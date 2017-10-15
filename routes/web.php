@@ -12,5 +12,11 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('dashboard');
+});
+
+Route::prefix('manage')->group(function () {
+    Route::get('/', function () {
+        return view('dashboard');
+    })->name('dashboard');
 });
