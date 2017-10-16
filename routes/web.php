@@ -15,8 +15,8 @@ Route::get('/', function () {
     return redirect()->route('dashboard');
 });
 
-Route::prefix('manage')->group(function () {
-    Route::get('/', function () {
-        return view('dashboard');
-    })->name('dashboard');
-});
+Route::get('dashboard', function () {
+    return view('dashboard');
+})->name('dashboard');
+
+Route::resource('maps', 'MapController');
