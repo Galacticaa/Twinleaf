@@ -173,11 +173,11 @@ return [
         /*
          * Application Service Providers...
          */
-        App\Providers\AppServiceProvider::class,
-        App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
-        App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
+        Twinleaf\Providers\AppServiceProvider::class,
+        Twinleaf\Providers\AuthServiceProvider::class,
+        // Twinleaf\Providers\BroadcastServiceProvider::class,
+        Twinleaf\Providers\EventServiceProvider::class,
+        Twinleaf\Providers\RouteServiceProvider::class,
 
     ],
 

@@ -13,11 +13,11 @@ return [
     |
     */
 
-    'title' => 'ScanManager',
+    'title' => 'Twinleaf',
 
     'title_prefix' => '',
 
-    'title_postfix' => ' - ScanManager',
+    'title_postfix' => ' - Twinleaf',
 
     /*
     |--------------------------------------------------------------------------
@@ -30,9 +30,9 @@ return [
     |
     */
 
-    'logo' => '<b>Scan</b>Manager',
+    'logo' => '<b>Twinleaf</b>',
 
-    'logo_mini' => '<b>S</b>Man',
+    'logo_mini' => '<b>T</b>l',
 
     /*
     |--------------------------------------------------------------------------

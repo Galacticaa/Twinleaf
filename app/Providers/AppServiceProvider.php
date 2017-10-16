@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Providers;
+namespace Twinleaf\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
