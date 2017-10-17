@@ -25,7 +25,7 @@ class StoreMap extends FormRequest
     {
         return [
             'name' => 'required',
-            'code' => 'required|unique:maps',
+            'code' => 'required|unique:maps,id,'.$this->map->id,
             'url' => 'required',
             'location' => 'required',
             'db_name' => 'required',

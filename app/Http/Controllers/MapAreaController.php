@@ -47,4 +47,35 @@ class MapAreaController extends Controller
                 ->with('map', $map)
                 ->with('area', $area);
     }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \Twinleaf\MapArea  $mapArea
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Map $map, MapArea $area)
+    {
+        return view('maps.areas.edit')
+                ->with('map', $map)
+                ->with('area', $area);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Twinleaf\MapArea  $mapArea
+     * @return \Illuminate\Http\Response
+     */
+    public function update(StoreMapArea $request, Map $map, MapArea $area)
+    {
+        $area->fill($request->all());
+        $area->save();
+
+        return redirect()->route('mapareas.show', [
+            'map' => $area->map,
+            'area' => $area,
+        ]);
+    }
 }

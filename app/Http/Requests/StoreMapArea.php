@@ -25,7 +25,7 @@ class StoreMapArea extends FormRequest
     {
         return [
             'name' => 'required',
-            'slug' => 'required',
+            'slug' => 'required|unique:map_areas,id,'.$this->area->id,
             'location' => 'required',
         ];
     }

@@ -24,5 +24,7 @@ Route::resource('maps/{map}/areas', 'MapAreaController', ['names' => [
     'create' => 'mapareas.create',
     'store' => 'mapareas.store',
     'show' => 'mapareas.show',
+    'edit' => 'mapareas.edit',
+    'update' => 'mapareas.update',
 ]]);
 

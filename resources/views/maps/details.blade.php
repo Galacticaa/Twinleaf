@@ -34,7 +34,10 @@
                     </li>
                 </ul>
                 <a class="btn btn-block bg-purple" href="{{ route('mapareas.create', ['map' => $map->code]) }}">
-                    <b>New Scan Area</b>
+                    <b>New scan area</b>
+                </a>
+                <a href="{{ route('maps.edit', ['map' => $map]) }}" class="btn btn-block btn-default">
+                    <b>Edit map settings</b>
                 </a>
             </div>
         </div>

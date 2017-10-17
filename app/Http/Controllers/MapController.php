@@ -41,4 +41,30 @@ class MapController extends Controller
     {
         return view('maps.details')->with('map', $map);
     }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \Twinleaf\Map  $map
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Map $map)
+    {
+        return view('maps.edit')->with('map', $map);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Twinleaf\Map  $map
+     * @return \Illuminate\Http\Response
+     */
+    public function update(StoreMap $request, Map $map)
+    {
+        $map->fill($request->all());
+        $map->save();
+
+        return redirect()->route('maps.show', ['map' => $map]);
+    }
 }

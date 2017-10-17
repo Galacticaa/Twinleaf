@@ -39,6 +39,9 @@
                         <a class="pull-right">{{ $total = $area->accounts->count() }}</a>
                     </li>
                 </ul>
+                <a href="{{ route('mapareas.edit', ['map' => $area->map, 'area' => $area]) }}" class="btn btn-block btn-default">
+                    <b>Edit Area</b>
+                </a>
             </div>
         </div>
     </div>
