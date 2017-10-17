@@ -23,9 +23,12 @@ class StoreMapArea extends FormRequest
      */
     public function rules()
     {
+        $unique = !$this->area ? 'unique:map_areas'
+                : 'unique:map_areas,id,'.$this->area->id;
+
         return [
             'name' => 'required',
-            'slug' => 'required|unique:map_areas,id,'.$this->area->id,
+            'slug' => 'required|'.$unique,
             'location' => 'required',
         ];
     }

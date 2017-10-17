@@ -59,7 +59,31 @@
             </div>
         </div>
     </div>
+    <button type="button" class="btn btn-danger btn-lg pull-right" data-toggle="modal" data-target="#deleteModal">Delete scan area</button>
     <button type="submit" class="btn btn-primary btn-lg">Save scan area</button>
     <a href="{{ route('mapareas.show', ['map' => $map, 'area' => $area]) }}" class="text-danger btn-lg">cancel</a>
 </form>
+
+<div id="deleteModal" class="modal modal-danger" tabindex="-1" role="dialog" aria-labelled-by="deleteModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fa fa-close"></i></span>
+                </button>
+                <h4 class="modal-title" id="deleteModalLabel">Are you sure?</h4>
+            </div>
+            <div class="modal-body">
+                <p>This will permanently destroy {{ $map->name }}'s <b>{{ $area->name }}</b> area! Do you really want to continue?</p>
+            </div>
+            <div class="modal-footer">
+                <form role="form" method="POST" action="{{ route('mapareas.destroy', ['map' => $map, 'area' => $area]) }}">
+                    {{ csrf_field() }}
+                    {{ method_field('DELETE') }}
+                    <button type="submit" class="btn btn-outline">Yeah, I get it, delete this map</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @stop

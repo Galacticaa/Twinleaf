@@ -67,4 +67,17 @@ class MapController extends Controller
 
         return redirect()->route('maps.show', ['map' => $map]);
     }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \Twinleaf\Map  $map
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Map $map)
+    {
+        $map->delete();
+
+        return redirect()->route('dashboard');
+    }
 }

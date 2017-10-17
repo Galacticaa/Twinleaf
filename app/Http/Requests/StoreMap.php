@@ -23,9 +23,12 @@ class StoreMap extends FormRequest
      */
     public function rules()
     {
+        $unique = !$this->map ? 'unique:maps'
+                : 'unique:maps,id,'.$this->map->id;
+
         return [
             'name' => 'required',
-            'code' => 'required|unique:maps,id,'.$this->map->id,
+            'code' => 'required|'.$unique,
             'url' => 'required',
             'location' => 'required',
             'db_name' => 'required',

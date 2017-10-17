@@ -53,7 +53,7 @@
                 </div>
             </div>
             <div class="box-body no-padding">
-                @if (!$map->areas)
+                @if (!$map->areas->count())
                 <p class="lead text-center">
                     {{ $map->name }} has no areas &#x1F61E;
                 </p>

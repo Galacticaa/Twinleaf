@@ -78,4 +78,17 @@ class MapAreaController extends Controller
             'area' => $area,
         ]);
     }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \Twinleaf\MapArea  $mapArea
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Map $map, MapArea $area)
+    {
+        $area->delete();
+
+        return redirect()->route('maps.show', ['map' => $map]);
+    }
 }
