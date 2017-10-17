@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Twinleaf\Map;
+use Twinleaf\MapArea;
 
 class MyFirstMapSeeder extends Seeder
 {
@@ -20,6 +21,13 @@ class MyFirstMapSeeder extends Seeder
             'db_name' => 'myfirstmap',
             'db_user' => 'root',
             'db_pass' => 'root',
+        ]);
+
+        MapArea::create([
+            'name' => 'Santa Monica',
+            'slug' => 'santa-monica',
+            'map_id' => 1,
+            'location' => '35.31233, 138.5892',
         ]);
     }
 }

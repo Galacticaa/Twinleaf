@@ -20,3 +20,9 @@ Route::get('dashboard', function () {
 })->name('dashboard');
 
 Route::resource('maps', 'MapController');
+Route::resource('maps/{map}/areas', 'MapAreaController', ['names' => [
+    'create' => 'mapareas.create',
+    'store' => 'mapareas.store',
+    'show' => 'mapareas.show',
+]]);
+

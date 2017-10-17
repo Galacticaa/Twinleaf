@@ -16,6 +16,11 @@ class Map extends Model
         'db_pass',
     ];
 
+    public function areas()
+    {
+        return $this->hasMany(MapArea::class);
+    }
+
     public function getRouteKeyName()
     {
         return 'code';

@@ -23,10 +23,46 @@
                         <sup><i class="fa fa-external-link"></i></sup>
                     </a>
                 </p>
+                <ul class="list-group list-group-unbordered">
+                    <li class="list-group-item">
+                        <b>Scan Areas</b>
+                        <a class="pull-right">{{ count($map->areas) }}</a>
+                    </li>
+                </ul>
+                <a class="btn btn-block bg-purple" href="{{ route('mapareas.create', ['map' => $map->code]) }}">
+                    <b>New Scan Area</b>
+                </a>
             </div>
         </div>
     </div>
     <div class="col-md-9">
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title">Scan Areas</h3>
+                <div class="box-tools pull-right">
+                    <a class="btn bg-purple" href="{{ route('mapareas.create', ['map' => $map->code]) }}">
+                        Add new Area
+                    </a>
+                </div>
+            </div>
+            <div class="box-body no-padding">
+                @if (!$map->areas)
+                <p class="lead text-center">
+                    {{ $map->name }} has no areas &#x1F61E;
+                </p>
+                @else
+                <table class="table">
+                    <tbody>
+                        @foreach ($map->areas as $area)
+                        <tr>
+                            <td><b>{{ $area->name }}</b></td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                @endif
+            </div>
+        </div>
     </div>
 </div>
 @stop
