@@ -72,7 +72,7 @@
                         <div class="small-box bg-green">
                             <div class="inner">
                                 <h3>{{ $working = $area->accounts->where('is_blind', '!=', true)->where('is_banned', '!=', true)->count() }}</h3>
-                                <p>{{ round(($working / $total) * 100) }}% Working</p>
+                                <p>{{ $working ? round(($working / $total) * 100) : 0 }}% Working</p>
                             </div>
                             <div class="icon">
                                 <i class="fa fa-check"></i>
@@ -83,7 +83,7 @@
                         <div class="small-box bg-orange">
                             <div class="inner">
                                 <h3>{{ $blind = $area->accounts->where('is_blind', true)->where('is_banned', '!=', true)->count() }}</h3>
-                                <p>{{ round(($blind / $total) * 100) }}% Blind</p>
+                                <p>{{ $blind ? round(($blind / $total) * 100) : 0 }}% Blind</p>
                             </div>
                             <div class="icon">
                                 <i class="fa fa-eye-slash"></i>
@@ -94,7 +94,7 @@
                         <div class="small-box bg-red">
                             <div class="inner">
                                 <h3>{{ $banned = $area->accounts()->whereIsBanned(true)->count() }}</h3>
-                                <p>{{ round(($banned / $total) * 100) }}% Banned</p>
+                                <p>{{ $banned ? round(($banned / $total) * 100) : 0 }}% Banned</p>
                             </div>
                             <div class="icon">
                                 <i class="fa fa-ban"></i>
