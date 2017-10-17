@@ -13,6 +13,11 @@ class MapArea extends Model
         'map_id'
     ];
 
+    public function accounts()
+    {
+        return $this->hasMany(Account::class);
+    }
+
     public function map()
     {
         return $this->belongsTo(Map::class);

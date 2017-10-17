@@ -34,4 +34,17 @@ class MapAreaController extends Controller
             'area' => $area,
         ]);
     }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \Twinleaf\MapArea  $mapArea
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Map $map, MapArea $area)
+    {
+        return view('maps.areas.details')
+                ->with('map', $map)
+                ->with('area', $area);
+    }
 }

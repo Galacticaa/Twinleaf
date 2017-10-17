@@ -25,6 +25,10 @@
                 </p>
                 <ul class="list-group list-group-unbordered">
                     <li class="list-group-item">
+                        <b>Accounts</b>
+                        <a class="pull-right">{{ $map->accounts->count() }}</a>
+                    </li>
+                    <li class="list-group-item">
                         <b>Scan Areas</b>
                         <a class="pull-right">{{ count($map->areas) }}</a>
                     </li>
@@ -56,6 +60,13 @@
                         @foreach ($map->areas as $area)
                         <tr>
                             <td><b>{{ $area->name }}</b></td>
+                            <td>{{ $area->accounts->count() }} accounts</td>
+                            <td>
+                                <a class="btn btn-xs btn-default pull-right"
+                                    href="{{ route('mapareas.show', ['map' => $map->code, 'slug' => $area->slug]) }}">
+                                    Details
+                                </a>
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>

@@ -16,6 +16,11 @@ class Map extends Model
         'db_pass',
     ];
 
+    public function accounts()
+    {
+        return $this->hasManyThrough(Account::class, MapArea::class);
+    }
+
     public function areas()
     {
         return $this->hasMany(MapArea::class);
