@@ -26,6 +26,14 @@ class Map extends Model
         return $this->hasMany(MapArea::class);
     }
 
+    public function is_installed()
+    {
+        $map = storage_path('maps/rocketmap/.twinleaf_installed');
+        $config = storage_path("maps/rocketmap/config/{$this->code}.ini");
+
+        return file_exists($map) && file_exists($config);
+    }
+
     public function getRouteKeyName()
     {
         return 'code';

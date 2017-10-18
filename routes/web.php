@@ -19,6 +19,13 @@ Route::get('dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
 
+Route::prefix('services/rocketmap')->group(function () {
+    Route::post('install', 'RocketMapController@download')->name('services.rm.download');
+    Route::post('compile', 'RocketMapController@install')->name('services.rm.install');
+    Route::post('clean/{map}', 'RocketMapController@clean')->name('services.rm.clean');
+    Route::post('configure/{map}', 'RocketMapController@configure')->name('services.rm.configure');
+});
+
 Route::resource('maps', 'MapController');
 Route::resource('maps/{map}/areas', 'MapAreaController', ['names' => [
     'create' => 'mapareas.create',
