@@ -69,10 +69,12 @@ class RocketMapController extends Controller
             system('mkdir '.$path);
         }
 
-        $config = view('config.rocketmap.server')->with([
-            'config' => Setting::first(),
-            'map' => $map,
-        ]);
+        if (\DB::statement("CREATE DATABASE IF NOT EXISTS `{$map->db_name}`")) {
+            $config = view('config.rocketmap.server')->with([
+                'config' => Setting::first(),
+                'map' => $map,
+            ]);
+        }
 
         return [
             'written' => false !== file_put_contents($path.'.ini', $config)
