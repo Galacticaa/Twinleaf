@@ -80,4 +80,53 @@ class RocketMapController extends Controller
             'written' => false !== file_put_contents($path.'.ini', $config)
         ];
     }
+
+    public function start(Map $map)
+    {
+        $pids = $map->getPids();
+
+        if (count($pids)) {
+            return ['running' => true];
+        }
+
+        $mapDir = storage_path("maps/rocketmap");
+
+        $cmd_parts = [
+            "cd {$mapDir} &&",
+            "tmux new-session -s \"tlm_{$map->code}\" -d",
+            "python2 runserver.py -cf \"config/{$map->code}.ini\" 2>&1",
+        ];
+
+        system(implode(' ', $cmd_parts));
+    }
+
+    public function stop(Map $map)
+    {
+        $pids = $map->getPids();
+
+        if (!count($pids)) {
+            return ['stopped' => true];
+        }
+
+        $mapDir = storage_path('maps/rocketmap');
+
+        foreach ($pids as $pid) {
+            system(sprintf("kill -15 %s", $pid));
+        }
+
+        sleep(1);
+
+        return ['stopped' => true];
+    }
+
+    public function restart(Map $map)
+    {
+        $this->stop($map);
+
+        sleep(1);
+
+        $this->start($map);
+
+        return ['started' => (bool) $map->getPids()];
+    }
 }

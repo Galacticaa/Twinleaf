@@ -76,6 +76,30 @@
                 }
             });
         });
+
+        $('#startMap').on('click', function (e) {
+            $(this).button('loading');
+
+            $.post('{{ route('services.rm.start', ['map' => $map]) }}', function (data) {
+                window.location.reload();
+            });
+        });
+
+        $('#stopMap').on('click', function (e) {
+            $(this).button('loading');
+
+            $.post('{{ route('services.rm.stop', ['map' => $map]) }}', function (data) {
+                window.location.reload();
+            });
+        });
+
+        $('#restartMap').on('click', function (e) {
+            $(this).button('loading');
+
+            $.post('{{ route('services.rm.stop', ['map' => $map]) }}', function (data) {
+                window.location.reload();
+            });
+        });
     });
 </script>
 @stop
@@ -117,11 +141,17 @@
                 <a href="{{ route('maps.edit', ['map' => $map]) }}" class="btn btn-block btn-default">
                     <b>Edit map settings</b>
                 </a>
+                @if ($map->isDown())
+                <button id="startMap" class="btn btn-block btn-success" data-loading-text="<i class='fa fa-spinner'></i> Starting map&hellip;"><b>Start map</b></button>
+                @else
+                <button id="restartMap" class="btn btn-block btn-warning"><b>Restart map</b></button>
+                <button id="stopMap" class="btn btn-block btn-danger"><b>Stop map</b></button>
+                @endif
             </div>
         </div>
     </div>
     <div class="col-md-9">
-        @if (!$map->is_installed())
+        @if (!$map->isInstalled())
         <div class="box box-danger" id="installWarning">
             <div class="box-header">
                 <h3 class="box-title">Installation Required</h3>
@@ -150,6 +180,14 @@
                     </div>
                 </div>
             </div>
+        </div>
+        @elseif ($map->isDown())
+        <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                <i class="fa fa-close"></i>
+            </button>
+            <h4><i class="fa fa-warning"></i> Map is Down!</h4>
+            <p>It appears this map isn't running. Let's fix that! Go ahead and click Start Area on the left.</p>
         </div>
         @endif
         <div class="box">
