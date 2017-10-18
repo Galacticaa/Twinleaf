@@ -174,10 +174,24 @@
                             <td><b>{{ $area->name }}</b></td>
                             <td>{{ $area->accounts->count() }} accounts</td>
                             <td>
-                                <a class="btn btn-xs btn-default pull-right"
-                                    href="{{ route('mapareas.show', ['map' => $map->code, 'slug' => $area->slug]) }}">
-                                    Details
-                                </a>
+                                <div class="btn-group pull-right">
+                                    <a class="btn btn-xs btn-default"
+                                        href="{{ route('mapareas.show', ['map' => $map->code, 'slug' => $area->slug]) }}">
+                                        Details
+                                    </a>
+                                    <button class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li>
+                                            <a href="{{ route('mapareas.edit', [
+                                                'map' => $map, 'area' => $area ]) }}">
+                                                Edit {{ $area->name }}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </td>
                         </tr>
                         @endforeach
