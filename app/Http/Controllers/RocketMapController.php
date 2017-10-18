@@ -3,6 +3,7 @@
 namespace Twinleaf\Http\Controllers;
 
 use Twinleaf\Map;
+use Twinleaf\MapArea;
 use Twinleaf\Setting;
 
 class RocketMapController extends Controller
@@ -53,9 +54,54 @@ class RocketMapController extends Controller
         return ['nuked' => true];
     }
 
-    public function configure(Map $map) {
+    public function check(MapArea $area)
+    {
+        sleep(1);
+
+        if (!$area->map->isInstalled()) {
+            return [
+                'success' => false,
+                'error' => "Please install {$area->map->name} before its scan areas.",
+            ];
+        }
+
+        return ['success' => true, 'error' => false];
+    }
+
+    public function configure(Map $map, MapArea $area = null) {
         sleep(2);
 
+        if ($area !== null) {
+            return $this->configureArea($area);
+        } else {
+            return $this->configureMap($map);
+        }
+    }
+
+    protected function configureArea(MapArea $area)
+    {
+        $path = storage_path('maps/rocketmap/config');
+        if (!is_dir($path)) {
+            return [
+                'success' => false,
+                'error' => "Config directory doesn't exist. Is RocketMap installed?",
+            ];
+        }
+
+        $path .= "/{$area->map->code}/{$area->slug}.ini";
+
+        $config = view('config.rocketmap.scanner')->with([
+            'config' => Setting::first(),
+            'area' => $area,
+        ]);
+
+        return [
+            'success' => false !== file_put_contents($path, $config),
+        ];
+    }
+
+    protected function configureMap(Map $map)
+    {
         $path = storage_path("maps/rocketmap/config");
 
         if (!is_dir($path)) {

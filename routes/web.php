@@ -25,7 +25,8 @@ Route::prefix('services/rocketmap')->group(function () {
     Route::post('install', 'RocketMapController@download')->name('services.rm.download');
     Route::post('compile', 'RocketMapController@install')->name('services.rm.install');
     Route::post('clean/{map}', 'RocketMapController@clean')->name('services.rm.clean');
-    Route::post('configure/{map}', 'RocketMapController@configure')->name('services.rm.configure');
+    Route::post('check/{area}', 'RocketMapController@check')->name('services.rm.check');
+    Route::post('configure/{map}/{area?}', 'RocketMapController@configure')->name('services.rm.configure');
     Route::post('start/{map}/{area?}', 'RocketMapController@start')->name('services.rm.start');
     Route::post('stop/{map}/{area?}', 'RocketMapController@stop')->name('services.rm.stop');
     Route::post('restart/{map}/{area?}', 'RocketMapController@restart')->name('services.rm.restart');

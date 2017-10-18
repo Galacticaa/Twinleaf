@@ -12,7 +12,72 @@
 <script>
     $(function() {
         $('#accounts-table').DataTable()
-    })
+
+        function set_status(txt, val, forceButton = false) {
+            $('#installStatus').html(txt + '&hellip;');
+
+            if (val === -1) {
+                $('.progress-bar').addClass('progress-bar-danger');
+            } else {
+                $('.progress-bar').removeClass('progress-bar-danger').width(val+'%')
+
+                if (val >= 100) {
+                    $('.progress-bar').removeClass('active');
+                }
+            }
+
+            if (val >= 100 || forceButton) {
+                var closebtn = $('<button/>').addClass('btn btn-default pull-right')
+                                             .attr('data-dismiss', 'modal')
+                                             .text('Close');
+                $('.modal-footer', '#installModal').append(closebtn);
+            }
+        }
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        });
+
+        $('#installModal').on('show.bs.modal', function (e) {
+            $('.modal-footer', '#installModal').empty();
+
+            set_status('Loading', 0);
+        });
+
+        $('#installModal').on('shown.bs.modal', function (e) {
+            function fail(txt, useOwn = false) {
+                if (useOwn) {
+                    set_status('Install failed! ' + txt, false, true);
+                } else {
+                    set_status('Install failed' + (txt ? (' while ' + txt + '.') : '!'), false, true);
+                }
+                $('#installStatus').addClass('text-danger');
+                $('.progress-bar').addClass('progress-bar-danger');
+            }
+
+            set_status('Checking installation status', 20);
+
+            $.post('{{ route('services.rm.check', ['area' => $area]) }}', function (data) {
+                if (data.success) {
+                    set_status('Writing configuration for {{ $area->name }}', 35);
+
+                    $.post('{{ route('services.rm.configure', ['map' => $area->map, 'area' => $area]) }}', function (data) {
+                        if (data.success) {
+                            $('#installWarning').remove();
+
+                            set_status('Installation complete!', 100);
+                        } else {
+                            fail(data.error, true);
+                        }
+                    });
+                } else {
+                    fail(data.error, true);
+                }
+            });
+        });
+    });
 </script>
 @stop
 
@@ -46,6 +111,48 @@
         </div>
     </div>
     <div class="col-md-9">
+        @if (!$area->map->isInstalled())
+        <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                <i class="fa fa-close"></i>
+            </button>
+            <h4><i class="fa fa-warning"></i> Something's Missing!</h4>
+            <p>
+                It would seem {{ $area->map->name }} isn't installed.
+                It's probably worth fixing that before you try installing this scan area.
+            </p>
+        </div>
+        @elseif (!$area->isInstalled())
+        <div class="box box-danger" id="installWarning">
+            <div class="box-header">
+                <h3 class="box-title">Installation Required</h3>
+            </div>
+            <div class="box-body">
+                <p class="lead">
+                    Your map won't do much while it's not installed!<br>
+                    It only takes a moment. Why not get it done?
+                </p>
+                <button class="btn btn-lg" data-toggle="modal" data-target="#installModal">Install {{ $area->name }}</button>
+            </div>
+        </div>
+        <div id="installModal" class="modal fade" tabindex="-1" role="dialog" aria-labelled-by="installModalLabel" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="installModalLabel">Installing {{ $area->name }}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="progress progress-sm">
+                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemax="100" style="min-width: 3em; width: 0%;"></div>
+                        </div>
+                        <p class="lead text-center" id="installStatus">Loading&hellip;</p>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
         <div class="box box-default">
             <div class="box-header">
                 <h3 class="box-title">Scan Accounts</h3>
