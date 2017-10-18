@@ -85,7 +85,7 @@ return [
     |
     */
 
-    'dashboard_url' => 'manage',
+    'dashboard_url' => '/',
 
     'logout_url' => 'logout',
 
@@ -113,6 +113,10 @@ return [
             'text' => 'Dashboard',
             'route'  => 'dashboard',
             'icon' => 'dashboard',
+        ], [
+            'text' => 'Settings',
+            'route' => 'settings.index',
+            'icon' => 'cogs',
         ],
     ],
 

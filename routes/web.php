@@ -19,6 +19,8 @@ Route::get('dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
 
+Route::resource('settings', 'SettingController');
+
 Route::prefix('services/rocketmap')->group(function () {
     Route::post('install', 'RocketMapController@download')->name('services.rm.download');
     Route::post('compile', 'RocketMapController@install')->name('services.rm.install');
@@ -35,4 +37,3 @@ Route::resource('maps/{map}/areas', 'MapAreaController', ['names' => [
     'update' => 'mapareas.update',
     'destroy' => 'mapareas.destroy',
 ]]);
-

@@ -3,6 +3,7 @@
 namespace Twinleaf\Http\Controllers;
 
 use Twinleaf\Map;
+use Twinleaf\Setting;
 
 class RocketMapController extends Controller
 {
@@ -69,10 +70,8 @@ class RocketMapController extends Controller
         }
 
         $config = view('config.rocketmap.server')->with([
+            'config' => Setting::first(),
             'map' => $map,
-            'config' => (object) [
-                'keys' => (object) [ 'gmaps' => 'my google maps key' ],
-            ],
         ]);
 
         return [
