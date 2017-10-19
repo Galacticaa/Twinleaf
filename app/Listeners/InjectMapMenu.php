@@ -21,6 +21,7 @@ class InjectMapMenu
             $nav[] = [
                 'text' => $map->name,
                 'url' => route('maps.show', ['map' => $map->code]),
+                'icon_color' => $this->getIconColour($map),
             ];
         }
 
@@ -31,5 +32,18 @@ class InjectMapMenu
         ];
 
         $event->menu->add(...$nav);
+    }
+
+    protected function getIconColour(Map $map)
+    {
+        if (!$map->isInstalled()) {
+            return 'grey';
+        }
+
+        if ($map->isUp()) {
+            return 'green';
+        }
+
+        return 'red';
     }
 }
