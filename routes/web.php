@@ -27,6 +27,7 @@ Route::prefix('services/rocketmap')->group(function () {
     Route::post('clean/{map}', 'RocketMapController@clean')->name('services.rm.clean');
     Route::post('check/{area}', 'RocketMapController@check')->name('services.rm.check');
     Route::post('configure/{map}/{area?}', 'RocketMapController@configure')->name('services.rm.configure');
+    Route::post('accounts/{area}/write', 'RocketMapController@writeAccounts')->name('services.rm.write_accounts');
     Route::post('start/{map}/{area?}', 'RocketMapController@start')->name('services.rm.start');
     Route::post('stop/{map}/{area?}', 'RocketMapController@stop')->name('services.rm.stop');
     Route::post('restart/{map}/{area?}', 'RocketMapController@restart')->name('services.rm.restart');

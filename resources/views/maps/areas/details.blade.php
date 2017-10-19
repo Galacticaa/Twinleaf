@@ -65,9 +65,13 @@
 
                     $.post('{{ route('services.rm.configure', ['map' => $area->map, 'area' => $area]) }}', function (data) {
                         if (data.success) {
-                            $('#installWarning').remove();
+                            set_status('Writing accounts file', 40);
 
-                            set_status('Installation complete!', 100);
+                            $.post('{{ route('services.rm.write_accounts', ['area' => $area]) }}', function (data) {
+                                $('#installWarning').remove();
+
+                                set_status('Installation complete!', 100);
+                            });
                         } else {
                             fail(data.error, true);
                         }

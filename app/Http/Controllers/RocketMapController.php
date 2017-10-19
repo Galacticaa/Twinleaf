@@ -127,6 +127,25 @@ class RocketMapController extends Controller
         ];
     }
 
+    public function writeAccounts(MapArea $area)
+    {
+        $accounts = '';
+
+        foreach ($area->accounts as $account) {
+            $accounts .= sprintf(
+                'ptc,%s,%s'.PHP_EOL,
+                $account->username,
+                $account->password
+            );
+        }
+
+        $path = storage_path("maps/rocketmap/config/{$area->map->code}/{$area->slug}.csv");
+
+        return [
+            'success' => false !== file_put_contents($path, $accounts),
+        ];
+    }
+
     public function start(Map $map)
     {
         $pids = $map->getPids();
