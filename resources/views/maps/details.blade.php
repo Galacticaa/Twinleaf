@@ -96,7 +96,7 @@
         $('#restartMap').on('click', function (e) {
             $(this).button('loading');
 
-            $.post('{{ route('services.rm.stop', ['map' => $map]) }}', function (data) {
+            $.post('{{ route('services.rm.restart', ['map' => $map]) }}', function (data) {
                 window.location.reload();
             });
         });
@@ -211,6 +211,13 @@
                         <tr>
                             <td><b>{{ $area->name }}</b></td>
                             <td>{{ $area->accounts->count() }} accounts</td>
+                            @if (!$area->isInstalled())
+                            <td class="text-muted"><i class="fa fa-circle"></i> Not installed</td>
+                            @elseif ($area->isUp())
+                            <td class="text-success"><i class="fa fa-circle"></i> Running</td>
+                            @else
+                            <td class="text-danger"><i class="fa fa-circle"></i> Not running!</td>
+                            @endif
                             <td>
                                 <div class="btn-group pull-right">
                                     <a class="btn btn-xs btn-default"

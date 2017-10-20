@@ -81,6 +81,37 @@
                 }
             });
         });
+
+        $('#startScan').on('click', function (e) {
+            $(this).button('loading');
+
+            $.post('{{ route('services.rm.start-area', [
+                'area' => $area,
+            ]) }}', function (data) {
+                window.location.reload();
+            });
+        });
+
+        $('#stopScan').on('click', function (e) {
+            $(this).button('loading');
+
+            $.post('{{ route('services.rm.stop-area', [
+                'map' => $area->map,
+                'area' => $area,
+            ]) }}', function (data) {
+                window.location.reload();
+            });
+        });
+
+        $('#restartScan').on('click', function (e) {
+            $(this).button('loading');
+
+            $.post('{{ route('services.rm.restart-area', [
+                'area' => $area,
+            ]) }}', function (data) {
+                window.location.reload();
+            });
+        });
     });
 </script>
 @stop
@@ -111,6 +142,12 @@
                 <a href="{{ route('mapareas.edit', ['map' => $area->map, 'area' => $area]) }}" class="btn btn-block btn-default">
                     <b>Edit Area</b>
                 </a>
+                @if ($area->isDown())
+                <button id="startScan" class="btn btn-block btn-success"><b>Start Scan</b></button>
+                @else
+                <button id="restartScan" class="btn btn-block btn-warning"><b>Restart Scan</b></button>
+                <button id="stopScan" class="btn btn-block btn-danger"><b>Stop Scan</b></button>
+                @endif
             </div>
         </div>
     </div>
@@ -155,6 +192,14 @@
                     </div>
                 </div>
             </div>
+        </div>
+        @elseif ($area->isDown())
+        <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                <i class="fa fa-close"></i>
+            </button>
+            <h4><i class="fa fa-warning"></i> Scan Area Down!</h4>
+            <p>It appears this area isn't running. Let's fix that! Go ahead and click Start Area on the left.</p>
         </div>
         @endif
         <div class="box box-default">

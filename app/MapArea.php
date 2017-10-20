@@ -27,6 +27,16 @@ class MapArea extends Model
         return file_exists($rocket) && file_exists($parent) && file_exists($config);
     }
 
+    public function isUp()
+    {
+        return 0 < count($this->getPids());
+    }
+
+    public function isDown()
+    {
+        return !$this->isUp();
+    }
+
     public function map()
     {
         return $this->belongsTo(Map::class);
@@ -35,5 +45,17 @@ class MapArea extends Model
     public function getRouteKeyName()
     {
         return 'slug';
+    }
+
+    public function getPids()
+    {
+        $cmd_parts = [
+            "ps axf | grep runserver.py | grep -v grep |",
+            "grep -v tmux | grep {$this->slug} | awk '{ print \$1 }'",
+        ];
+
+        exec(implode(' ', $cmd_parts), $pids);
+
+        return $pids;
     }
 }

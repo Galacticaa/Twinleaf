@@ -53,7 +53,7 @@ class Map extends Model
     {
         $cmd_parts = [
             "ps axf | grep runserver.py | grep -v grep |",
-            "grep -v tmux | grep {$this->code} | awk '{ print \$1 }'",
+            "grep -v tmux | grep {$this->code}.ini | awk '{ print \$1 }'",
         ];
 
         exec(implode(' ', $cmd_parts), $pids);
