@@ -165,6 +165,8 @@ class RocketMapController extends Controller
         ];
 
         system(implode(' ', $cmd_parts));
+
+        $target->applyUptimeMax()->setStartTime()->save();
     }
 
     public function startMap(Map $map)
@@ -188,6 +190,8 @@ class RocketMapController extends Controller
         foreach ($pids as $pid) {
             system(sprintf("kill -15 %s", $pid));
         }
+
+        $target->applyUptimeMax()->unsetStartTime()->save();
 
         sleep(1);
 

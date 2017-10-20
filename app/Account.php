@@ -10,4 +10,11 @@ class Account extends Model
         'name',
         'email',
     ];
+
+    protected $dates = [
+        'registered_at',
+        'activated_at',
+        'created_at',
+        'updated_at',
+    ];
 }

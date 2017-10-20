@@ -138,6 +138,18 @@
                         <b>Accounts</b>
                         <a class="pull-right">{{ $total = $area->accounts->count() }}</a>
                     </li>
+                    <li class="list-group-item">
+                        <b>Current Uptime</b>
+                        <a class="pull-right">
+                            {{ $area->human_uptime }}
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Record Uptime</b>
+                        <a class="pull-right">
+                            {{ $area->human_uptime_max }}
+                        </a>
+                    </li>
                 </ul>
                 <a href="{{ route('mapareas.edit', ['map' => $area->map, 'area' => $area]) }}" class="btn btn-block btn-default">
                     <b>Edit Area</b>

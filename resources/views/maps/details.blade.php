@@ -134,6 +134,18 @@
                         <b>Scan Areas</b>
                         <a class="pull-right">{{ count($map->areas) }}</a>
                     </li>
+                    <li class="list-group-item">
+                        <b>Current Uptime</b>
+                        <a class="pull-right">
+                            {{ $map->human_uptime }}
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Record Uptime</b>
+                        <a class="pull-right">
+                            {{ $map->human_uptime_max }}
+                        </a>
+                    </li>
                 </ul>
                 <a class="btn btn-block bg-purple" href="{{ route('mapareas.create', ['map' => $map->code]) }}">
                     <b>New scan area</b>
