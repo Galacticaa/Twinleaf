@@ -43,9 +43,10 @@ class SettingController extends Controller
         ];
 
         foreach ($settings as $s => $default) {
-            echo "Setting {$s} to {$request->get($s)}".PHP_EOL;
-            $setting->$s = $request->get($s);
+            $setting->$s = $request->get($s, $default);
         }
+
+        $setting->email_domains = explode("\n", $request->get('email_domains'));
 
         $setting->save();
 

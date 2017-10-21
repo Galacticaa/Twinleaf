@@ -19,6 +19,8 @@ Route::get('dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
 
+Route::post('accounts/{account}/replace', 'AccountController@replace')->name('accounts.replace');
+
 Route::resource('settings', 'SettingController');
 
 Route::prefix('services/rocketmap')->group(function () {

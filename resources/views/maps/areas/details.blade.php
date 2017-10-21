@@ -113,6 +113,14 @@
             });
         });
     });
+
+    function replaceAccount(account, row) {
+        var route = '{{ route('accounts.replace', ['account' => '--USERNAME--']) }}';
+
+        $.post(route.replace('--USERNAME--', account), function (data) {
+            window.location.reload();
+        });
+    };
 </script>
 @stop
 
@@ -276,6 +284,7 @@
                             <th>Username</th>
                             <th>Email Activation</th>
                             <th>Condition</th>
+                            <th>&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -316,6 +325,13 @@
                                 <i class="fa fa-question"></i> Unused / Unknown
                             </td>
                             @endif
+                            <td>
+                                <button class="btn btn-xs btn-warning replace-account"
+                                    onclick="replaceAccount('{{ $account->username }}', $(this).parent().parent())">
+                                    <i class="fa fa-refresh"></i>
+                                    Replace
+                                </button>
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>

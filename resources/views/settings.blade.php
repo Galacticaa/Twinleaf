@@ -40,6 +40,7 @@
                 <a href="#tab_captchas" data-toggle="tab">Captchas</a>
             </li>
             <li><a href="#tab_keys" data-toggle="tab">Keys</a></li>
+            <li><a href="#tab_creation" data-toggle="tab">Account Creation</a></li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="tab_captchas">
@@ -70,6 +71,16 @@
                 <div class="form-group">
                     <label for="settings_keys_hash">Bossland Hashing Key</label>
                     <input type="text" class="form-control" id="settings_keys_hash" name="hash_key" value="{{ $settings->hash_key }}">
+                </div>
+            </div>
+            <div class="tab-pane" id="tab_creation">
+                <div class="form-group">
+                    <label for="settings_creation_email-domains">Email Domains</label>
+                    <textarea class="form-control" name="email_domains"
+                        id="settings_creation_email-domains"
+                        rows="{{ max(3, min(10, count($settings->email_domains))) }}"
+                    >{{ implode($settings->email_domains) }}</textarea>
+                    <span class="help-block">Domain names to use when registering new game accounts. One per line.</span>
                 </div>
             </div>
         </div>
