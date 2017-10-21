@@ -17,6 +17,7 @@ class MapArea extends Model
         'name',
         'slug',
         'location',
+        'accounts_target',
         'map_id'
     ];
 

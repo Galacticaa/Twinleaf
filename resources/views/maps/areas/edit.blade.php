@@ -53,9 +53,34 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="formLocation">Location</label>
-                <input type="text" class="form-control" id="formLocation" placeholder="35.31233, 138.5892" name="location" value="{{ $area->location }}">
+        </div>
+    </div>
+    <h2 class="page-header">Map Settings</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Scan Area</h3>
+                </div>
+                <div class="box-body">
+                    <div class="form-group">
+                        <label for="formLocation">Location</label>
+                        <input type="text" class="form-control" id="formLocation" placeholder="35.31233, 138.5892" name="location" value="{{ $area->location }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Quotas</h3>
+                </div>
+                <div class="box-body">
+                    <div class="form-group">
+                        <label for="formAccountsTarget">Number of Accounts to Generate</label>
+                        <input type="text" class="form-control" id="formAccountsTarget" placeholder="25" name="accounts_target" value="{{ $area->accounts_target }}">
+                    </div>
+                </div>
             </div>
         </div>
     </div>

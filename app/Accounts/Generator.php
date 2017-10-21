@@ -23,10 +23,11 @@ class Generator
         $this->faker = Factory::create();
     }
 
-    public function generate(int $count = 1)
+    public function generate(int $count = null)
     {
         $accounts = [];
         $nameUses = 25;
+        $count = $this->area ? $this->area->accounts_target : ($count ?? 1);
 
         for ($i = 0; $i < ceil($count / $nameUses); $i++) {
             $batchCount = (($i + 1) * $nameUses) < $count

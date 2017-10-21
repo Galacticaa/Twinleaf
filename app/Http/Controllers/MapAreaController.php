@@ -4,6 +4,7 @@ namespace Twinleaf\Http\Controllers;
 
 use Twinleaf\Map;
 use Twinleaf\MapArea;
+use Twinleaf\Accounts\Generator;
 use Twinleaf\Http\Requests\StoreMapArea;
 
 class MapAreaController extends Controller
@@ -77,6 +78,22 @@ class MapAreaController extends Controller
             'map' => $area->map,
             'area' => $area,
         ]);
+    }
+
+    /**
+     * Replace all accounts for the specified area.
+     * @param \Twinleaf\Map  $map
+     * @param \Twinleaf\MapArea  $area
+     * @return \Illuminate\Http\Response
+     */
+    public function regenerate(Map $map, MapArea $area)
+    {
+        foreach ($area->accounts as $account) {
+            $account->area()->dissociate();
+            $account->save();
+        }
+
+        return (new Generator($area))->generate();
     }
 
     /**

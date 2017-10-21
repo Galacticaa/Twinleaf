@@ -20,6 +20,7 @@ Route::get('dashboard', function () {
 })->name('dashboard');
 
 Route::post('accounts/{account}/replace', 'AccountController@replace')->name('accounts.replace');
+Route::post('maps/{map}/areas/{area}/regenerate', 'MapAreaController@regenerate')->name('mapareas.regenerate');
 
 Route::resource('settings', 'SettingController');
 

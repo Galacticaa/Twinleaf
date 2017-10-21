@@ -112,9 +112,21 @@
                 window.location.reload();
             });
         });
+
+        $('#regenerateArea').on('click', function (e) {
+            $(this).button('loading');
+
+            $.post('{{ route('mapareas.regenerate', [
+                'map' => $map,
+                'area' => $area,
+            ]) }}', function (data) {
+                window.location.reload();
+            });
+        });
     });
 
-    function replaceAccount(account, row) {
+    function replaceAccount(account) {
+        $(this).button('loading');
         var route = '{{ route('accounts.replace', ['account' => '--USERNAME--']) }}';
 
         $.post(route.replace('--USERNAME--', account), function (data) {
@@ -159,14 +171,15 @@
                         </a>
                     </li>
                 </ul>
+                <button id="regenerateArea" class="btn btn-block bg-purple"><b>Regenerate accounts</b></button>
                 <a href="{{ route('mapareas.edit', ['map' => $area->map, 'area' => $area]) }}" class="btn btn-block btn-default">
-                    <b>Edit Area</b>
+                    <b>Edit area settings</b>
                 </a>
                 @if ($area->isDown())
-                <button id="startScan" class="btn btn-block btn-success"><b>Start Scan</b></button>
+                <button id="startScan" class="btn btn-block btn-success"><b>Start scan</b></button>
                 @else
-                <button id="restartScan" class="btn btn-block btn-warning"><b>Restart Scan</b></button>
-                <button id="stopScan" class="btn btn-block btn-danger"><b>Stop Scan</b></button>
+                <button id="restartScan" class="btn btn-block btn-warning"><b>Restart scan</b></button>
+                <button id="stopScan" class="btn btn-block btn-danger"><b>Stop scan</b></button>
                 @endif
             </div>
         </div>
@@ -327,7 +340,7 @@
                             @endif
                             <td>
                                 <button class="btn btn-xs btn-warning replace-account"
-                                    onclick="replaceAccount('{{ $account->username }}', $(this).parent().parent())">
+                                    onclick="replaceAccount('{{ $account->username }}')">
                                     <i class="fa fa-refresh"></i>
                                     Replace
                                 </button>
