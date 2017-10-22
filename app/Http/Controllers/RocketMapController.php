@@ -132,11 +132,7 @@ class RocketMapController extends Controller
         $accounts = '';
 
         foreach ($area->accounts as $account) {
-            $accounts .= sprintf(
-                'ptc,%s,%s'.PHP_EOL,
-                $account->username,
-                $account->password
-            );
+            $accounts .= $account->format().PHP_EOL;
         }
 
         $path = storage_path("maps/rocketmap/config/{$area->map->code}/{$area->slug}.csv");

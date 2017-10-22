@@ -24,6 +24,43 @@ class Account extends Model
         return $this->belongsTo('Twinleaf\MapArea', 'map_area_id');
     }
 
+    public function scopeActivated($query)
+    {
+        return $query->whereNotNull('activated_at');
+    }
+
+    public function scopeUnregistered($query)
+    {
+        return $query->whereNull('registered_at')->whereNull('activated_at');
+    }
+
+    public function format($format = 'rocketmap')
+    {
+        if (!in_array($format, ['kinan', 'rocketmap'])) {
+            throw new \Exception("Invalid format '{$format}'");
+        }
+
+        if ($format == 'rocketmap') {
+            $separator = ',';
+            $values = [
+                'ptc',
+                $this->attributes['username'],
+                $this->attributes['password'],
+            ];
+        } else {
+            $separator = ';';
+            $values = [
+                $this->attributes['username'],
+                $this->attributes['email'],
+                $this->attributes['password'],
+                $this->attributes['birthday'],
+                $this->attributes['country']
+            ];
+        }
+
+        return implode($separator, $values);
+    }
+
     public function getRouteKeyName()
     {
         return 'username';

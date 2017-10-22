@@ -1,15 +1,6 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+use Twinleaf\Services\KinanCore;
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -22,7 +13,17 @@ Route::get('dashboard', function () {
 Route::post('accounts/{account}/replace', 'AccountController@replace')->name('accounts.replace');
 Route::post('maps/{map}/areas/{area}/regenerate', 'MapAreaController@regenerate')->name('mapareas.regenerate');
 
+Route::get('tasks', function () {
+    return view('tasks')->with('creator', new KinanCore);
+})->name('tasks');
+
 Route::resource('settings', 'SettingController');
+
+Route::post('services/kinan/configure', function () {
+    return [
+        'success' => (new KinanCore)->configure(),
+    ];
+})->name('services.kinan.configure');
 
 Route::prefix('services/rocketmap')->group(function () {
     Route::post('install', 'RocketMapController@download')->name('services.rm.download');

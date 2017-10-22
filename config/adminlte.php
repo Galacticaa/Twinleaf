@@ -114,6 +114,10 @@ return [
             'route'  => 'dashboard',
             'icon' => 'dashboard',
         ], [
+            'text' => 'Task Manager',
+            'route' => 'tasks',
+            'icon' => 'tasks',
+        ], [
             'text' => 'Settings',
             'route' => 'settings.index',
             'icon' => 'cogs',

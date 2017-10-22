@@ -26,6 +26,22 @@ class MapArea extends Model
         return $this->hasMany(Account::class);
     }
 
+    public function scopeDueUpdate($query)
+    {
+        return $query->where(function ($q) {
+            $interval = Carbon::now()->subMinutes(30);
+
+            $q->whereNull('last_restart')->orWhere('last_restart', '<', $interval);
+        });
+    }
+
+    public function scopeWithActivatedAccounts($query)
+    {
+        return $query->with('accounts', function ($q) {
+            $q->activated()->orderBy('activated_at', 'desc');
+        });
+    }
+
     public function isInstalled()
     {
         $rocket = storage_path('maps/rocketmap/.twinleaf_installed');
