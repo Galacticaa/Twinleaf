@@ -13,6 +13,8 @@ Route::get('dashboard', function () {
 Route::post('accounts/{account}/replace', 'AccountController@replace')->name('accounts.replace');
 Route::post('maps/{map}/areas/{area}/regenerate', 'MapAreaController@regenerate')->name('mapareas.regenerate');
 
+Route::resource('proxies', 'ProxyController');
+
 Route::get('tasks', function () {
     return view('tasks')->with('creator', new KinanCore);
 })->name('tasks');
@@ -32,6 +34,7 @@ Route::prefix('services/rocketmap')->group(function () {
     Route::post('check/{area}', 'RocketMapController@check')->name('services.rm.check');
     Route::post('configure/{map}/{area?}', 'RocketMapController@configure')->name('services.rm.configure');
     Route::post('accounts/{area}/write', 'RocketMapController@writeAccounts')->name('services.rm.write_accounts');
+    Route::post('proxies/{area}/write', 'RocketMapController@writeProxies')->name('services.rm.write-proxies');
     Route::post('start/{map}', 'RocketMapController@startMap')->name('services.rm.start');
     Route::post('start/area/{area}', 'RocketMapController@startArea')->name('services.rm.start-area');
     Route::post('stop/{map}', 'RocketMapController@stopMap')->name('services.rm.stop');

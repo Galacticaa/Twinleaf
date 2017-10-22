@@ -8,6 +8,7 @@ step-limit: {{ $area->radius }}
 
 status-name: {{ $area->name }}
 accountcsv: config/{{ $area->map->code }}/{{ $area->slug }}.csv
+proxy-file: config/{{ $area->map->code }}/{{ $area->slug }}.txt
 
 gym-info
 no-server

@@ -4,6 +4,7 @@ namespace Twinleaf\Http\Controllers;
 
 use Twinleaf\Map;
 use Twinleaf\MapArea;
+use Twinleaf\Proxy;
 use Twinleaf\Setting;
 
 class RocketMapController extends Controller
@@ -139,6 +140,31 @@ class RocketMapController extends Controller
 
         return [
             'success' => false !== file_put_contents($path, $accounts),
+        ];
+    }
+
+    public function writeProxies(MapArea $area)
+    {
+        $current = $area->proxies->count();
+        $target = $area->proxy_target;
+
+        if ($current < $target) {
+            $extras = Proxy::available()->unbanned()->limit($target - $current)->get();
+
+            $area->proxies()->saveMany($extras);
+            $area->save();
+        }
+
+        $proxies = '';
+
+        foreach ($area->proxies as $proxy) {
+            $proxies .= $proxy->url.PHP_EOL;
+        }
+
+        $path = storage_path("maps/rocketmap/config/{$area->map->code}/{$area->slug}.txt");
+
+        return [
+            'success' => false !== file_put_contents($path, $proxies),
         ];
     }
 

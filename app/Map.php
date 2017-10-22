@@ -33,6 +33,11 @@ class Map extends Model
         return $this->hasMany(MapArea::class);
     }
 
+    public function proxies()
+    {
+        return $this->hasManyThrough(Proxy::class, MapArea::class);
+    }
+
     public function isInstalled()
     {
         $map = storage_path('maps/rocketmap/.twinleaf_installed');

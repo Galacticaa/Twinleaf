@@ -114,6 +114,10 @@ return [
             'route'  => 'dashboard',
             'icon' => 'dashboard',
         ], [
+            'text' => 'Proxies',
+            'route' => 'proxies.index',
+            'icon' => 'globe',
+        ], [
             'text' => 'Task Manager',
             'route' => 'tasks',
             'icon' => 'tasks',

@@ -65,12 +65,21 @@
 
                     $.post('{{ route('services.rm.configure', ['map' => $area->map, 'area' => $area]) }}', function (data) {
                         if (data.success) {
-                            set_status('Writing accounts file', 40);
+
+                            set_status('Writing accounts file', 60);
 
                             $.post('{{ route('services.rm.write_accounts', ['area' => $area]) }}', function (data) {
-                                $('#installWarning').remove();
+                                set_status('Writing proxy file', 85);
 
-                                set_status('Installation complete!', 100);
+                                $.post('{{ route('services.rm.write-proxies', ['area' => $area]) }}', function (data) {
+                                    if (data.success) {
+                                        $('#installWarning').remove();
+
+                                        set_status('Installation complete!', 100);
+                                    } else {
+                                        fail(data.error, true);
+                                    }
+                                });
                             });
                         } else {
                             fail(data.error, true);
@@ -156,7 +165,15 @@
                 <ul class="list-group list-group-unbordered">
                     <li class="list-group-item">
                         <b>Accounts</b>
-                        <a class="pull-right">{{ $total = $area->accounts->count() }}</a>
+                        <a class="pull-right">
+                            {{ $total = $area->accounts->count() }} / {{ $area->accounts_target }}
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Proxies</b>
+                        <a class="pull-right">
+                            {{ $area->proxies->count() }} / {{ $area->proxy_target }}
+                        </a>
                     </li>
                     <li class="list-group-item">
                         <b>Current Uptime</b>

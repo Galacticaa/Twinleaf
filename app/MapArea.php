@@ -16,14 +16,20 @@ class MapArea extends Model
     protected $fillable = [
         'name',
         'slug',
+        'map_id',
         'location',
         'accounts_target',
-        'map_id'
+        'proxy_target',
     ];
 
     public function accounts()
     {
         return $this->hasMany(Account::class);
+    }
+
+    public function proxies()
+    {
+        return $this->hasMany(Proxy::class);
     }
 
     public function scopeDueUpdate($query)
@@ -44,11 +50,21 @@ class MapArea extends Model
 
     public function isInstalled()
     {
-        $rocket = storage_path('maps/rocketmap/.twinleaf_installed');
-        $parent = storage_path("maps/rocketmap/config/{$this->map->code}.ini");
-        $config = storage_path("maps/rocketmap/config/{$this->map->code}/{$this->slug}.ini");
+        $files = [
+            "maps/rocketmap/.twinleaf_installed",
+            "maps/rocketmap/config/{$this->map->code}.ini",
+            "maps/rocketmap/config/{$this->map->code}/{$this->slug}.ini",
+            "maps/rocketmap/config/{$this->map->code}/{$this->slug}.txt",
+            "maps/rocketmap/config/{$this->map->code}/{$this->slug}.csv",
+        ];
 
-        return file_exists($rocket) && file_exists($parent) && file_exists($config);
+        foreach ($files as $file) {
+            if (!file_exists(storage_path($file))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function isUp()

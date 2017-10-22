@@ -44,18 +44,18 @@
                 $('.progress-bar').addClass('progress-bar-danger');
             }
 
-            set_status('Downloading RocketMap from Github...', 20);
+            set_status('Downloading RocketMap from Github...', 25);
 
             $.post('{{ route('services.rm.download') }}', function (data) {
                 if (data.downloaded) {
-                    set_status('Installing RocketMap packages...');
+                    set_status('Installing RocketMap packages...', 45);
 
                     $.post('{{ route('services.rm.install') }}', function (data) {
                         if (data.installed) {
-                            set_status('Cleaning old files...', 40);
+                            set_status('Cleaning old files...', 55);
 
                             $.post('{{ route('services.rm.clean', ['map' => $map]) }}', function (data) {
-                                set_status('Installing the map', 65);
+                                set_status('Installing the map', 75);
 
                                 $.post('{{ route('services.rm.configure', ['map' => $map]) }}', function (data) {
                                     if (data.written) {
@@ -129,6 +129,10 @@
                     <li class="list-group-item">
                         <b>Accounts</b>
                         <a class="pull-right">{{ $map->accounts->count() }}</a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Proxies</b>
+                        <a class="pull-right">{{ $map->proxies->count() }}</a>
                     </li>
                     <li class="list-group-item">
                         <b>Scan Areas</b>

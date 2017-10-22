@@ -76,9 +76,19 @@
                     <h3 class="box-title">Quotas</h3>
                 </div>
                 <div class="box-body">
-                    <div class="form-group">
-                        <label for="formAccountsTarget">Number of Accounts to Generate</label>
-                        <input type="text" class="form-control" id="formAccountsTarget" placeholder="25" name="accounts_target" value="{{ $area->accounts_target }}">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="formAccountsTarget">Accounts to Generate</label>
+                                <input type="number" min="0" class="form-control" id="formAccountsTarget" placeholder="25" name="accounts_target" value="{{ $area->accounts_target }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="formProxyTarget">Proxies to Assign</label>
+                                <input type="number" min="0" class="form-control" id="formProxyTarget" placeholder="25" name="proxy_target" value="{{ $area->proxy_target }}">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
