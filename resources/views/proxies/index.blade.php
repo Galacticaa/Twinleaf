@@ -27,16 +27,19 @@
 @section ('content')
 <div class="box box-primary">
     <div class="box-body">
-        <button class="btn bg-purple" style="margin-bottom: 10px;" data-toggle="modal" data-target="#importModal">
+        <button class="btn btn-default pull-right" data-toggle="modal" data-target="#importModal">
             <i class="fa fa-upload"></i> Import
         </button>
+        <a class="btn bg-purple" href="{{ route('proxies.check') }}" style="margin-bottom: 10px;">
+            <i class="fa fa-search"></i> Run ban check
+        </a>
         <div id="importModal" class="modal fade" tabindex="-1" role="dialog" aria-labelled-by="importModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title" id="importModalLabel">Import Proxies</h4>
                     </div>
-                    <form class="form" action="{{ route('proxies.store') }}" method="POST">
+                    <form class="form" action="{{ route('proxies.import') }}" method="POST">
                         {{ csrf_field() }}
                         <div class="modal-body">
                             <div class="form-group">
@@ -86,7 +89,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="3"><p class="lead text-center">There aren't any proxies!</p></td>
+                    <td colspan="4"><p class="lead text-center">There aren't any proxies!</p></td>
                 </tr>
                 @endforelse
             </tbody>

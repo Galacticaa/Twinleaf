@@ -13,7 +13,13 @@ Route::get('dashboard', function () {
 Route::post('accounts/{account}/replace', 'AccountController@replace')->name('accounts.replace');
 Route::post('maps/{map}/areas/{area}/regenerate', 'MapAreaController@regenerate')->name('mapareas.regenerate');
 
-Route::resource('proxies', 'ProxyController');
+Route::prefix('proxies')->group(function () {
+    Route::get('/', 'ProxyController@index')->name('proxies.index');
+    Route::post('import', 'ProxyController@import')->name('proxies.import');
+    Route::get('check', 'ProxyController@check')->name('proxies.check');
+    Route::post('check/{proxy}/ptc', 'ProxyController@checkPtc')->name('proxies.check-ptc');
+    Route::post('check/{proxy}/pogo', 'ProxyController@checkPogo')->name('proxies.check-pogo');
+});
 
 Route::get('tasks', function () {
     return view('tasks')->with('creator', new KinanCore);

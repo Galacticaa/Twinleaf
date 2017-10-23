@@ -23,7 +23,7 @@ class ProxyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function import(Request $request)
     {
         // Load proxies, stripping any blank lines
         $proxies = $request->get('proxies');
@@ -36,5 +36,42 @@ class ProxyController extends Controller
         }
 
         return redirect()->route('proxies.index');
+    }
+
+    public function check(Request $request)
+    {
+        return view('proxies.check')->with('proxies', Proxy::all());
+    }
+
+    public function checkPtc(Proxy $proxy)
+    {
+        return $this->checkProxy('ptc', $proxy);
+    }
+
+    public function checkPogo(Proxy $proxy)
+    {
+        return $this->checkProxy('pogo', $proxy);
+    }
+
+    protected function checkProxy(string $service, Proxy $proxy)
+    {
+        sleep(rand(1, 3));
+
+        $result = exec(base_path('bin/bancheck')." {$service} '{$proxy->url}'");
+        list($type, $code) = explode(':', $result);
+
+        $banKey = $service.'_ban';
+
+        $bannedBefore = $proxy->$banKey;
+        $proxy->$banKey = !($type == 'HTTP' && (int) $code == 200);
+
+        if ($bannedBefore != $proxy->$banKey) {
+            $proxy->save();
+        }
+
+        return [
+            'status' => $type == 'CURL' ? 'C'.$code : $code,
+            'proxy' => $proxy
+        ];
     }
 }
