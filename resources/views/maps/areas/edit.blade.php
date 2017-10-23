@@ -2,6 +2,21 @@
 
 @section ('title', 'Editing '.$area->name)
 
+@section ('css')
+<link href="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/skins/square/purple.css" rel="stylesheet">
+@stop
+
+@section ('js')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/icheck.min.js"></script>
+<script>
+    $(function() {
+        $('input').iCheck({
+            checkboxClass: 'icheckbox_square-purple'
+        });
+    });
+</script>
+@stop
+
 @section ('content_header')
 <h1>Editing {{ $area->name }}</h1>
 <ol class="breadcrumb">
@@ -63,9 +78,46 @@
                     <h3 class="box-title">Scan Area</h3>
                 </div>
                 <div class="box-body">
-                    <div class="form-group">
-                        <label for="formLocation">Location</label>
-                        <input type="text" class="form-control" id="formLocation" placeholder="35.31233, 138.5892" name="location" value="{{ $area->location }}">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label for="formLocation">Location</label>
+                                <input type="text" class="form-control" id="formLocation" placeholder="35.31233, 138.5892" name="location" value="{{ $area->location }}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="formRadius">Radius (steps)</label>
+                                <input type="number" min="1" required class="form-control" id="formRadius" name="radius" value="{{ $area->radius }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Resources</h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="formAccountsTarget">Accounts</label>
+                                <input type="number" min="0" required class="form-control" id="formAccountsTarget" name="accounts_target" value="{{ $area->accounts_target }}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="formProxyTarget">Proxies</label>
+                                <input type="number" min="0" required class="form-control" id="formProxyTarget" name="proxy_target" value="{{ $area->proxy_target }}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="formDbThreads">Threads</label>
+                                <input type="number" min="0" class="form-control" id="formDbThreads" name="db_threads" value="{{ $area->db_threads }}">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -73,20 +125,75 @@
         <div class="col-md-6">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Quotas</h3>
+                    <h3 class="box-title">Scan Options</h3>
                 </div>
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="formAccountsTarget">Accounts to Generate</label>
-                                <input type="number" min="0" class="form-control" id="formAccountsTarget" placeholder="25" name="accounts_target" value="{{ $area->accounts_target }}">
+                                <label for="formSpeedScan">
+                                    <input type="checkbox" name="speed_scan" id="formSpeedScan" value="1" @if ($area->speed_scan) checked @endif>
+                                    Speed Scan
+                                </label>
+                                <div class="input-group">
+                                    <label for="formWorkers" class="sr-only">Workers</label>
+                                    <input type="number" min="0" class="form-control" id="formWorkers" name="workers" value="{{ $area->workers }}">
+                                    <div class="input-group-addon">
+                                        workers
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="formProxyTarget">Proxies to Assign</label>
-                                <input type="number" min="0" class="form-control" id="formProxyTarget" placeholder="25" name="proxy_target" value="{{ $area->proxy_target }}">
+                                <label for="formBeehive" class="icheck"><input type="checkbox" id="formBeehive" name="beehive" value="1" @if ($area->beehive) checked @endif> Beehive Mode</label>
+                                <div class="input-group">
+                                    <label for="formWorkersPerHive" class="sr-only">Workers per Hive</label>
+                                    <input type="number" min="0" class="form-control" id="formWorkersPerHive" name="workers_per_hive" value="{{ $area->workers_per_hive }}">
+                                    <div class="input-group-addon">
+                                        per hive
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="formScanDuration">Acccount Scan Duration</label>
+                                <div class="input-group">
+                                    <input type="number" min="0" class="form-control" id="formScanDuration" name="scan_duration" value="{{ $area->scan_duration }}">
+                                    <div class="input-group-addon">minutes</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="formRestInterval">Acccount Rest Interval</label>
+                                <div class="input-group">
+                                    <input type="number" min="0" class="form-control" id="formRestInterval" name="rest_interval" value="{{ $area->rest_interval }}">
+                                    <div class="input-group-addon">minutes</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="formMaxEmpty">Max Empty</label>
+                                <input type="number" min="0" class="form-control" id="formMaxEmpty" name="max_empty" value="{{ $area->max_empty }}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="formMaxFailures">Max Failures</label>
+                                <input type="number" min="0" class="form-control" id="formMaxFailures" name="max_failures" value="{{ $area->max_failures }}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="formMaxRetries">Max Retries</label>
+                                <input type="number" min="0" class="form-control" id="formMaxRetries" name="max_retries" value="{{ $area->max_retries }}">
                             </div>
                         </div>
                     </div>

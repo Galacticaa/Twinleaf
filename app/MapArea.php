@@ -18,8 +18,19 @@ class MapArea extends Model
         'slug',
         'map_id',
         'location',
+        'radius',
         'accounts_target',
         'proxy_target',
+        'db_threads',
+        'speed_scan',
+        'beehive',
+        'workers',
+        'workers_per_hive',
+        'scan_duration',
+        'rest_interval',
+        'max_empty',
+        'max_failures',
+        'max_retries',
     ];
 
     public function accounts()

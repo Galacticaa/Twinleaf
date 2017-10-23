@@ -72,6 +72,8 @@ class MapAreaController extends Controller
     public function update(StoreMapArea $request, Map $map, MapArea $area)
     {
         $area->fill($request->all());
+        $area->speed_scan = $request->get('speed_scan', false);
+        $area->beehive = $request->get('beehive', false);
         $area->save();
 
         return redirect()->route('mapareas.show', [
