@@ -2,14 +2,10 @@ hash-key: {{ $config->hash_key }}
 gmaps-key: {{ $config->gmaps_key }}
 
 location: {{ $area->location ?? '42.421,141.1' }}
+status-name: {{ $area->name }}
 @if ($area->radius)
 step-limit: {{ $area->radius }}
 @endif
-
-status-name: {{ $area->name }}
-accountcsv: config/{{ $area->map->code }}/{{ $area->slug }}.csv
-proxy-file: config/{{ $area->map->code }}/{{ $area->slug }}.txt
-
 
 @if ($area->speed_scan)
 speed-scan
@@ -17,7 +13,6 @@ speed-scan
 @if ($area->beehive)
 beehive
 @endif
-
 @if ($area->workers)
 workers: {{ $area->workers }}
 @endif
@@ -25,8 +20,15 @@ workers: {{ $area->workers }}
 workers-per-hive: {{ $area->workers_per_hive }}
 @endif
 
+accountcsv: config/{{ $area->map->code }}/{{ $area->slug }}.csv
+@if ($config->login_delay)
+login-delay: {{ $config->login_delay }}
+@endif
+@if ($config->login_retries)
+login-retries: {{ $config->login_retries }}
+@endif
 @if ($area->scan_duration)
-account-scan-interval: {{ $area->scan_duration * 60 }}
+account-search-interval: {{ $area->scan_duration * 60 }}
 @endif
 @if ($area->rest_interval)
 account-rest-interval: {{ $area->rest_interval * 60 }}
@@ -37,21 +39,32 @@ max-empty: {{ $area->max_empty }}
 @if ($area->max_failures )
 max-failures: {{ $area->max_failures }}
 @endif
-@if ($area->max_retries)
-bad-scan-retry: {{ $area->max_retries }}
-@endif
 
 gym-info
 no-server
 print-status: logs
-#use-altitude-cache
-
-@if ($config->captcha_solving !== null)
-captcha-solving
-manual-captcha-domain: {{ $area->map->url }}
+@if ($config->altitude_cache)
+use-altitude-cache
 @endif
-@if ($config->captcha_solving === 1 && $config->captcha_key)
+min-seconds-left: 15
+
+proxy-file: config/{{ $area->map->code }}/{{ $area->slug }}.txt
+proxy-display: full
+
+@if ($config->automatic_captchas || $config->manual_captchas)
+captcha-solving
+@endif
+@if ($config->automatic_captchas)
 captcha-key: {{ $config->captcha_key }}
+@endif
+@if ($config->manual_captchas)
+manual-captcha-domain: {{ $area->map->url }}
+@if ($config->captcha_refresh)
+manual-captcha-refresh: {{ $config->captcha_refresh }}
+@endif
+@if ($config->captcha_timeout)
+manual-captcha-timeout: {{ $config->captcha_timeout }}
+@endif
 @endif
 
 db-type: mysql
@@ -62,4 +75,8 @@ db-pass: {{ $area->map->db_pass }}
 db-port: 3306
 @if ($area->db_threads)
 db-threads: {{ $area->db_threads }}
+@endif
+
+@if ($config->disable_version_check)
+no-version-check
 @endif

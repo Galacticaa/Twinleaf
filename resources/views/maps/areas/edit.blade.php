@@ -146,7 +146,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="formBeehive" class="icheck"><input type="checkbox" id="formBeehive" name="beehive" value="1" @if ($area->beehive) checked @endif> Beehive Mode</label>
+                                <label for="formBeehive"><input type="checkbox" id="formBeehive" name="beehive" value="1" @if ($area->beehive) checked @endif> Beehive Mode</label>
                                 <div class="input-group">
                                     <label for="formWorkersPerHive" class="sr-only">Workers per Hive</label>
                                     <input type="number" min="0" class="form-control" id="formWorkersPerHive" name="workers_per_hive" value="{{ $area->workers_per_hive }}">
@@ -178,22 +178,16 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="formMaxEmpty">Max Empty</label>
                                 <input type="number" min="0" class="form-control" id="formMaxEmpty" name="max_empty" value="{{ $area->max_empty }}">
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="formMaxFailures">Max Failures</label>
                                 <input type="number" min="0" class="form-control" id="formMaxFailures" name="max_failures" value="{{ $area->max_failures }}">
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="formMaxRetries">Max Retries</label>
-                                <input type="number" min="0" class="form-control" id="formMaxRetries" name="max_retries" value="{{ $area->max_retries }}">
                             </div>
                         </div>
                     </div>

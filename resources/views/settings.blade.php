@@ -34,57 +34,129 @@
 <form role="form" method="POST" action="{{ route('settings.update', ['id' => 1]) }}">
     {{ csrf_field() }}
     {{ method_field('PUT') }}
-    <div class="nav-tabs-custom">
-        <ul class="nav nav-tabs">
-            <li class="active">
-                <a href="#tab_captchas" data-toggle="tab">Captchas</a>
-            </li>
-            <li><a href="#tab_keys" data-toggle="tab">Keys</a></li>
-            <li><a href="#tab_creation" data-toggle="tab">Account Creation</a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane active" id="tab_captchas">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="settings_captchas_captcha-solving">Captcha Completion</label>
-                            <select class="form-control" id="settings_captchas_captcha-solving" name="captcha_solving">
-                                <option value=""@if (is_null($settings->captcha_solving)) selected @endif>None</option>
-                                <option value="0"@if ($settings->captcha_solving == '0') selected @endif>Manual only</option>
-                                <option value="1"@if ($settings->captcha_solving == '1') selected @endif>Manual + autocomplete</option>
-                            </select>
-                        </div>
+
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title">Scan Options</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="formAltitudeCache">
+                            <input type="checkbox" name="altitude_cache" id="formAltitudeCache" value="1" @if ($settings->altitude_cache) checked @endif>
+                            Use altitude cache
+                        </label>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="settings_captchas_key">2Captcha Key</label>
-                            <input type="text" class="form-control" id="settings_captchas_key" name="captcha_key" value="{{ $settings->captcha_key }}">
-                        </div>
+                    <div class="form-group">
+                        <label for="formDisableVersionCheck">
+                            <input type="checkbox" id="formDisableVersionCheck" name="disable_version_check" value="1" @if ($settings->disable_version_check) checked @endif>
+                            Disable version check
+                        </label>
                     </div>
                 </div>
-            </div>
-            <div class="tab-pane" id="tab_keys">
-                <div class="form-group">
-                    <label for="settings_keys_gmaps">Google Maps Key</label>
-                    <input type="text" class="form-control" id="settings_keys_gmaps" name="gmaps_key" value="{{ $settings->gmaps_key }}">
-                </div>
-                <div class="form-group">
-                    <label for="settings_keys_hash">Bossland Hashing Key</label>
-                    <input type="text" class="form-control" id="settings_keys_hash" name="hash_key" value="{{ $settings->hash_key }}">
-                </div>
-            </div>
-            <div class="tab-pane" id="tab_creation">
-                <div class="form-group">
-                    <label for="settings_creation_email-domains">Email Domains</label>
-                    <textarea class="form-control" name="email_domains"
-                        id="settings_creation_email-domains"
-                        rows="{{ max(3, min(10, count($settings->email_domains))) }}"
-                    >{{ implode($settings->email_domains) }}</textarea>
-                    <span class="help-block">Domain names to use when registering new game accounts. One per line.</span>
+                <div class="col-md-9">
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="form-group">
+                                <label for="formGmapsKey">Google Maps Key</label>
+                                <input type="text" class="form-control" id="formGmapsKey" name="gmaps_key" value="{{ $settings->gmaps_key }}">
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="formHashKey">Bossland Hashing Key</label>
+                                <input type="text" class="form-control" id="formHashKey" name="hash_key" value="{{ $settings->hash_key }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="formLoginDelay">Login Delay</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="formLoginDelay" name="login_delay" value="{{ $settings->login_delay }}">
+                                    <div class="input-group-addon">seconds</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="formLoginRetries">Login Retries</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="formLoginRetries" name="login_retries" value="{{ $settings->login_retries }}">
+                                    <div class="input-group-addon">seconds</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Account Creation</h3>
+                </div>
+                <div class="box-body">
+                    <div class="form-group">
+                        <label for="formEmailDomains">Email Domains</label>
+                        <textarea name="email_domains" id="formEmailDomains" rows="5"
+                            class="form-control">{{ implode("\n", $settings->email_domains) }}</textarea>
+                        <span class="help-block">Domain names to use when registering new game accounts. One per line.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Captchas</h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="formManualCaptchas">
+                                    <input type="checkbox" name="manual_captchas" id="formManualCaptchas" value="1" @if ($settings->manual_captchas) checked @endif>
+                                    Manual solving
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="formAutomaticCaptchas">
+                                    <input type="checkbox" id="formAutomaticCaptchas" name="automatic_captchas" value="1" @if ($settings->automatic_captchas) checked @endif>
+                                    Automatic solving
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="formCaptchaKey">2Captcha Key</label>
+                        <input type="text" class="form-control" required id="formCaptchaKey" name="captcha_key" value="{{ $settings->captcha_key }}">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="formCaptchaRefresh">Captcha Refresh</label>
+                                <input type="text" class="form-control" id="formCaptchaRefresh" name="captcha_refresh" value="{{ $settings->captcha_refresh }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="formCaptchaTimeout">Captcha Timeout</label>
+                                <input type="text" class="form-control" id="formCaptchaTimeout" name="captcha_timeout" value="{{ $settings->captcha_timeout }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <button type="submit" class="btn btn-primary btn-lg">Save settings</button>
     <a href="/settings" class="text-danger btn-lg">cancel</a>
 </form>

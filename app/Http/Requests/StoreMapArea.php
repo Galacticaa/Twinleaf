@@ -33,6 +33,7 @@ class StoreMapArea extends FormRequest
             $rules['slug'] = 'required|unique:map_areas,id,'.$this->area->id;
             $rules['accounts_target'] = 'required|integer|min:0';
             $rules['proxy_target'] = 'required|integer|min:0';
+            $rules['db_threads'] = 'nullable|integer|max:255';
         }
 
         return $rules;

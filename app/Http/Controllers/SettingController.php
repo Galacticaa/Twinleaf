@@ -7,6 +7,22 @@ use Illuminate\Http\Request;
 
 class SettingController extends Controller
 {
+    protected $settings = [
+        'automatic_captchas' => false,
+        'captcha_key' => '',
+        'manual_captchas' => false,
+        'captcha_refresh' => null,
+        'captcha_timeout' => null,
+
+        'hash_key' => '',
+        'gmaps_key' => '',
+
+        'login_delay' => null,
+        'login_retries' => null,
+        'altitude_cache' => false,
+        'disable_version_check' => false,
+    ];
+
     /**
      * Display a listing of the resource.
      *
@@ -37,16 +53,14 @@ class SettingController extends Controller
      */
     public function update(Request $request, Setting $setting)
     {
-        $settings = [
-            'captcha_solving' => null, 'captcha_key' => '',
-            'hash_key' => '', 'gmaps_key' => '',
-        ];
-
-        foreach ($settings as $s => $default) {
+        foreach ($this->settings as $s => $default) {
             $setting->$s = $request->get($s, $default);
         }
 
-        $setting->email_domains = explode("\n", $request->get('email_domains'));
+        $setting->email_domains = explode("\n", preg_replace(
+            "/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n",
+            $request->get('email_domains')
+        ));
 
         $setting->save();
 

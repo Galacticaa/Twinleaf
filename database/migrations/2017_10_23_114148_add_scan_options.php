@@ -16,8 +16,8 @@ class AddScanOptions extends Migration
         Schema::table('map_areas', function (Blueprint $table) {
             $table->tinyInteger('radius')->unsigned()->nullable();
             $table->tinyInteger('db_threads')->unsigned()->nullable();
-            $table->boolean('speed_scan')->nullable();
-            $table->boolean('beehive')->nullable();
+            $table->boolean('speed_scan')->default(false);
+            $table->boolean('beehive')->default(false);
             $table->smallInteger('workers')->unsigned()->nullable();
             $table->smallInteger('workers_per_hive')->unsigned()->nullable();
             $table->smallInteger('scan_duration')->unsigned()->nullable();
@@ -25,6 +25,19 @@ class AddScanOptions extends Migration
             $table->tinyInteger('max_empty')->unsigned()->nullable();
             $table->tinyInteger('max_failures')->unsigned()->nullable();
             $table->tinyInteger('max_retries')->unsigned()->nullable();
+        });
+
+        Schema::table('settings', function (Blueprint $table) {
+            $table->dropColumn('captcha_solving');
+            $table->boolean('automatic_captchas')->default(false);
+            $table->boolean('manual_captchas')->default(false);
+            $table->tinyInteger('captcha_refresh')->nullable();
+            $table->tinyInteger('captcha_timeout')->nullable();
+
+            $table->tinyInteger('login_delay')->nullable();
+            $table->tinyInteger('login_retries')->nullable();
+            $table->boolean('altitude_cache')->default(false);
+            $table->boolean('disable_version_check')->default(false);
         });
     }
 
@@ -43,6 +56,7 @@ class AddScanOptions extends Migration
                 'beehive', 'speed_scan',
                 'db_threads', 'radius',
             ]);
+            $table->boolean('captcha_solving')->nullable();
         });
     }
 }
