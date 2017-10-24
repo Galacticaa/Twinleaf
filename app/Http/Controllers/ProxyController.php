@@ -3,6 +3,8 @@
 namespace Twinleaf\Http\Controllers;
 
 use Twinleaf\Proxy;
+
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ProxyController extends Controller
@@ -40,7 +42,7 @@ class ProxyController extends Controller
 
     public function check(Request $request)
     {
-        return view('proxies.check')->with('proxies', Proxy::all());
+        return view('proxies.check')->with('proxies', Proxy::dueBanCheck()->get());
     }
 
     public function checkPtc(Proxy $proxy)
@@ -65,7 +67,11 @@ class ProxyController extends Controller
         $bannedBefore = $proxy->$banKey;
         $proxy->$banKey = !($type == 'HTTP' && (int) $code == 200);
 
-        if ($bannedBefore != $proxy->$banKey) {
+        if ($service == 'pogo') {
+            $proxy->checked_at = Carbon::now();
+        }
+
+        if ($service == 'pogo' || $bannedBefore != $proxy->$banKey) {
             $proxy->save();
         }
 

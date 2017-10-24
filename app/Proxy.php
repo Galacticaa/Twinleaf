@@ -2,6 +2,7 @@
 
 namespace Twinleaf;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Proxy extends Model
@@ -18,6 +19,12 @@ class Proxy extends Model
     public function scopeAvailable($query)
     {
         return $query->whereNull('map_area_id');
+    }
+
+    public function scopeDueBanCheck($query)
+    {
+        return $query->where('checked_at', '<', Carbon::now()->subHours(1.5))
+                    ->orWhereNull('checked_at');
     }
 
     public function scopeNoPogoBan($query)

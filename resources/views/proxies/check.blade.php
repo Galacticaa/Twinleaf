@@ -5,7 +5,8 @@
 @section ('js')
 <script>
     $(function() {
-        var ptcCheckUrl = '{{ route('proxies.check-ptc', ['id' => '--ID--']) }}',
+        var bancheckThreads = 20,
+            ptcCheckUrl = '{{ route('proxies.check-ptc', ['id' => '--ID--']) }}',
             pogoCheckUrl = '{{ route('proxies.check-pogo', ['id' => '--ID--']) }}';
 
         function makeStatusBox (proxy) {
@@ -109,7 +110,7 @@
 
             $('#overallStatus p').html('Completed <span id="complete">0</span>'+
                 ' of '+total/2+' proxies &mdash; <span id="remaining">'+total+'</span> checks remaining.');
-            for (var i = 0; i < 15; i++) {
+            for (var i = 0; i < bancheckThreads; i++) {
                 setTimeout(checkProxy, (Math.random() * 2000));
             }
         }, 750);
