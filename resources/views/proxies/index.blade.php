@@ -79,12 +79,18 @@
                     @endif
                     @foreach (['ptc_ban', 'pogo_ban'] as $ban)
                     @if ($proxy->$ban === null)
-                    <td class="text-muted"><i class="fa fa-question"></i> Unknown</td>
+                    <td class="text-muted"><i class="fa fa-question"></i> Unknown
                     @elseif ($proxy->$ban)
-                    <td class="text-danger"><i class="fa fa-exclamation-triangle"></i> FAIL</td>
+                    <td class="text-danger"><i class="fa fa-exclamation-triangle"></i> FAIL
                     @else
-                    <td class="text-success"><i class="fa fa-check"></i> Pass</td>
+                    <td class="text-success"><i class="fa fa-check"></i> Pass
                     @endif
+                    @if ($ban == 'ptc_ban' && $proxy->ptc_status)
+                    ({{ $proxy->ptc_status }})
+                    @elseif ($ban == 'pogo_ban' && $proxy->pogo_status)
+                    ({{ $proxy->pogo_status }})
+                    @endif
+                    </td>
                     @endforeach
                 </tr>
                 @empty

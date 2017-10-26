@@ -61,22 +61,23 @@ class ProxyController extends Controller
 
         $result = exec(base_path('bin/bancheck')." {$service} '{$proxy->url}'");
         list($type, $code) = explode(':', $result);
+        $status = $type == 'CURL' ? 'C'.$code : $code;
 
         $banKey = $service.'_ban';
-
         $bannedBefore = $proxy->$banKey;
         $proxy->$banKey = !($type == 'HTTP' && (int) $code == 200);
 
         if ($service == 'pogo') {
+            $proxy->pogo_status = $status;
             $proxy->checked_at = Carbon::now();
+        } else {
+            $proxy->ptc_status = $status;
         }
 
-        if ($service == 'pogo' || $bannedBefore != $proxy->$banKey) {
-            $proxy->save();
-        }
+        $proxy->save();
 
         return [
-            'status' => $type == 'CURL' ? 'C'.$code : $code,
+            'status' => $status,
             'proxy' => $proxy
         ];
     }

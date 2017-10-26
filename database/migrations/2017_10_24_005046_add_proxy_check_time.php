@@ -15,6 +15,8 @@ class AddProxyCheckTime extends Migration
     {
         Schema::table('proxies', function (Blueprint $table) {
             $table->datetime('checked_at')->nullable();
+            $table->string('ptc_status')->nullable()->after('ptc_ban');
+            $table->string('pogo_status')->nullable()->after('pogo_ban');
         });
     }
 
@@ -26,7 +28,7 @@ class AddProxyCheckTime extends Migration
     public function down()
     {
         Schema::table('proxies', function (Blueprint $table) {
-            $table->dropColumn('checked_at');
+            $table->dropColumn(['pogo_status', 'ptc_status', 'checked_at']);
         });
     }
 }
