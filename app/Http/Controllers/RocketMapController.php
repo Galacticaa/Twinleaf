@@ -9,6 +9,13 @@ use Twinleaf\Setting;
 
 class RocketMapController extends Controller
 {
+    protected $config;
+
+    public function __construct()
+    {
+        $this->config = Setting::first();
+    }
+
     public function download()
     {
         $mapRoot = storage_path('maps');
@@ -35,7 +42,7 @@ class RocketMapController extends Controller
         $checkFile = $dir.'/.twinleaf_installed';
 
         if (!file_exists($checkFile)) {
-            $pip = exec('pip -V | grep "python 2"') ? 'pip' : 'pip2';
+            $pip = $this->config->pip_command;
 
             exec("cd {$dir} && {$pip} install -r requirements.txt");
             exec("cd {$dir} && npm install && npm run build && touch {$checkFile}");
@@ -92,7 +99,7 @@ class RocketMapController extends Controller
         $path .= "/{$area->map->code}/{$area->slug}.ini";
 
         $config = view('config.rocketmap.scanner')->with([
-            'config' => Setting::first(),
+            'config' => $this->config,
             'area' => $area,
         ]);
 
@@ -118,7 +125,7 @@ class RocketMapController extends Controller
 
         if (\DB::statement("CREATE DATABASE IF NOT EXISTS `{$map->db_name}`")) {
             $config = view('config.rocketmap.server')->with([
-                'config' => Setting::first(),
+                'config' => $this->config,
                 'map' => $map,
             ]);
         }
@@ -179,11 +186,12 @@ class RocketMapController extends Controller
         $mapDir = storage_path('maps/rocketmap');
         $tmuxId = $isArea ? 'tla_'.$target->slug : 'tlm_'.$target->code;
         $config = $isArea ? "{$target->map->code}/{$target->slug}" : $target->code;
+        $python = $this->config->python_command;
 
         $cmd_parts = [
             "cd {$mapDir} &&",
             "tmux new-session -s \"{$tmuxId}\" -d",
-            "python2 runserver.py -cf \"config/{$config}.ini\" 2>&1",
+            "{$python} runserver.py -cf \"config/{$config}.ini\" 2>&1",
         ];
 
         system(implode(' ', $cmd_parts));

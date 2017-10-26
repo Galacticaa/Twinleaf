@@ -41,11 +41,23 @@
         </div>
         <div class="box-body">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-sm-4 col-md-3">
                     <div class="form-group">
                         <label for="formAltitudeCache">
                             <input type="checkbox" name="altitude_cache" id="formAltitudeCache" value="1" @if ($settings->altitude_cache) checked @endif>
                             Use altitude cache
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="formManualCaptchas">
+                            <input type="checkbox" name="manual_captchas" id="formManualCaptchas" value="1" @if ($settings->manual_captchas) checked @endif>
+                            Manual captcha solving
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="formAutomaticCaptchas">
+                            <input type="checkbox" id="formAutomaticCaptchas" name="automatic_captchas" value="1" @if ($settings->automatic_captchas) checked @endif>
+                            Automatic captcha solving
                         </label>
                     </div>
                     <div class="form-group">
@@ -55,7 +67,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="col-md-9">
+                <div class="col-sm-8 col-md-9">
                     <div class="row">
                         <div class="col-md-7">
                             <div class="form-group">
@@ -69,7 +81,27 @@
                                 <input type="text" class="form-control" id="formHashKey" name="hash_key" value="{{ $settings->hash_key }}">
                             </div>
                         </div>
-                        <div class="col-md-6">
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 col-md-3">
+                            <div class="form-group">
+                                <label for="formCaptchaRefresh">Captcha Refresh</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="formCaptchaRefresh" name="captcha_refresh" value="{{ $settings->captcha_refresh }}">
+                                    <div class="input-group-addon">seconds</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="form-group">
+                                <label for="formCaptchaTimeout">Captcha Timeout</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="formCaptchaTimeout" name="captcha_timeout" value="{{ $settings->captcha_timeout }}">
+                                    <div class="input-group-addon">seconds</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
                             <div class="form-group">
                                 <label for="formLoginDelay">Login Delay</label>
                                 <div class="input-group">
@@ -78,7 +110,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-sm-6 col-md-3">
                             <div class="form-group">
                                 <label for="formLoginRetries">Login Retries</label>
                                 <div class="input-group">
@@ -101,6 +133,10 @@
                 </div>
                 <div class="box-body">
                     <div class="form-group">
+                        <label for="formCaptchaKey">2Captcha Key</label>
+                        <input type="text" class="form-control" required id="formCaptchaKey" name="captcha_key" value="{{ $settings->captcha_key }}">
+                    </div>
+                    <div class="form-group">
                         <label for="formEmailDomains">Email Domains</label>
                         <textarea name="email_domains" id="formEmailDomains" rows="5"
                             class="form-control">{{ implode("\n", $settings->email_domains) }}</textarea>
@@ -113,44 +149,18 @@
         <div class="col-md-6">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Captchas</h3>
+                    <h3 class="box-title">Server Settings</h3>
                 </div>
                 <div class="box-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="formManualCaptchas">
-                                    <input type="checkbox" name="manual_captchas" id="formManualCaptchas" value="1" @if ($settings->manual_captchas) checked @endif>
-                                    Manual solving
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="formAutomaticCaptchas">
-                                    <input type="checkbox" id="formAutomaticCaptchas" name="automatic_captchas" value="1" @if ($settings->automatic_captchas) checked @endif>
-                                    Automatic solving
-                                </label>
-                            </div>
-                        </div>
+                    <div class="form-group">
+                        <label for="formPythonCommand">Python command</label>
+                        <input type="text" class="form-control" id="formPythonCommand" name="python_command" value="{{ $settings->python_command }}">
+                        <span class="help-block">The command used to run maps and map areas.</span>
                     </div>
                     <div class="form-group">
-                        <label for="formCaptchaKey">2Captcha Key</label>
-                        <input type="text" class="form-control" required id="formCaptchaKey" name="captcha_key" value="{{ $settings->captcha_key }}">
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="formCaptchaRefresh">Captcha Refresh</label>
-                                <input type="text" class="form-control" id="formCaptchaRefresh" name="captcha_refresh" value="{{ $settings->captcha_refresh }}">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="formCaptchaTimeout">Captcha Timeout</label>
-                                <input type="text" class="form-control" id="formCaptchaTimeout" name="captcha_timeout" value="{{ $settings->captcha_timeout }}">
-                            </div>
-                        </div>
+                        <label for="formPipCommand">Python Pip command</label>
+                        <input type="text" class="form-control" id="formPipCommand" name="pip_command" value="{{ $settings->pip_command }}">
+                        <span class="help-block">Used when installing and updating maps.</span>
                     </div>
                 </div>
             </div>

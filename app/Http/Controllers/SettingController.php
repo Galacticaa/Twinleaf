@@ -9,8 +9,8 @@ class SettingController extends Controller
 {
     protected $settings = [
         'automatic_captchas' => false,
-        'captcha_key' => '',
         'manual_captchas' => false,
+        'captcha_key' => '',
         'captcha_refresh' => null,
         'captcha_timeout' => null,
 
@@ -21,6 +21,9 @@ class SettingController extends Controller
         'login_retries' => null,
         'altitude_cache' => false,
         'disable_version_check' => false,
+
+        'pip_command' => 'sudo -H pip',
+        'python_command' => 'python',
     ];
 
     /**
@@ -54,7 +57,7 @@ class SettingController extends Controller
     public function update(Request $request, Setting $setting)
     {
         foreach ($this->settings as $s => $default) {
-            $setting->$s = $request->get($s, $default);
+            $setting->$s = $request->get($s) ?? $default;
         }
 
         $setting->email_domains = explode("\n", preg_replace(
