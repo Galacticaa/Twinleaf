@@ -15,7 +15,12 @@ class MyFirstMapSeeder extends Seeder
      */
     public function run()
     {
-        Setting::create();
+        $config = new Setting;
+        $config->map_repo = 'https://github.com/RocketMap/RocketMap.git';
+        $config->map_branch = 'develop';
+        $config->python_command = 'python';
+        $config->pip_command = 'sudo -H pip';
+        $config->save();
 
         $location = '35.31233,138.5892';
 

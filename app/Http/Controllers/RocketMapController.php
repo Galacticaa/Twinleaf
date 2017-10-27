@@ -21,7 +21,6 @@ class RocketMapController extends Controller
         $mapRoot = storage_path('maps');
         $mapDir = $mapRoot.'/rocketmap';
         $checkFile = $mapDir.'/.twinleaf_downloaded';
-        $rmRepo = 'https://github.com/RocketMap/RocketMap.git';
 
         if (file_exists($checkFile)) {
             return ['downloaded' => true];
@@ -31,7 +30,10 @@ class RocketMapController extends Controller
             exec('rm -rf '.$mapDir);
         }
 
-        exec("git clone {$rmRepo} {$mapDir} && touch {$checkFile}");
+        $repo = $this->config->map_repo;
+        $branch = $this->config->map_branch;
+
+        exec("git clone {$repo} {$mapDir} && cd {$mapDir} && git checkout {$branch} && touch {$checkFile}");
 
         return ['downloaded' => file_exists($checkFile)];
     }
