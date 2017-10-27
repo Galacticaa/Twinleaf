@@ -24,7 +24,7 @@
 </div>
 @endif
 
-<form role="form" method="POST" action="{{ route('mapareas.store', ['map' => $map->code]) }}">
+<form role="form" method="POST" action="{{ route('maps.areas.store', ['map' => $map->code]) }}">
     {{ csrf_field() }}
     <input type="hidden" name="map_id" value="{{ $map->id }}">
     <div class="box box-primary">

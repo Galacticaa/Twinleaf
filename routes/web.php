@@ -11,7 +11,7 @@ Route::get('dashboard', function () {
 })->name('dashboard');
 
 Route::post('accounts/{account}/replace', 'AccountController@replace')->name('accounts.replace');
-Route::post('maps/{map}/areas/{area}/regenerate', 'MapAreaController@regenerate')->name('mapareas.regenerate');
+Route::post('maps/{map}/areas/{area}/regenerate', 'MapAreaController@regenerate')->name('maps.areas.regenerate');
 
 Route::prefix('proxies')->group(function () {
     Route::get('/', 'ProxyController@index')->name('proxies.index');
@@ -26,6 +26,9 @@ Route::get('tasks', function () {
 })->name('tasks');
 
 Route::resource('settings', 'SettingController');
+
+Route::resource('maps', 'MapController');
+Route::resource('maps.areas', 'MapAreaController');
 
 Route::post('services/kinan/configure', function () {
     return [
@@ -48,13 +51,3 @@ Route::prefix('services/rocketmap')->group(function () {
     Route::post('restart/{map}', 'RocketMapController@restartMap')->name('services.rm.restart');
     Route::post('restart/area/{area}', 'RocketMapController@restartArea')->name('services.rm.restart-area');
 });
-
-Route::resource('maps', 'MapController');
-Route::resource('maps/{map}/areas', 'MapAreaController', ['names' => [
-    'create' => 'mapareas.create',
-    'store' => 'mapareas.store',
-    'show' => 'mapareas.show',
-    'edit' => 'mapareas.edit',
-    'update' => 'mapareas.update',
-    'destroy' => 'mapareas.destroy',
-]]);

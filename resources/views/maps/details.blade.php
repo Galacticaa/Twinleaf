@@ -151,7 +151,7 @@
                         </a>
                     </li>
                 </ul>
-                <a class="btn btn-block bg-purple" href="{{ route('mapareas.create', ['map' => $map->code]) }}">
+                <a class="btn btn-block bg-purple" href="{{ route('maps.areas.create', ['map' => $map->code]) }}">
                     <b>New scan area</b>
                 </a>
                 <a href="{{ route('maps.edit', ['map' => $map]) }}" class="btn btn-block btn-default">
@@ -210,7 +210,7 @@
             <div class="box-header">
                 <h3 class="box-title">Scan Areas</h3>
                 <div class="box-tools pull-right">
-                    <a class="btn bg-purple" href="{{ route('mapareas.create', ['map' => $map->code]) }}">
+                    <a class="btn bg-purple" href="{{ route('maps.areas.create', ['map' => $map->code]) }}">
                         Add new Area
                     </a>
                 </div>
@@ -237,7 +237,7 @@
                             <td>
                                 <div class="btn-group pull-right">
                                     <a class="btn btn-xs btn-default"
-                                        href="{{ route('mapareas.show', ['map' => $map->code, 'slug' => $area->slug]) }}">
+                                        href="{{ route('maps.areas.show', ['map' => $map->code, 'slug' => $area->slug]) }}">
                                         Details
                                     </a>
                                     <button class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown">
@@ -246,7 +246,7 @@
                                     </button>
                                     <ul class="dropdown-menu" role="menu">
                                         <li>
-                                            <a href="{{ route('mapareas.edit', [
+                                            <a href="{{ route('maps.areas.edit', [
                                                 'map' => $map, 'area' => $area ]) }}">
                                                 Edit {{ $area->name }}
                                             </a>

@@ -30,7 +30,7 @@ class MapAreaController extends Controller
         $area = MapArea::create($request->all());
         $map = Map::find($area->map_id);
 
-        return redirect()->route('mapareas.show', [
+        return redirect()->route('maps.areas.show', [
             'map' => $map,
             'area' => $area,
         ]);
@@ -76,7 +76,7 @@ class MapAreaController extends Controller
         $area->beehive = $request->get('beehive', false);
         $area->save();
 
-        return redirect()->route('mapareas.show', [
+        return redirect()->route('maps.areas.show', [
             'map' => $area->map,
             'area' => $area,
         ]);
