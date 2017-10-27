@@ -95,6 +95,7 @@
             $(this).button('loading');
 
             $.post('{{ route('services.rm.start-area', [
+                'map' => $area->map,
                 'area' => $area,
             ]) }}', function (data) {
                 window.location.reload();
@@ -116,6 +117,7 @@
             $(this).button('loading');
 
             $.post('{{ route('services.rm.restart-area', [
+                'map' => $area->map,
                 'area' => $area,
             ]) }}', function (data) {
                 window.location.reload();

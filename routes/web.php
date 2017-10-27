@@ -45,9 +45,9 @@ Route::prefix('services/rocketmap')->group(function () {
     Route::post('accounts/{area}/write', 'RocketMapController@writeAccounts')->name('services.rm.write_accounts');
     Route::post('proxies/{area}/write', 'RocketMapController@writeProxies')->name('services.rm.write-proxies');
     Route::post('start/{map}', 'RocketMapController@startMap')->name('services.rm.start');
-    Route::post('start/area/{area}', 'RocketMapController@startArea')->name('services.rm.start-area');
+    Route::post('start/{map}/{area}', 'RocketMapController@startArea')->name('services.rm.start-area');
     Route::post('stop/{map}', 'RocketMapController@stopMap')->name('services.rm.stop');
-    Route::post('stop-area/{area}', 'RocketMapController@stopArea')->name('services.rm.stop-area');
+    Route::post('stop/{map}/{area}', 'RocketMapController@stopArea')->name('services.rm.stop-area');
     Route::post('restart/{map}', 'RocketMapController@restartMap')->name('services.rm.restart');
-    Route::post('restart/area/{area}', 'RocketMapController@restartArea')->name('services.rm.restart-area');
+    Route::post('restart/{map}/{area}', 'RocketMapController@restartArea')->name('services.rm.restart-area');
 });
