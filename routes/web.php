@@ -1,13 +1,14 @@
 <?php
 
 use Twinleaf\Services\KinanCore;
+use Twinleaf\Map;
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
 });
 
 Route::get('dashboard', function () {
-    return view('dashboard');
+    return view('dashboard')->with('maps', Map::with('areas')->get());
 })->name('dashboard');
 
 Route::post('accounts/{account}/replace', 'AccountController@replace')->name('accounts.replace');
