@@ -21,8 +21,6 @@ class CreateSettingsTable extends Migration
             $table->string('hash_key')->nullable();
             $table->timestamps();
         });
-
-        Twinleaf\Setting::create();
     }
 
     /**
