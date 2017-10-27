@@ -22,6 +22,8 @@ class SettingController extends Controller
         'altitude_cache' => false,
         'disable_version_check' => false,
 
+        'map_repo' => 'https://github.com/RocketMap/RocketMap.git',
+        'map_branch' => 'develop',
         'pip_command' => 'sudo -H pip',
         'python_command' => 'python',
     ];

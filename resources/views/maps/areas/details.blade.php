@@ -95,6 +95,7 @@
             $(this).button('loading');
 
             $.post('{{ route('services.rm.start-area', [
+                'map' => $area->map,
                 'area' => $area,
             ]) }}', function (data) {
                 window.location.reload();
@@ -116,6 +117,7 @@
             $(this).button('loading');
 
             $.post('{{ route('services.rm.restart-area', [
+                'map' => $area->map,
                 'area' => $area,
             ]) }}', function (data) {
                 window.location.reload();
@@ -125,7 +127,7 @@
         $('#regenerateArea').on('click', function (e) {
             $(this).button('loading');
 
-            $.post('{{ route('mapareas.regenerate', [
+            $.post('{{ route('maps.areas.regenerate', [
                 'map' => $map,
                 'area' => $area,
             ]) }}', function (data) {
@@ -189,7 +191,7 @@
                     </li>
                 </ul>
                 <button id="regenerateArea" class="btn btn-block bg-purple"><b>Regenerate accounts</b></button>
-                <a href="{{ route('mapareas.edit', ['map' => $area->map, 'area' => $area]) }}" class="btn btn-block btn-default">
+                <a href="{{ route('maps.areas.edit', ['map' => $area->map, 'area' => $area]) }}" class="btn btn-block btn-default">
                     <b>Edit area settings</b>
                 </a>
                 @if ($area->isDown())

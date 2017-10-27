@@ -73,7 +73,7 @@
                 <tr>
                     <td>{{ $proxy->url }}</td>
                     @if ($proxy->area)
-                    <td><a href="{{ route('mapareas.show', ['map' => $proxy->area->map, 'area' => $proxy->area]) }}">{{ $proxy->area->name }}</a></td>
+                    <td><a href="{{ route('maps.areas.show', ['map' => $proxy->area->map, 'area' => $proxy->area]) }}">{{ $proxy->area->name }}</a></td>
                     @else
                     <td><span class="text-muted">Unassigned</span></td>
                     @endif

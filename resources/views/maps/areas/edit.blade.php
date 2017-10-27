@@ -39,7 +39,7 @@
 </div>
 @endif
 
-<form role="form" method="POST" action="{{ route('mapareas.update', ['map' => $map, 'area' => $area]) }}">
+<form role="form" method="POST" action="{{ route('maps.areas.update', ['map' => $map, 'area' => $area]) }}">
     {{ csrf_field() }}
     {{ method_field('PUT') }}
     <input type="hidden" name="map_id" value="{{ $map->id }}">
@@ -197,7 +197,7 @@
     </div>
     <button type="button" class="btn btn-danger btn-lg pull-right" data-toggle="modal" data-target="#deleteModal">Delete scan area</button>
     <button type="submit" class="btn btn-primary btn-lg">Save scan area</button>
-    <a href="{{ route('mapareas.show', ['map' => $map, 'area' => $area]) }}" class="text-danger btn-lg">cancel</a>
+    <a href="{{ route('maps.areas.show', ['map' => $map, 'area' => $area]) }}" class="text-danger btn-lg">cancel</a>
 </form>
 
 <div id="deleteModal" class="modal modal-danger" tabindex="-1" role="dialog" aria-labelled-by="deleteModalLabel">
@@ -213,7 +213,7 @@
                 <p>This will permanently destroy {{ $map->name }}'s <b>{{ $area->name }}</b> area! Do you really want to continue?</p>
             </div>
             <div class="modal-footer">
-                <form role="form" method="POST" action="{{ route('mapareas.destroy', ['map' => $map, 'area' => $area]) }}">
+                <form role="form" method="POST" action="{{ route('maps.areas.destroy', ['map' => $map, 'area' => $area]) }}">
                     {{ csrf_field() }}
                     {{ method_field('DELETE') }}
                     <button type="submit" class="btn btn-outline">Yeah, I get it, delete this map</button>

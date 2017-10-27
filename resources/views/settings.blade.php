@@ -152,13 +152,27 @@
                     <h3 class="box-title">Server Settings</h3>
                 </div>
                 <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label for="formMapRepo">RocketMap Git Repository</label>
+                                <input type="text" class="form-control" id="formMapRepo" name="map_repo" value="{{ $settings->map_repo }}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="formMapBranch">Git Branch</label>
+                                <input type="text" class="form-control" id="formMapBranch" name="map_branch" value="{{ $settings->map_branch }}">
+                            </div>
+                        </div>
+                    </div>
                     <div class="form-group">
-                        <label for="formPythonCommand">Python command</label>
+                        <label for="formPythonCommand">Python Command</label>
                         <input type="text" class="form-control" id="formPythonCommand" name="python_command" value="{{ $settings->python_command }}">
                         <span class="help-block">The command used to run maps and map areas.</span>
                     </div>
                     <div class="form-group">
-                        <label for="formPipCommand">Python Pip command</label>
+                        <label for="formPipCommand">Python Pip Command</label>
                         <input type="text" class="form-control" id="formPipCommand" name="pip_command" value="{{ $settings->pip_command }}">
                         <span class="help-block">Used when installing and updating maps.</span>
                     </div>
