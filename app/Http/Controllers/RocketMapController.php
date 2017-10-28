@@ -45,9 +45,10 @@ class RocketMapController extends Controller
 
         if (!file_exists($checkFile)) {
             $pip = $this->config->pip_command;
+            $npm = 'sudo -H npm';
 
             exec("cd {$dir} && {$pip} install -r requirements.txt");
-            exec("cd {$dir} && npm install && npm run build && touch {$checkFile}");
+            exec("cd {$dir} && {$npm} install && {$npm} run build && touch {$checkFile}");
         }
 
         return ['installed' => file_exists($checkFile)];
