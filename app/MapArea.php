@@ -48,15 +48,15 @@ class MapArea extends Model
         return $query->where(function ($q) {
             $interval = Carbon::now()->subMinutes(30);
 
-            $q->whereNull('last_restart')->orWhere('last_restart', '<', $interval);
+            $q->whereNull('started_at')->orWhere('started_at', '<', $interval);
         });
     }
 
     public function scopeWithActivatedAccounts($query)
     {
-        return $query->with('accounts', function ($q) {
+        return $query->with(['accounts' => function ($q) {
             $q->activated()->orderBy('activated_at', 'desc');
-        });
+        }]);
     }
 
     public function isInstalled()
