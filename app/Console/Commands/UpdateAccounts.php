@@ -2,6 +2,7 @@
 
 namespace Twinleaf\Console\Commands;
 
+use Twinleaf\MapArea;
 use Twinleaf\Setting;
 
 use Illuminate\Console\Command;
