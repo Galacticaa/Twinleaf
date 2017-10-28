@@ -1,10 +1,7 @@
-@php
-extract($config->toArray())
-@endphp
 host: 0.0.0.0
 port: {{ 8000 + $map->id }}
 
-gmaps-key: {{ $gmaps_key }}
+gmaps-key: {{ $config->gmaps_key }}
 
 location: {{ $map->location }}
 
@@ -12,12 +9,15 @@ gym-info
 only-server
 print-status: logs
 
-@if ($captcha_solving !== null)
+@if ($config->manual_captchas)
 captcha-solving
 manual-captcha-domain: {{ $map->url }}
+@if ($config->captcha_refresh)
+manual-captcha-refresh: {{ $config->captcha_refresh }}
 @endif
-@if ($captcha_solving === 1 && $captcha_key)
-captcha-key: {{ $captcha_key }}
+@if ($config->captcha_timeout)
+manual-captcha-timeout: {{ $config->captcha_timeout }}
+@endif
 @endif
 
 db-type: mysql
