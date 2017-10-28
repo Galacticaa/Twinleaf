@@ -82,7 +82,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="formDbPass">MySQL Password</label>
-                        <input type="text" class="form-control" id="formDbPass" placeholder="root" name="db_pass">
+                        <input type="password" class="form-control" id="formDbPass" placeholder="root" name="db_pass">
                     </div>
                 </div>
             </div>

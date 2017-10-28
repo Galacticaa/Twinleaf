@@ -23,21 +23,12 @@ class UpdateAccounts extends Command
     protected $description = 'Update accounts and restart applicable Map Areas';
 
     /**
-     * Twinleaf Settings
-     *
-     * @var \Twinleaf\Setting
-     */
-    protected $config;
-
-    /**
      * Create a new command instance.
      *
      * @return void
      */
     public function __construct()
     {
-        $this->config = Setting::first();
-
         parent::__construct();
     }
 
@@ -111,7 +102,7 @@ class UpdateAccounts extends Command
         sleep(2);
 
         $mapDir = storage_path('maps/rocketmap');
-        $python = $this->config->python_command;
+        $python = Setting::first()->python_command;
 
         $cmd_parts = [
             "cd {$mapDir} &&",
