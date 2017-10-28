@@ -225,7 +225,7 @@ class RocketMapController extends Controller
         return $this->start($map);
     }
 
-    public function startArea(MapArea $area)
+    public function startArea(Map $map, MapArea $area)
     {
         return $this->start($area, true);
     }
@@ -254,7 +254,7 @@ class RocketMapController extends Controller
         return $this->stop($map);
     }
 
-    public function stopArea(MapArea $area)
+    public function stopArea(Map $map, MapArea $area)
     {
         return $this->stop($area);
     }
@@ -275,7 +275,7 @@ class RocketMapController extends Controller
         return $this->restart($map);
     }
 
-    public function restartArea(MapArea $area)
+    public function restartArea(Map $map, MapArea $area)
     {
         return $this->restart($area, true);
     }
