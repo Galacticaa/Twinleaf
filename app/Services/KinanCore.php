@@ -57,7 +57,7 @@ class KinanCore
 
     protected function writeAccountsFile() {
         $accounts = Account::unregistered()->get();
-        $csv = '#username,email,password,dob,country'.PHP_EOL;
+        $csv = '#username;email;password;dob;country'.PHP_EOL;
 
         if ($accounts->isEmpty()) {
             return false;
