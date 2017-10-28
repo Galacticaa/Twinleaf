@@ -18,6 +18,7 @@ class RocketMapController extends Controller
 
     public function download()
     {
+        $output = [];
         $mapRoot = storage_path('maps');
         $mapDir = $mapRoot.'/rocketmap';
         $checkFile = $mapDir.'/.twinleaf_downloaded';
@@ -25,17 +26,20 @@ class RocketMapController extends Controller
         if (file_exists($checkFile)) {
             return ['downloaded' => true];
         } elseif (!is_dir($mapRoot)) {
-            exec('mkdir -p '.$mapRoot);
+            exec("mkdir -pv {$mapRoot} 2>&1", $output);
         } elseif (is_dir($mapDir)) {
-            exec('rm -rf '.$mapDir);
+            exec("rm -rvf {$mapDir} 2>&1", $output);
         }
 
         $repo = $this->config->map_repo;
         $branch = $this->config->map_branch;
 
-        exec("git clone {$repo} {$mapDir} && cd {$mapDir} && git checkout {$branch} && touch {$checkFile}");
+        exec("git clone {$repo} {$mapDir} 2>&1 && cd {$mapDir} && git checkout {$branch} 2>&1 && touch {$checkFile}", $output);
 
-        return ['downloaded' => file_exists($checkFile)];
+        return [
+            'downloaded' => file_exists($checkFile),
+            'output' => $output ?? null,
+        ];
     }
 
     public function install()
@@ -47,11 +51,17 @@ class RocketMapController extends Controller
             $pip = $this->config->pip_command;
             $npm = 'sudo -H npm';
 
-            exec("cd {$dir} && {$pip} install -r requirements.txt");
-            exec("cd {$dir} && {$npm} install && {$npm} run build && touch {$checkFile}");
+            $output = ["Using {$pip} to install in {$dir}..."];
+            exec("cd {$dir} && {$pip} install -r requirements.txt 2>&1", $output);
+
+            $output[] = "Completed pip install!";
+            exec("cd {$dir} && {$npm} install 2>&1 && echo 'Completed npm install!' && {$npm} run build 2>&1 && touch {$checkFile}", $output);
         }
 
-        return ['installed' => file_exists($checkFile)];
+        return [
+            'installed' => file_exists($checkFile),
+            'output' => $output ?? null,
+        ];
     }
 
     public function clean(Map $map) {
@@ -127,14 +137,22 @@ class RocketMapController extends Controller
         }
 
         if (\DB::statement("CREATE DATABASE IF NOT EXISTS `{$map->db_name}`")) {
-            $config = view('config.rocketmap.server')->with([
-                'config' => $this->config,
-                'map' => $map,
-            ]);
+            try {
+                $config = view('config.rocketmap.server')->with([
+                    'config' => $this->config,
+                    'map' => $map,
+                ])->render();
+            } catch (\ErrorException $e) {
+                return [
+                    'written' => false,
+                    'errors' => [$e->getMessage()],
+                ];
+            }
         }
 
         return [
-            'written' => false !== file_put_contents($path.'.ini', $config)
+            'written' => false !== file_put_contents($path.'.ini', $config),
+            'errors' => [],
         ];
     }
 
