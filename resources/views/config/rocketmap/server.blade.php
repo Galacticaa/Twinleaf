@@ -1,5 +1,6 @@
 host: 0.0.0.0
 port: {{ 8000 + $map->id }}
+name: {{ $map->name }}
 
 gmaps-key: {{ $config->gmaps_key }}
 
