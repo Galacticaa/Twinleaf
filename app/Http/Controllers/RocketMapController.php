@@ -161,7 +161,18 @@ class RocketMapController extends Controller
         $accounts = '';
 
         foreach ($area->accounts as $account) {
+            if ($account->activated_at === null) {
+                continue;
+            }
+
             $accounts .= $account->format().PHP_EOL;
+        }
+
+        if (empty(trim($accounts))) {
+            // It's not technically a success, but we don't want
+            // to overwrite any accounts with an empty file, and
+            // there might still be proxies to update after this
+            return ['success' => true];
         }
 
         $path = storage_path("maps/rocketmap/config/{$area->map->code}/{$area->slug}.csv");
