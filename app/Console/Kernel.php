@@ -32,9 +32,10 @@ class Kernel extends ConsoleKernel
             $kinan->start();
         })->everyMinute()->skip(function () use ($kinan) {
             return $kinan->isRunning();
-        });
+        })->appendOutputTo(storage_path('logs/creation.log'));
 
-        $schedule->command('accounts:update')->everyMinute();
+        $schedule->command('accounts:update')->everyMinute()
+                 ->appendOutputTo(storage_path('logs/accounts.log'));
     }
 
     /**

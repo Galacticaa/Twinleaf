@@ -3,6 +3,9 @@ port: {{ 8000 + $map->id }}
 name: {{ $map->name }}
 
 gmaps-key: {{ $config->gmaps_key }}
+@if ($map->analytics_key)
+analytics-key: {{ $map->analytics_key }}
+@endif
 
 location: {{ $map->location }}
 

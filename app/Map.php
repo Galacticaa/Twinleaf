@@ -18,6 +18,7 @@ class Map extends Model
         'code',
         'url',
         'location',
+        'analytics_key',
         'db_name',
         'db_user',
         'db_pass',

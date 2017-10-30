@@ -103,18 +103,18 @@
                         </div>
                         <div class="col-sm-6 col-md-3">
                             <div class="form-group">
-                                <label for="formLoginDelay">Login Delay</label>
+                                <label for="formLoginRetries">Account Logins</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" id="formLoginDelay" name="login_delay" value="{{ $settings->login_delay }}">
-                                    <div class="input-group-addon">seconds</div>
+                                    <input type="text" class="form-control" id="formLoginRetries" name="login_retries" value="{{ $settings->login_retries }}">
+                                    <div class="input-group-addon">retries</div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-sm-6 col-md-3">
                             <div class="form-group">
-                                <label for="formLoginRetries">Login Retries</label>
+                                <label for="formLoginDelay">Login Delay</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" id="formLoginRetries" name="login_retries" value="{{ $settings->login_retries }}">
+                                    <input type="text" class="form-control" id="formLoginDelay" name="login_delay" value="{{ $settings->login_delay }}">
                                     <div class="input-group-addon">seconds</div>
                                 </div>
                             </div>
