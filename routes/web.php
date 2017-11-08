@@ -8,7 +8,22 @@ Route::get('/', function () {
 });
 
 Route::get('dashboard', function () {
-    return view('dashboard')->with('maps', Map::with('areas')->get());
+    $logs = Activity::orderBy('updated_at', 'desc')->limit(10)->get();
+    $logsByDate = [];
+
+    foreach ($logs as $log) {
+        $date = $log->updated_at->toDateString();
+
+        if (!array_key_exists($date, $logsByDate)) {
+            $logsByDate[$date] = [];
+        }
+
+        $logsByDate[$date][] = $log;
+    }
+
+    return view('dashboard')
+            ->with('maps', Map::with('areas')->get())
+            ->with('logsByDate', $logsByDate);
 })->name('dashboard');
 
 Route::post('accounts/{account}/replace', 'AccountController@replace')->name('accounts.replace');

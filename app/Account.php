@@ -2,6 +2,7 @@
 
 namespace Twinleaf;
 
+use Activity;
 use Twinleaf\Accounts\Generator;
 use Illuminate\Database\Eloquent\Model;
 
@@ -79,10 +80,22 @@ class Account extends Model
 
     public function replace()
     {
+        $area = $this->area;
         $replacement = (new Generator($this->area))->generateSingle();
 
         $this->area()->dissociate();
         $this->save();
+
+        Activity::log([
+            'contentId' => $area->id,
+            'contentType' => 'map_area',
+            'action' => 'replace',
+            'description' => sprintf(
+                '<a href="%s">%s</a>\'s account <strong>%s</strong> was replaced with <strong>%s</strong>.',
+                route('maps.areas.show', ['map' => $area->map, 'area' => $area]),
+                $area->name, $this->username, $replacement->username
+            ),
+        ]);
 
         return $replacement;
     }

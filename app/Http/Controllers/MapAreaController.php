@@ -2,6 +2,7 @@
 
 namespace Twinleaf\Http\Controllers;
 
+use Activity;
 use Twinleaf\Map;
 use Twinleaf\MapArea;
 use Twinleaf\Accounts\Generator;
@@ -44,9 +45,29 @@ class MapAreaController extends Controller
      */
     public function show(Map $map, MapArea $area)
     {
-        return view('maps.areas.details')
-                ->with('map', $map)
-                ->with('area', $area);
+        $logs = Activity::whereContentType('map_area')
+                        ->whereContentId($area->id)
+                        ->orderBy('updated_at', 'desc')
+                        ->limit(50)
+                        ->get();
+
+        $logsByDate = [];
+
+        foreach ($logs as $log) {
+            $date = $log->updated_at->toDateString();
+
+            if (!array_key_exists($date, $logsByDate)) {
+                $logsByDate[$date] = [];
+            }
+
+            $logsByDate[$date][] = $log;
+        }
+
+        return view('maps.areas.details')->with([
+            'map' => $map,
+            'area' => $area,
+            'logsByDate' => $logsByDate,
+        ]);
     }
 
     /**
@@ -90,12 +111,28 @@ class MapAreaController extends Controller
      */
     public function regenerate(Map $map, MapArea $area)
     {
+        $oldCount = $area->accounts()->count();
+
         foreach ($area->accounts as $account) {
             $account->area()->dissociate();
             $account->save();
         }
 
-        return (new Generator($area))->generate();
+        $result = (new Generator($area))->generate();
+
+        Activity::log([
+            'contentId' => $area->id,
+            'contentType' => 'map_area',
+            'action' => 'regenerate',
+            'description' => sprintf(
+                '<a href="%s">%s</a>\'s accounts were regenerated.',
+                route('maps.areas.show', ['map' => $map, 'area' => $area]),
+                $area->name
+            ),
+            'details' => sprintf('Before: %s; After: %s', $oldCount, $area->accounts()->count()),
+        ]);
+
+        return $result;
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace Twinleaf\Http\Controllers;
 
+use Activity;
 use Twinleaf\Map;
 use Twinleaf\MapArea;
 use Twinleaf\Proxy;
@@ -229,6 +230,8 @@ class RocketMapController extends Controller
         system(implode(' ', $cmd_parts));
 
         $target->applyUptimeMax()->setStartTime()->save();
+
+        $this->log('start', $target);
     }
 
     public function startMap(Map $map)
@@ -256,6 +259,8 @@ class RocketMapController extends Controller
         $target->applyUptimeMax()->unsetStartTime()->save();
 
         sleep(1);
+
+        $this->log('stop', $target);
 
         return ['stopped' => true];
     }
@@ -289,5 +294,36 @@ class RocketMapController extends Controller
     public function restartArea(Map $map, MapArea $area)
     {
         return $this->restart($area, true);
+    }
+
+    protected function log($action, $model)
+    {
+        $type = get_class($model) == Map::class ? 'map' : 'map_area';
+
+        if ($type == Map::class) {
+            $link = route('maps.show', [
+                'map' => $model,
+            ]);
+        } else if ($type == MapArea::class) {
+            $link = route('maps.areas.show', [
+                'map' => $model->map,
+                'area' => $model
+            ]);
+        } else $link = '#';
+
+        $suffix = [
+            'stop' => 'ped',
+            'start' => 'ed',
+        ];
+
+        Activity::log([
+            'contentId' => $model->id,
+            'contentType' => $type,
+            'action' => $action,
+            'description' => sprintf(
+                '<a href="%s">%s</a> was %s.',
+                $link, $model->name, $action.$suffix[$action]
+            ),
+        ]);
     }
 }

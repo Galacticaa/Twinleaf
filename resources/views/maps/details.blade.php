@@ -116,6 +116,7 @@
 @section ('content')
 <div class="row">
     <div class="col-md-3">
+
         <div class="box box-primary">
             <div class="box-body box-profile">
                 <h3 class="profile-username text-center">{{ $map->name }}</h3>
@@ -165,8 +166,10 @@
                 @endif
             </div>
         </div>
+
     </div>
     <div class="col-md-9">
+
         @if (!$map->isInstalled())
         <div class="box box-danger" id="installWarning">
             <div class="box-header">
@@ -206,6 +209,7 @@
             <p>It appears this map isn't running. Let's fix that! Go ahead and click Start Area on the left.</p>
         </div>
         @endif
+
         <div class="box">
             <div class="box-header">
                 <h3 class="box-title">Scan Areas</h3>
@@ -261,6 +265,35 @@
                 @endif
             </div>
         </div>
+
+        <h3 class="box-title">Activity Log</h3>
+        @if ($logsByDate)
+        <ul class="timeline">
+            @foreach ($logsByDate as $date => $logs)
+            <li class="time-label">
+                <span class="bg-purple">{{ (new Carbon\Carbon($date))->toFormattedDateString() }}</span>
+            </li>
+            @foreach ($logs as $log)
+            <li>
+                @php $data = json_decode($log->data) @endphp
+                <i class="fa fa-{{ $log->getIcon() }}"></i>
+                <div class="timeline-item">
+                    <span class="time"><i class="fa fa-clock-o"></i> {{ $log->created_at }}</span>
+
+                    <h3 class="timeline-header">{!! $log->description !!}</h3>
+                    @if ($log->details)
+                    <div class="timeline-body">{{ $log->details }}</div>
+                    @endif
+                </div>
+            </li>
+            @endforeach
+            @endforeach
+            <li><i class="fa fa-clock-o bg-gray"></i></li>
+        </ul>
+        @else
+        <p class="lead">No history to display.</p>
+        @endif
+
     </div>
 </div>
 @stop
