@@ -2,6 +2,7 @@
 
 namespace Twinleaf\Http\Controllers;
 
+use Activity;
 use Twinleaf\Map;
 use Twinleaf\Http\Requests\StoreMap;
 
@@ -39,7 +40,28 @@ class MapController extends Controller
      */
     public function show(Map $map)
     {
-        return view('maps.details')->with('map', $map);
+        $logs = Activity::whereContentType('map')
+                        ->whereContentId($map->id)
+                        ->orderBy('updated_at', 'desc')
+                        ->limit(50)
+                        ->get();
+
+        $logsByDate = [];
+
+        foreach ($logs as $log) {
+            $date = $log->updated_at->toDateString();
+
+            if (!array_key_exists($date, $logsByDate)) {
+                $logsByDate[$date] = [];
+            }
+
+            $logsByDate[$date][] = $log;
+        }
+
+        return view('maps.details')->with([
+            'map' => $map,
+            'logsByDate' => $logsByDate,
+        ]);
     }
 
     /**

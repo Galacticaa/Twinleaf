@@ -50,12 +50,42 @@
 @stop
 
 @section ('content')
-<div class="box box-primary">
-    <div class="box-header with-border">
-        <h3 class="box-title">Current Locations</h3>
+<div class="row">
+    <div class="col-md-6">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">Current Locations</h3>
+            </div>
+            <div class="box-body no-padding">
+                <div id="map"></div>
+            </div>
+        </div>
     </div>
-    <div class="box-body no-padding">
-        <div id="map"></div>
+    <div class="col-md-6">
+        <h3 style="margin-top: 0;">Recent Activity</h3>
+        @if ($logsByDate)
+        <ul class="timeline">
+            @foreach ($logsByDate as $date => $logs)
+            <li class="time-label">
+                <span class="bg-purple">{{ (new Carbon\Carbon($date))->toFormattedDateString() }}</span>
+            </li>
+            @foreach ($logs as $log)
+            <li>
+                @php $data = json_decode($log->data) @endphp
+                <i class="fa fa-{{ $log->getIcon() }}"></i>
+                <div class="timeline-item">
+                    <span class="time"><i class="fa fa-clock-o"></i> {{ $log->created_at }}</span>
+
+                    <h3 class="timeline-header">{!! $log->description !!}</h3>
+                </div>
+            </li>
+            @endforeach
+            @endforeach
+            <li><i class="fa fa-clock-o bg-gray"></i></li>
+        </ul>
+        @else
+        <p class="lead">No history to display.</p>
+        @endif
     </div>
 </div>
 @stop
