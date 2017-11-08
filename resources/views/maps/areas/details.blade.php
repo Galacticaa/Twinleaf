@@ -338,8 +338,8 @@
                             @endphp
 
                             <td>{{ $account->username }}</td>
-                            <td class="text-{{ $status }}">
-                                <i class="fa fa-{{ $icon }}"></i>
+                            <td class="text-{{ $status }}" data-order="{{ $account->activated_at }}">
+                                <i class="fa fa-{{ $icon }}" title="{{ $account->activated_at }}"></i>
                                 {{ $account->email }}
                             </td>
                             @if ($account->is_banned === 1)
