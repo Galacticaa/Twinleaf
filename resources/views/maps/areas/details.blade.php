@@ -137,13 +137,13 @@
     });
 
     function replaceAccount(account) {
-        $(this).button('loading');
+        $(account).button('loading');
         var route = '{{ route('accounts.replace', ['account' => '--USERNAME--']) }}';
 
-        $.post(route.replace('--USERNAME--', account), function (data) {
+        $.post(route.replace('--USERNAME--', $(account).data('username')), function (data) {
             window.location.reload();
         });
-    };
+    }
 </script>
 @stop
 
@@ -204,6 +204,7 @@
         </div>
     </div>
     <div class="col-md-9">
+
         @if (!$area->map->isInstalled())
         <div class="alert alert-danger alert-dismissable">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
@@ -254,6 +255,7 @@
             <p>It appears this area isn't running. Let's fix that! Go ahead and click Start Area on the left.</p>
         </div>
         @endif
+
         <div class="box box-default">
             <div class="box-header">
                 <h3 class="box-title">Scan Accounts</h3>
@@ -359,7 +361,8 @@
                             @endif
                             <td>
                                 <button class="btn btn-xs btn-warning replace-account"
-                                    onclick="replaceAccount('{{ $account->username }}')">
+                                    data-username="{{ $account->username }}"
+                                    onclick="replaceAccount(this)">
                                     <i class="fa fa-refresh"></i>
                                     Replace
                                 </button>
@@ -370,6 +373,35 @@
                 </table>
             </div>
         </div>
+
+        <h3 class="box-title">Activity Log</h3>
+        @if ($logsByDate)
+        <ul class="timeline">
+            @foreach ($logsByDate as $date => $logs)
+            <li class="time-label">
+                <span class="bg-purple">{{ (new Carbon\Carbon($date))->toFormattedDateString() }}</span>
+            </li>
+            @foreach ($logs as $log)
+            <li>
+                @php $data = json_decode($log->data) @endphp
+                <i class="fa fa-{{ $log->getIcon() }}"></i>
+                <div class="timeline-item">
+                    <span class="time"><i class="fa fa-clock-o"></i> {{ $log->created_at }}</span>
+
+                    <h3 class="timeline-header">{!! $log->description !!}</h3>
+                    @if ($log->details)
+                    <div class="timeline-body">{{ $log->details }}</div>
+                    @endif
+                </div>
+            </li>
+            @endforeach
+            @endforeach
+            <li><i class="fa fa-clock-o bg-gray"></i></li>
+        </ul>
+        @else
+        <p class="lead">No history to display.</p>
+        @endif
+
     </div>
 </div>
 @stop

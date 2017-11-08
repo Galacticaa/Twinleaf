@@ -83,6 +83,18 @@ class UpdateAccounts extends Command
             return null;
         }
 
+        Acitivty::log([
+            'contentId' => $area->id,
+            'contentType' => 'map_area',
+            'action' => 'write',
+            'description' => sprintf(
+                '<code>[cron]</code> Writing %s accounts for <a href="%s">%s</a>.',
+                count($area->accounts),
+                route('maps.areas.show', ['map' => $area->map, 'area' => $area]),
+                $area->name
+            ),
+        ]);
+
         return false === file_put_contents($path, $csv);
     }
 
