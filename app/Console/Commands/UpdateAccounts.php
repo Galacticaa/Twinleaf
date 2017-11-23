@@ -2,6 +2,7 @@
 
 namespace Twinleaf\Console\Commands;
 
+use Activity;
 use Twinleaf\MapArea;
 use Twinleaf\Setting;
 
@@ -49,7 +50,7 @@ class UpdateAccounts extends Command
 
     protected function updateArea(MapArea $area)
     {
-        if (!$area->accounts) {
+        if (!$area->accounts->count()) {
             $this->line("Skipping area {$area->name}, it has no accounts.");
             return;
         }
@@ -83,7 +84,7 @@ class UpdateAccounts extends Command
             return null;
         }
 
-        Acitivty::log([
+        Activity::log([
             'contentId' => $area->id,
             'contentType' => 'map_area',
             'action' => 'write',
@@ -95,7 +96,7 @@ class UpdateAccounts extends Command
             ),
         ]);
 
-        return false === file_put_contents($path, $csv);
+        return false !== file_put_contents($path, $csv);
     }
 
     protected function restartArea(MapArea $area)
@@ -110,7 +111,7 @@ class UpdateAccounts extends Command
             system(sprintf("kill -15 %s", $pid));
         }
 
-        $target->applyUptimeMax()->unsetStartTime()->save();
+        $area->applyUptimeMax()->unsetStartTime()->save();
 
         sleep(2);
 
