@@ -16,6 +16,12 @@
 <script src="http://jvectormap.com/js/jquery-jvectormap-uk_regions-merc.js"></script>
 <script>
     $(function() {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        });
+
         $('#map').vectorMap({
             map: 'uk_regions_merc',
             backgroundColor: 'transparent',
@@ -41,6 +47,22 @@
                 @endforeach
             ]
         });
+
+        $('#activateLures').bind('click', function() {
+            $.post('{{ route('long-lures.enable') }}', function(data) {
+                if (data.success === true) {
+                    $('.lure-container').toggleClass('hidden');
+                }
+            });
+        });
+
+        $('#deactivateLures').bind('click', function() {
+            $.post('{{ route('long-lures.disable') }}', function(data) {
+                if (data.success === true) {
+                    $('.lure-container').toggleClass('hidden');
+                }
+            });
+        });
     });
 </script>
 @stop
@@ -52,6 +74,19 @@
 @section ('content')
 <div class="row">
     <div class="col-md-6">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">Lure Duration</h3>
+            </div>
+            <div class="lure-container box-body {{ $settings->long_lures ? '' : 'hidden' }}">
+                <button id="deactivateLures" class="btn btn-danger pull-right">Deactivate</button>
+                <p class="lead">6-hour Lures are <span class="text-success">active</span>!</p>
+            </div>
+            <div class="lure-container box-body {{ $settings->long_lures ? 'hidden' : '' }}">
+                <button id="activateLures" class="btn btn-success pull-right">Activate</button>
+                <p class="lead">6-hour Lures are <span class="text-danger">inactive</span>!</p>
+            </div>
+        </div>
         <div class="box box-primary">
             <div class="box-header with-border">
                 <h3 class="box-title">Current Locations</h3>

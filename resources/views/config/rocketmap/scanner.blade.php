@@ -47,6 +47,9 @@ print-status: logs
 use-altitude-cache
 @endif
 min-seconds-left: 15
+@if ($config->long_lures)
+lure-duration: 360
+@endif
 
 proxy-file: config/{{ $area->map->code }}/{{ $area->slug }}.txt
 proxy-display: full
