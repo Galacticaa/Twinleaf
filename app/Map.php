@@ -49,30 +49,28 @@ class Map extends Model
         return file_exists($map) && file_exists($config);
     }
 
-    public function isUp()
+    public function getConfigFile()
     {
-        return 0 < count($this->getPids());
+        return 'config/'.$this->code.'.ini';
     }
 
-    public function isDown()
+    public function getSessionName()
     {
-        return !$this->isUp();
+        return 'tlm_'.$this->code;
+    }
+
+    /**
+     * Define the value used to filter running processes
+     *
+     * @return string
+     */
+    public function getPidFilter()
+    {
+        return $this->code.'.ini';
     }
 
     public function getRouteKeyName()
     {
         return 'code';
-    }
-
-    public function getPids()
-    {
-        $cmd_parts = [
-            "ps axf | grep runserver.py | grep -v grep |",
-            "grep -v tmux | grep {$this->code}.ini | awk '{ print \$1 }'",
-        ];
-
-        exec(implode(' ', $cmd_parts), $pids);
-
-        return $pids;
     }
 }

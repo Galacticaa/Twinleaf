@@ -208,30 +208,19 @@ class RocketMapController extends Controller
         ];
     }
 
-    public function start($target, $isArea = false)
+    public function start($target)
     {
-        $pids = $target->getPids();
+        $result = $target->start();
 
-        if (count($pids)) {
+        if (is_null($result)) {
             return ['running' => true];
         }
 
-        $mapDir = storage_path('maps/rocketmap');
-        $tmuxId = $isArea ? 'tla_'.$target->slug : 'tlm_'.$target->code;
-        $config = $isArea ? "{$target->map->code}/{$target->slug}" : $target->code;
-        $python = $this->config->python_command;
+        if ($result) {
+            $this->log('start', $target);
+        }
 
-        $cmd_parts = [
-            "cd {$mapDir} &&",
-            "tmux new-session -s \"{$tmuxId}\" -d",
-            "{$python} runserver.py -cf \"config/{$config}.ini\" 2>&1",
-        ];
-
-        system(implode(' ', $cmd_parts));
-
-        $target->applyUptimeMax()->setStartTime()->save();
-
-        $this->log('start', $target);
+        return ['running' => $result];
     }
 
     public function startMap(Map $map)
@@ -241,28 +230,16 @@ class RocketMapController extends Controller
 
     public function startArea(Map $map, MapArea $area)
     {
-        return $this->start($area, true);
+        return $this->start($area);
     }
 
     public function stop($target)
     {
-        $pids = $target->getPids();
-
-        if (!count($pids)) {
-            return ['stopped' => true];
+        if ($result = $target->stop()) {
+            $this->log('stop', $target);
         }
 
-        foreach ($pids as $pid) {
-            system(sprintf("kill -15 %s", $pid));
-        }
-
-        $target->applyUptimeMax()->unsetStartTime()->save();
-
-        sleep(1);
-
-        $this->log('stop', $target);
-
-        return ['stopped' => true];
+        return ['stopped' => $result];
     }
 
     public function stopMap(Map $map)
@@ -275,13 +252,13 @@ class RocketMapController extends Controller
         return $this->stop($area);
     }
 
-    public function restart($target, $isArea = false)
+    public function restart($target)
     {
-        $this->stop($target);
+        if ($this->stop($target)) {
+            sleep(1);
 
-        sleep(1);
-
-        $this->start($target, $isArea);
+            $this->start($target);
+        }
 
         return ['started' => (bool) $target->getPids()];
     }
