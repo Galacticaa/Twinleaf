@@ -100,6 +100,10 @@ class MapAreaController extends Controller
 
         $area->writeGeofenceFile();
 
+        if ($request->ajax()) {
+            return ['success' => true, 'area' => $area];
+        }
+
         return redirect()->route('maps.areas.show', [
             'map' => $area->map,
             'area' => $area,
