@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class MapArea extends Model
 {
+    use Traits\Loggable;
     use Traits\Restartable;
 
     protected $dates = [
@@ -34,6 +35,8 @@ class MapArea extends Model
         'max_failures',
         'max_retries',
     ];
+
+    protected $logType = 'map_area';
 
     /**
      * @var array  Location represented as an array

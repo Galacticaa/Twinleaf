@@ -2,7 +2,6 @@
 
 namespace Twinleaf\Http\Controllers;
 
-use Activity;
 use Twinleaf\Map;
 use Twinleaf\MapArea;
 use Twinleaf\Proxy;
@@ -217,7 +216,7 @@ class RocketMapController extends Controller
         }
 
         if ($result) {
-            $this->log('start', $target);
+            $target->writeLog('start');
         }
 
         return ['running' => $result];
@@ -236,7 +235,7 @@ class RocketMapController extends Controller
     public function stop($target)
     {
         if ($result = $target->stop()) {
-            $this->log('stop', $target);
+            $target->writeLog('stop');
         }
 
         return ['stopped' => $result];
@@ -255,7 +254,7 @@ class RocketMapController extends Controller
     public function restart($target)
     {
         if ($target->stop() && $target->start()) {
-            $this->log('restart', $target);
+            $target->writeLog('restart');
         }
 
         return ['started' => (bool) $target->getPids()];
@@ -269,26 +268,5 @@ class RocketMapController extends Controller
     public function restartArea(Map $map, MapArea $area)
     {
         return $this->restart($area, true);
-    }
-
-    protected function log($action, $model)
-    {
-        $type = get_class($model) == Map::class ? 'map' : 'map_area';
-        $link = method_exists($model, 'url') ? $model->url() : '#';
-        $suffix = [
-            'stop' => 'ped',
-            'start' => 'ed',
-            'restart' => 'ed',
-        ];
-
-        Activity::log([
-            'contentId' => $model->id,
-            'contentType' => $type,
-            'action' => $action,
-            'description' => sprintf(
-                '<a href="%s">%s</a> was %s.',
-                $link, $model->name, $action.$suffix[$action]
-            ),
-        ]);
     }
 }

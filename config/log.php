@@ -107,6 +107,7 @@ return [
 
     'action_icons' => [
         'x'          => 'info-circle',
+        'error'      => 'exclamation-triangle bg-red',
         'create'     => 'plus-circle bg-green',
         'add'        => 'plus-circle bg-green',
         'update'     => 'edit bg-aqua',

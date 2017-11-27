@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Map extends Model
 {
+    use Traits\Loggable;
     use Traits\Restartable;
 
     protected $dates = [
@@ -25,6 +26,8 @@ class Map extends Model
         'db_user',
         'db_pass',
     ];
+
+    protected $logType = 'map';
 
     public function accounts()
     {
