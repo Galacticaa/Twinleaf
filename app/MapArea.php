@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class MapArea extends Model
 {
+    use Traits\Restartable;
+
     protected $dates = [
         'created_at',
         'updated_at',
@@ -81,16 +83,6 @@ class MapArea extends Model
         }
 
         return true;
-    }
-
-    public function isUp()
-    {
-        return 0 < count($this->getPids());
-    }
-
-    public function isDown()
-    {
-        return !$this->isUp();
     }
 
     public function map()
@@ -180,47 +172,24 @@ class MapArea extends Model
         return $this->locationArray;
     }
 
-    public function setStartTime()
+    public function getConfigFile()
     {
-        $this->started_at = Carbon::now();
-
-        return $this;
+        return 'config/'.$this->map->code.'/'.$this->slug.'.ini';
     }
 
-    public function unsetStartTime()
+    public function getSessionName()
     {
-        $this->started_at = null;
-
-        return $this;
+        return 'tla_'.$this->slug;
     }
 
-    public function getUptimeAttribute()
+    /**
+     * Define the value used to filter running processes
+     *
+     * @return string
+     */
+    public function getPidFilter()
     {
-        return $this->started_at === null ? 0
-             : $this->started_at->diffInSeconds();
-    }
-
-    public function getHumanUptimeAttribute()
-    {
-        return $this->started_at === null ? '---'
-             : $this->started_at->diffForHumans(null, true);
-    }
-
-    public function applyUptimeMax()
-    {
-        $uptime = $this->uptime;
-
-        if ($uptime > $this->uptime_max) {
-            $this->uptime_max = $uptime;
-        }
-
-        return $this;
-    }
-
-    public function getHumanUptimeMaxAttribute()
-    {
-        return !$this->uptime_max ? '---'
-             : Carbon::now()->addSeconds($this->uptime_max)->diffForHumans(null, true);
+        return $this->slug;
     }
 
     public function getRouteKeyName()
@@ -228,15 +197,11 @@ class MapArea extends Model
         return 'slug';
     }
 
-    public function getPids()
+    public function url($route = 'show')
     {
-        $cmd_parts = [
-            "ps axf | grep runserver.py | grep -v grep |",
-            "grep -v tmux | grep {$this->slug} | awk '{ print \$1 }'",
-        ];
-
-        exec(implode(' ', $cmd_parts), $pids);
-
-        return $pids;
+        return route('maps.areas.'.$route, [
+            'map' => $this->map,
+            'area' => $this,
+        ]);
     }
 }

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Map extends Model
 {
+    use Traits\Restartable;
+
     protected $dates = [
         'created_at',
         'updated_at',
@@ -47,57 +49,24 @@ class Map extends Model
         return file_exists($map) && file_exists($config);
     }
 
-    public function isUp()
+    public function getConfigFile()
     {
-        return 0 < count($this->getPids());
+        return 'config/'.$this->code.'.ini';
     }
 
-    public function isDown()
+    public function getSessionName()
     {
-        return !$this->isUp();
+        return 'tlm_'.$this->code;
     }
 
-    public function setStartTime()
+    /**
+     * Define the value used to filter running processes
+     *
+     * @return string
+     */
+    public function getPidFilter()
     {
-        $this->started_at = Carbon::now();
-
-        return $this;
-    }
-
-    public function unsetStartTime()
-    {
-        $this->started_at = null;
-
-        return $this;
-    }
-
-    public function getUptimeAttribute()
-    {
-        return $this->started_at === null ? 0
-             : $this->started_at->diffInSeconds();
-    }
-
-    public function getHumanUptimeAttribute()
-    {
-        return $this->started_at === null ? '---'
-             : $this->started_at->diffForHumans(null, true);
-    }
-
-    public function applyUptimeMax()
-    {
-        $uptime = $this->uptime;
-
-        if ($uptime > $this->uptime_max) {
-            $this->uptime_max = $uptime;
-        }
-
-        return $this;
-    }
-
-    public function getHumanUptimeMaxAttribute()
-    {
-        return !$this->uptime_max ? '---'
-             : Carbon::now()->addSeconds($this->uptime_max)->diffForHumans(null, true);
+        return $this->code.'.ini';
     }
 
     public function getRouteKeyName()
@@ -105,15 +74,10 @@ class Map extends Model
         return 'code';
     }
 
-    public function getPids()
+    public function url($route = 'show')
     {
-        $cmd_parts = [
-            "ps axf | grep runserver.py | grep -v grep |",
-            "grep -v tmux | grep {$this->code}.ini | awk '{ print \$1 }'",
-        ];
-
-        exec(implode(' ', $cmd_parts), $pids);
-
-        return $pids;
+        return route('maps.'.$route, [
+            'map' => $this,
+        ]);
     }
 }

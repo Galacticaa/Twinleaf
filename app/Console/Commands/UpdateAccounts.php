@@ -64,7 +64,9 @@ class UpdateAccounts extends Command
             return;
         }
 
-        $this->restartArea($area);
+        if ($area->isUp() && $area->stop()) {
+            $area->start();
+        }
 
         $this->info("Completed update for the {$area->slug} area.");
     }
@@ -97,35 +99,5 @@ class UpdateAccounts extends Command
         ]);
 
         return false !== file_put_contents($path, $csv);
-    }
-
-    protected function restartArea(MapArea $area)
-    {
-        $pids = $area->getPids();
-
-        if (!count($pids)) {
-            return;
-        }
-
-        foreach ($pids as $pid) {
-            system(sprintf("kill -15 %s", $pid));
-        }
-
-        $area->applyUptimeMax()->unsetStartTime()->save();
-
-        sleep(2);
-
-        $mapDir = storage_path('maps/rocketmap');
-        $python = Setting::first()->python_command;
-
-        $cmd_parts = [
-            "cd {$mapDir} &&",
-            "tmux new-session -s \"tla_{$area->slug}\" -d",
-            "{$python} runserver.py -cf \"config/{$area->map->code}/{$area->slug}.ini\" 2>&1",
-        ];
-
-        system(implode(' ', $cmd_parts));
-
-        $area->setStartTime()->save();
     }
 }
