@@ -160,7 +160,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="formScanDuration">Acccount Scan Duration</label>
+                                <label for="formScanDuration">Account Scan Duration</label>
                                 <div class="input-group">
                                     <input type="number" min="0" class="form-control" id="formScanDuration" name="scan_duration" value="{{ $area->scan_duration }}">
                                     <div class="input-group-addon">minutes</div>
@@ -169,7 +169,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="formRestInterval">Acccount Rest Interval</label>
+                                <label for="formRestInterval">Account Rest Interval</label>
                                 <div class="input-group">
                                     <input type="number" min="0" class="form-control" id="formRestInterval" name="rest_interval" value="{{ $area->rest_interval }}">
                                     <div class="input-group-addon">minutes</div>
