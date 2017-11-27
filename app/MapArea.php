@@ -122,6 +122,43 @@ class MapArea extends Model
         $this->attributes['geofence'] = json_encode($coords, JSON_NUMERIC_CHECK);
     }
 
+    public function getGeofenceStringAttribute()
+    {
+        if (is_null($this->geofence)) {
+            return null;
+        }
+
+        $coords = json_decode($this->geofence);
+        $fence = '';
+
+        foreach ($coords as $marker) {
+            $fence .= $marker->lat.','.$marker->lng.PHP_EOL;
+        }
+
+        return $fence;
+    }
+
+    public function writeGeofenceFile()
+    {
+        $file = storage_path(sprintf(
+            'maps/rocketmap/geofences/%s_%s.csv',
+            $this->map->code,
+            $this->slug
+        ));
+
+        $fenceNow = file_exists($file) ? file_get_contents($file) : null;
+
+        if ($fenceNow === $this->geofenceString) {
+            return;
+        }
+
+        if (empty($this->geofenceString)) {
+            return unlink($file);
+        }
+
+        return file_put_contents($file, $this->geofenceString);
+    }
+
     public function getLatAttribute()
     {
         return $this->locationToArray()['lat'];

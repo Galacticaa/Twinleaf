@@ -98,6 +98,8 @@ class MapAreaController extends Controller
         $area->geofence = $request->get('geofence');
         $area->save();
 
+        $area->writeGeofenceFile();
+
         return redirect()->route('maps.areas.show', [
             'map' => $area->map,
             'area' => $area,

@@ -13,6 +13,9 @@ speed-scan
 @if ($area->beehive)
 beehive
 @endif
+@if ($area->geofence)
+geofence-file: geofences/{{ $area->map->code }}_{{ $area->slug }}.csv
+@endif
 @if ($area->workers)
 workers: {{ $area->workers }}
 @endif
