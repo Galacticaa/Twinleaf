@@ -254,10 +254,8 @@ class RocketMapController extends Controller
 
     public function restart($target)
     {
-        if ($this->stop($target)) {
-            sleep(1);
-
-            $this->start($target);
+        if ($target->stop() && $target->start()) {
+            $this->log('restart', $target);
         }
 
         return ['started' => (bool) $target->getPids()];
@@ -276,21 +274,11 @@ class RocketMapController extends Controller
     protected function log($action, $model)
     {
         $type = get_class($model) == Map::class ? 'map' : 'map_area';
-
-        if ($type == Map::class) {
-            $link = route('maps.show', [
-                'map' => $model,
-            ]);
-        } else if ($type == MapArea::class) {
-            $link = route('maps.areas.show', [
-                'map' => $model->map,
-                'area' => $model
-            ]);
-        } else $link = '#';
-
+        $link = method_exists($model, 'url') ? $model->url() : '#';
         $suffix = [
             'stop' => 'ped',
             'start' => 'ed',
+            'restart' => 'ed',
         ];
 
         Activity::log([

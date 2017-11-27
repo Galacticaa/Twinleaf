@@ -73,4 +73,11 @@ class Map extends Model
     {
         return 'code';
     }
+
+    public function url($route = 'show')
+    {
+        return route('maps.'.$route, [
+            'map' => $this,
+        ]);
+    }
 }

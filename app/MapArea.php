@@ -109,4 +109,12 @@ class MapArea extends Model
     {
         return 'slug';
     }
+
+    public function url($route = 'show')
+    {
+        return route('maps.areas.'.$route, [
+            'map' => $this->map,
+            'area' => $this,
+        ]);
+    }
 }
