@@ -33,6 +33,11 @@ class MapArea extends Model
         'max_retries',
     ];
 
+    /**
+     * @var array  Location represented as an array
+     */
+    protected $locationArray;
+
     public function accounts()
     {
         return $this->hasMany(Account::class);
@@ -91,6 +96,88 @@ class MapArea extends Model
     public function map()
     {
         return $this->belongsTo(Map::class);
+    }
+
+    public function setGeofenceAttribute($value)
+    {
+        if (!trim($value)) {
+            $this->attributes['geofence'] = null;
+
+            return;
+        }
+
+        $lines = explode("\n", trim($value));
+        $coords = [];
+
+        foreach ($lines as $latlng) {
+            if (empty(trim($latlng))) {
+                continue;
+            }
+
+            list($lat, $lng) = explode(',', trim($latlng));
+
+            $coords[] = (object) compact('lat', 'lng');
+        }
+
+        $this->attributes['geofence'] = json_encode($coords, JSON_NUMERIC_CHECK);
+    }
+
+    public function getGeofenceStringAttribute()
+    {
+        if (is_null($this->geofence)) {
+            return null;
+        }
+
+        $coords = json_decode($this->geofence);
+        $fence = '';
+
+        foreach ($coords as $marker) {
+            $fence .= $marker->lat.','.$marker->lng.PHP_EOL;
+        }
+
+        return $fence;
+    }
+
+    public function writeGeofenceFile()
+    {
+        $file = storage_path(sprintf(
+            'maps/rocketmap/geofences/%s_%s.csv',
+            $this->map->code,
+            $this->slug
+        ));
+
+        $fenceNow = file_exists($file) ? file_get_contents($file) : null;
+
+        if ($fenceNow === $this->geofenceString) {
+            return;
+        }
+
+        if (empty($this->geofenceString)) {
+            return unlink($file);
+        }
+
+        return file_put_contents($file, $this->geofenceString);
+    }
+
+    public function getLatAttribute()
+    {
+        return $this->locationToArray()['lat'];
+    }
+
+    public function getLngAttribute()
+    {
+        return $this->locationToArray()['lng'];
+    }
+
+    public function locationToArray()
+    {
+        if (empty($this->locationArray)) {
+            list($lat, $lng) = explode(',', $this->location);
+
+            $this->locationArray = compact('lat', 'lng');
+        }
+
+        return $this->locationArray;
     }
 
     public function setStartTime()

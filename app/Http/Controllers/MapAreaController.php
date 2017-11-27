@@ -95,7 +95,10 @@ class MapAreaController extends Controller
         $area->fill($request->all());
         $area->speed_scan = $request->get('speed_scan', false);
         $area->beehive = $request->get('beehive', false);
+        $area->geofence = $request->get('geofence');
         $area->save();
+
+        $area->writeGeofenceFile();
 
         return redirect()->route('maps.areas.show', [
             'map' => $area->map,
