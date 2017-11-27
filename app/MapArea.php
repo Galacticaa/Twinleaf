@@ -98,6 +98,30 @@ class MapArea extends Model
         return $this->belongsTo(Map::class);
     }
 
+    public function setGeofenceAttribute($value)
+    {
+        if (!trim($value)) {
+            $this->attributes['geofence'] = null;
+
+            return;
+        }
+
+        $lines = explode("\n", trim($value));
+        $coords = [];
+
+        foreach ($lines as $latlng) {
+            if (empty(trim($latlng))) {
+                continue;
+            }
+
+            list($lat, $lng) = explode(',', trim($latlng));
+
+            $coords[] = (object) compact('lat', 'lng');
+        }
+
+        $this->attributes['geofence'] = json_encode($coords, JSON_NUMERIC_CHECK);
+    }
+
     public function getLatAttribute()
     {
         return $this->locationToArray()['lat'];

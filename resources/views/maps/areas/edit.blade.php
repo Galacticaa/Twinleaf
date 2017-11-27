@@ -5,7 +5,7 @@
 @section ('css')
 <link href="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/skins/square/purple.css" rel="stylesheet">
 <style type="text/css">
-#map_canvas { height: 535px; width: 100%;}
+#map_canvas { height: 331px; width: 100%;}
 </style>
 @stop
 
@@ -26,10 +26,60 @@
             mapTypeId: google.maps.MapTypeId.MAP,
             zoom: 12
         });
+
+        @if ($fence = $area->geofence)
+        var fence = new google.maps.Polygon({
+            paths: JSON.parse('{!! $fence !!}'),
+            strokeColor: '#605ca8',
+            strokeOpacity: 0.8,
+            strokeWeight: 3,
+            fillColor: '#605ca8',
+            fillOpacity: 0.1
+        })
+        fence.setMap(map)
+        @else
+        var drawingManager = new google.maps.drawing.DrawingManager({
+            drawingMode: google.maps.drawing.OverlayType.POLYGON,
+            drawingControl: true,
+            drawingControlOptions: {
+                position: google.maps.ControlPosition.TOP_CENTER,
+                drawingModes: [ google.maps.drawing.OverlayType.POLYGON ]
+            },
+            polylineOptions: {
+                strokeWeight: 2,
+                strokeColor: '#605ca8',
+                clickable: false,
+                zIndex: 1,
+                editable: false
+            },
+            polygonOptions: {
+                editable:false
+            }
+        });
+
+        drawingManager.setMap(map);
+
+        google.maps.event.addDomListener(drawingManager, 'polygoncomplete', function(polygon) {
+            path = polygon.getPath();
+            for(var i = 0; i < path.length; i++) {
+                document.getElementById("formGeofence").value += path.getAt(i).lat() + "," + path.getAt(i).lng();
+                if (i != path.length-1) {
+                    document.getElementById("formGeofence").value += '\n';
+                }
+            }
+            drawingManager.setOptions({
+                drawingControl: false
+            });
+        });
+
+        google.maps.event.addDomListener(document.getElementById("map_canvas"), 'ready', function() {
+            drawingManager.setMap(map)
+        });
+        @endif
     }
 </script>
 <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key={{ \Twinleaf\Setting::first()->gmaps_key }}&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key={{ \Twinleaf\Setting::first()->gmaps_key }}&callback=initMap&libraries=drawing">
 </script>
 @stop
 
@@ -215,6 +265,14 @@
                 </div>
                 <div class="box-body">
                     <div id="map_canvas"></div>
+                    <textarea class="form-control" id="formGeofence" name="geofence" value="{{ $area->geofence }}" rows="10"
+                        placeholder="Enter geofence coordinates one per line in the format {lat},{lng}">
+@if ($area->geofence)
+@foreach (json_decode($area->geofence) as $i)
+{{ $i->lat }},{{ $i->lng }}
+@endforeach
+@endif
+</textarea>
                 </div>
             </div>
         </div>
