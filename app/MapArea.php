@@ -33,6 +33,11 @@ class MapArea extends Model
         'max_retries',
     ];
 
+    /**
+     * @var array  Location represented as an array
+     */
+    protected $locationArray;
+
     public function accounts()
     {
         return $this->hasMany(Account::class);
@@ -91,6 +96,27 @@ class MapArea extends Model
     public function map()
     {
         return $this->belongsTo(Map::class);
+    }
+
+    public function getLatAttribute()
+    {
+        return $this->locationToArray()['lat'];
+    }
+
+    public function getLngAttribute()
+    {
+        return $this->locationToArray()['lng'];
+    }
+
+    public function locationToArray()
+    {
+        if (empty($this->locationArray)) {
+            list($lat, $lng) = explode(',', $this->location);
+
+            $this->locationArray = compact('lat', 'lng');
+        }
+
+        return $this->locationArray;
     }
 
     public function setStartTime()

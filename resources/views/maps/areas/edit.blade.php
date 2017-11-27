@@ -4,6 +4,9 @@
 
 @section ('css')
 <link href="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/skins/square/purple.css" rel="stylesheet">
+<style type="text/css">
+#map_canvas { height: 535px; width: 100%;}
+</style>
 @stop
 
 @section ('js')
@@ -14,6 +17,19 @@
             checkboxClass: 'icheckbox_square-purple'
         });
     });
+
+    var map;
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById("map_canvas"), {
+            center: {lat: {{ $area->lat }}, lng: {{ $area->lng }}},
+            mapTypeId: google.maps.MapTypeId.MAP,
+            zoom: 12
+        });
+    }
+</script>
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key={{ \Twinleaf\Setting::first()->gmaps_key }}&callback=initMap">
 </script>
 @stop
 
@@ -121,8 +137,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-6">
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title">Scan Options</h3>
@@ -191,6 +205,16 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Geofence</h3>
+                </div>
+                <div class="box-body">
+                    <div id="map_canvas"></div>
                 </div>
             </div>
         </div>
