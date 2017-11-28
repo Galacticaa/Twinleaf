@@ -152,6 +152,9 @@
         map = new google.maps.Map(document.getElementById("map_canvas"), {
             center: {lat: {{ $area->lat }}, lng: {{ $area->lng }}},
             mapTypeId: google.maps.MapTypeId.MAP,
+            streetViewControl: false,
+            rotateControl: false,
+            scaleControl: true,
             zoom: 12
         });
 
