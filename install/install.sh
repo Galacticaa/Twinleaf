@@ -78,7 +78,7 @@ sudo -Hu twinleaf php artisan migrate --seed
 
 
 header "Configuring web server..."
-cp install/vhost.conf /etc/nginx/sites-available/
+cp install/vhost.conf /etc/nginx/sites-available/twinleaf.conf
 sed -ie 's/_HOSTNAME_/'$_HOSTNAME'/g' /etc/nginx/sites-available/twinleaf.conf
 echo "$_USERNAME:$(openssl passwd -crypt $_PASSWORD)\n" >> /home/twinleaf/twinleaf/.htpasswd
 ln -fs /etc/nginx/sites-available/twinleaf.conf /etc/nginx/sites-enabled/
