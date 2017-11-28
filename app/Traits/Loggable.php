@@ -2,6 +2,8 @@
 
 namespace Twinleaf\Traits;
 
+use Activity;
+
 Trait Loggable
 {
     public function writeLog($action = 'x', $message = null, $details = null, $updated = null)
