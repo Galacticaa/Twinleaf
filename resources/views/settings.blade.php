@@ -139,7 +139,7 @@
                     <div class="form-group">
                         <label for="formEmailDomains">Email Domains</label>
                         <textarea name="email_domains" id="formEmailDomains" rows="5"
-                            class="form-control">{{ implode("\n", $settings->email_domains) }}</textarea>
+                            class="form-control">{{ implode("\n", $settings->email_domains ?? '') }}</textarea>
                         <span class="help-block">Domain names to use when registering new game accounts. One per line.</span>
                     </div>
                 </div>
