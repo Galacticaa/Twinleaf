@@ -5,10 +5,10 @@
 /storage/maps
 /vendor
 /.idea
+/.env
 /.vagrant
 Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
 .htpasswd
-.env
