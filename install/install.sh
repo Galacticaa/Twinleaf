@@ -61,14 +61,20 @@ useradd -mNg www-data -G root -s /bin/zsh twinleaf
 passwd twinleaf
 
 header "Installing Composer..."
-wget https://getcomposer.org/installer && php installer --install-dir=/usr/local/bin --filename=composer
+wget -4 https://getcomposer.org/installer && php installer --install-dir=/usr/local/bin --filename=composer
 
 header "Installing Twinleaf..."
 cd /home/twinleaf
 sudo -Hu twinleaf git clone https://github.com/Galacticaa/Twinleaf.git twinleaf
+read -p "Enter the password for the MySQL root user: " _PASSWORD
 cd /home/twinleaf/twinleaf
+cp install/.env .env
+sed -ie 's/_URL_/http:\/\/'$_HOSTNAME'/' .env
+sed -ie 's/_PASS_/'$_PASSWORD'/' .env
 sudo -Hu twinleaf composer install
+sudo -Hu twinleaf php artisan key:generate
 sudo -Hu twinleaf php artisan migrate --seed
+
 
 header "Configuring web server..."
 cp install/vhost.conf /etc/nginx/sites-available/
