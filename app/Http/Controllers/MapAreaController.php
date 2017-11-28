@@ -95,7 +95,14 @@ class MapAreaController extends Controller
         $area->fill($request->all());
         $area->speed_scan = $request->get('speed_scan', false);
         $area->beehive = $request->get('beehive', false);
+        $area->geofence = $request->get('geofence');
         $area->save();
+
+        $area->writeGeofenceFile();
+
+        if ($request->ajax()) {
+            return ['success' => true, 'area' => $area];
+        }
 
         return redirect()->route('maps.areas.show', [
             'map' => $area->map,
@@ -120,17 +127,13 @@ class MapAreaController extends Controller
 
         $result = (new Generator($area))->generate();
 
-        Activity::log([
-            'contentId' => $area->id,
-            'contentType' => 'map_area',
-            'action' => 'regenerate',
-            'description' => sprintf(
-                '<a href="%s">%s</a>\'s accounts were regenerated.',
-                route('maps.areas.show', ['map' => $map, 'area' => $area]),
-                $area->name
-            ),
-            'details' => sprintf('Before: %s; After: %s', $oldCount, $area->accounts()->count()),
-        ]);
+        $area->writeLog('regenerate', sprintf(
+            '<a href="%s">%s</a>\'s accounts were regenerated.',
+            $area->url(), $area->name
+        ), sprintf(
+            'Before: %s; After: %s',
+            $oldCount, $area->accounts()->count()
+        ));
 
         return $result;
     }

@@ -71,4 +71,32 @@ class SettingController extends Controller
 
         return redirect()->route('settings.index');
     }
+
+    /**
+     * Enable 6-hour lures
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function enableLongLures()
+    {
+        $setting = Setting::first();
+
+        $setting->long_lures = true;
+
+        return ['success' => $setting->save()];
+    }
+
+    /**
+     * Disable 6-hour lures
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function disableLongLures()
+    {
+        $setting = Setting::first();
+
+        $setting->long_lures = false;
+
+        return ['success' => $setting->save()];
+    }
 }

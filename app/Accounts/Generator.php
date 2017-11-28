@@ -83,7 +83,7 @@ class Generator
     {
         $account = '1234567890987654321';
 
-        while (strlen($account) > 15) {
+        while (strlen($account) > 15 || str_contains($account, "'")) {
             $parts = [
                 $this->faker->domainWord,
                 $this->faker->lastName,

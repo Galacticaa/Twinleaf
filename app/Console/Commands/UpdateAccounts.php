@@ -2,7 +2,6 @@
 
 namespace Twinleaf\Console\Commands;
 
-use Activity;
 use Twinleaf\MapArea;
 use Twinleaf\Setting;
 
@@ -59,12 +58,19 @@ class UpdateAccounts extends Command
 
         if (!$result) {
             if ($result === false) {
-                $this->error("Failed to write accounts for {$area->name}");
+                $message = "Failed writing accounts for {$area->name}";
+                $area->writeLog('error', '[cron] '.$message);
+                $this->error($message);
             }
             return;
         }
 
-        $this->restartArea($area);
+        if ($area->isUp() && $area->stop() && $area->start()) {
+            $area->writeLog('restart', sprintf(
+                '[cron] Restarted <a href="%s">%s</a>.',
+                $area->url(), $area->name
+            ));
+        }
 
         $this->info("Completed update for the {$area->slug} area.");
     }
@@ -84,48 +90,11 @@ class UpdateAccounts extends Command
             return null;
         }
 
-        Activity::log([
-            'contentId' => $area->id,
-            'contentType' => 'map_area',
-            'action' => 'write',
-            'description' => sprintf(
-                '<code>[cron]</code> Writing %s accounts for <a href="%s">%s</a>.',
-                count($area->accounts),
-                route('maps.areas.show', ['map' => $area->map, 'area' => $area]),
-                $area->name
-            ),
-        ]);
+        $area->writeLog('update', sprintf(
+            '<code>[cron]</code> Writing %s accounts for <a href="%s">%s</a>.',
+            count($area->accounts), $area->url(), $area->name
+        ));
 
         return false !== file_put_contents($path, $csv);
-    }
-
-    protected function restartArea(MapArea $area)
-    {
-        $pids = $area->getPids();
-
-        if (!count($pids)) {
-            return;
-        }
-
-        foreach ($pids as $pid) {
-            system(sprintf("kill -15 %s", $pid));
-        }
-
-        $area->applyUptimeMax()->unsetStartTime()->save();
-
-        sleep(2);
-
-        $mapDir = storage_path('maps/rocketmap');
-        $python = Setting::first()->python_command;
-
-        $cmd_parts = [
-            "cd {$mapDir} &&",
-            "tmux new-session -s \"tla_{$area->slug}\" -d",
-            "{$python} runserver.py -cf \"config/{$area->map->code}/{$area->slug}.ini\" 2>&1",
-        ];
-
-        system(implode(' ', $cmd_parts));
-
-        $area->setStartTime()->save();
     }
 }

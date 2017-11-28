@@ -13,6 +13,9 @@ speed-scan
 @if ($area->beehive)
 beehive
 @endif
+@if ($area->geofence)
+geofence-file: geofences/{{ $area->map->code }}_{{ $area->slug }}.csv
+@endif
 @if ($area->workers)
 workers: {{ $area->workers }}
 @endif
@@ -47,6 +50,9 @@ print-status: logs
 use-altitude-cache
 @endif
 min-seconds-left: 15
+@if ($config->long_lures)
+lure-duration: 360
+@endif
 
 proxy-file: config/{{ $area->map->code }}/{{ $area->slug }}.txt
 proxy-display: full

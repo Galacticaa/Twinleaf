@@ -2,7 +2,6 @@
 
 namespace Twinleaf\Observers;
 
-use Activity;
 use Twinleaf\Map;
 
 class MapObserver
@@ -13,31 +12,17 @@ class MapObserver
         unset($changes['updated_at'], $changes['started_at']);
 
         if (count($changes) || !$map->getOriginal('id')) {
-            Activity::log([
-                'contentId' => $map->id,
-                'contentType' => 'map',
-                'action' => 'create',
-                'description' => sprintf(
-                    'Map "<a href="%s">%s</a>" was created.',
-                    route('maps.show', ['map' => $map]),
-                    $map->name
-                ),
-                'updated' => (bool) $map->getOriginal('id'),
-            ]);
+            $map->writeLog('create', sprintf(
+                'Map "<a href="%s">%s</a>" was created.',
+                $map->url(), $map->name
+            ), (bool) $map->getOriginal('id'));
         }
     }
 
     public function deleted(Map $map)
     {
-        Activity::log([
-            'contentId' => $map->id,
-            'contentType' => 'map',
-            'action' => 'delete',
-            'description' => sprintf(
-                'Map "<a href="%s">%s</a>" was deleted.',
-                route('maps.show', ['map' => $map]),
-                $map->name
-            ),
-        ]);
+        $message = "Map <strong>{$map->name}</strong> was deleted.";
+
+        $map->writeLog('delete', $message);
     }
 }

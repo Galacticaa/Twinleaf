@@ -342,7 +342,15 @@
                                 <i class="fa fa-{{ $icon }}" title="{{ $account->activated_at }}"></i>
                                 {{ $account->email }}
                             </td>
-                            @if ($account->is_banned === 1)
+                            @if ($account->registered_at === null)
+                            <td class="text-muted">
+                                <i class="fa fa-hourglass"></i> Pending creation
+                            </td>
+                            @elseif ($account->activated_at === null)
+                            <td class="text-muted">
+                                <i class="fa fa-hourglass"></i> Pending activation
+                            </td>
+                            @elseif ($account->is_banned === 1)
                             <td class="text-danger">
                                 <i class="fa fa-ban"></i> Banned
                             </td>

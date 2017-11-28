@@ -2,6 +2,7 @@
 
 use Twinleaf\Services\KinanCore;
 use Twinleaf\Map;
+use Twinleaf\Setting;
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -23,6 +24,7 @@ Route::get('dashboard', function () {
 
     return view('dashboard')
             ->with('maps', Map::with('areas')->get())
+            ->with('settings', Setting::first())
             ->with('logsByDate', $logsByDate);
 })->name('dashboard');
 
@@ -41,6 +43,10 @@ Route::get('tasks', function () {
     return view('tasks')->with('creator', new KinanCore);
 })->name('tasks');
 
+Route::prefix('settings/lures')->group(function () {
+    Route::post('enable', 'SettingController@enableLongLures')->name('long-lures.enable');
+    Route::post('disable', 'SettingController@disableLongLures')->name('long-lures.disable');
+});
 Route::resource('settings', 'SettingController');
 
 Route::resource('maps', 'MapController');

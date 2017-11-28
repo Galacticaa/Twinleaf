@@ -2,7 +2,6 @@
 
 namespace Twinleaf\Http\Controllers;
 
-use Activity;
 use Twinleaf\Map;
 use Twinleaf\MapArea;
 use Twinleaf\Proxy;
@@ -197,7 +196,7 @@ class RocketMapController extends Controller
 
         $proxies = '';
 
-        foreach ($area->proxies as $proxy) {
+        foreach ($area->proxies() as $proxy) {
             $proxies .= $proxy->url.PHP_EOL;
         }
 
@@ -208,30 +207,19 @@ class RocketMapController extends Controller
         ];
     }
 
-    public function start($target, $isArea = false)
+    public function start($target)
     {
-        $pids = $target->getPids();
+        $result = $target->start();
 
-        if (count($pids)) {
+        if (is_null($result)) {
             return ['running' => true];
         }
 
-        $mapDir = storage_path('maps/rocketmap');
-        $tmuxId = $isArea ? 'tla_'.$target->slug : 'tlm_'.$target->code;
-        $config = $isArea ? "{$target->map->code}/{$target->slug}" : $target->code;
-        $python = $this->config->python_command;
+        if ($result) {
+            $target->writeLog('start');
+        }
 
-        $cmd_parts = [
-            "cd {$mapDir} &&",
-            "tmux new-session -s \"{$tmuxId}\" -d",
-            "{$python} runserver.py -cf \"config/{$config}.ini\" 2>&1",
-        ];
-
-        system(implode(' ', $cmd_parts));
-
-        $target->applyUptimeMax()->setStartTime()->save();
-
-        $this->log('start', $target);
+        return ['running' => $result];
     }
 
     public function startMap(Map $map)
@@ -241,28 +229,16 @@ class RocketMapController extends Controller
 
     public function startArea(Map $map, MapArea $area)
     {
-        return $this->start($area, true);
+        return $this->start($area);
     }
 
     public function stop($target)
     {
-        $pids = $target->getPids();
-
-        if (!count($pids)) {
-            return ['stopped' => true];
+        if ($result = $target->stop()) {
+            $target->writeLog('stop');
         }
 
-        foreach ($pids as $pid) {
-            system(sprintf("kill -15 %s", $pid));
-        }
-
-        $target->applyUptimeMax()->unsetStartTime()->save();
-
-        sleep(1);
-
-        $this->log('stop', $target);
-
-        return ['stopped' => true];
+        return ['stopped' => $result];
     }
 
     public function stopMap(Map $map)
@@ -275,13 +251,11 @@ class RocketMapController extends Controller
         return $this->stop($area);
     }
 
-    public function restart($target, $isArea = false)
+    public function restart($target)
     {
-        $this->stop($target);
-
-        sleep(1);
-
-        $this->start($target, $isArea);
+        if ($target->stop() && $target->start()) {
+            $target->writeLog('restart');
+        }
 
         return ['started' => (bool) $target->getPids()];
     }
@@ -294,36 +268,5 @@ class RocketMapController extends Controller
     public function restartArea(Map $map, MapArea $area)
     {
         return $this->restart($area, true);
-    }
-
-    protected function log($action, $model)
-    {
-        $type = get_class($model) == Map::class ? 'map' : 'map_area';
-
-        if ($type == Map::class) {
-            $link = route('maps.show', [
-                'map' => $model,
-            ]);
-        } else if ($type == MapArea::class) {
-            $link = route('maps.areas.show', [
-                'map' => $model->map,
-                'area' => $model
-            ]);
-        } else $link = '#';
-
-        $suffix = [
-            'stop' => 'ped',
-            'start' => 'ed',
-        ];
-
-        Activity::log([
-            'contentId' => $model->id,
-            'contentType' => $type,
-            'action' => $action,
-            'description' => sprintf(
-                '<a href="%s">%s</a> was %s.',
-                $link, $model->name, $action.$suffix[$action]
-            ),
-        ]);
     }
 }
