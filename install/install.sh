@@ -67,6 +67,7 @@ header "Installing Twinleaf..."
 cd /home/twinleaf
 sudo -Hu twinleaf git clone https://github.com/Galacticaa/Twinleaf.git twinleaf
 read -p "Enter the password for the MySQL root user: " _PASSWORD
+echo "CREATE DATABASE twinleaf" | mysql -u root -p$_PASSWORD
 cd /home/twinleaf/twinleaf
 cp install/.env .env
 sed -ie 's/_URL_/http:\/\/'$_HOSTNAME'/' .env
