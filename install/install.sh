@@ -104,7 +104,7 @@ systemctl restart nginx.service
 
 
 header "Installing crontab entries..."
-sudo -Hu twinleaf crontab -l ? /tmp/crontab
+sudo -Hu twinleaf crontab -l > /tmp/crontab
 echo "* * * * * cd /home/twinleaf/twinleaf && /usr/bin/php artisan schedule:run >> /home/twinleaf/twinleaf/storage/logs/cron.log 2>&1" >> /tmp/crontab
 sudo -Hu twinleaf crontab /tmp/crontab
 rm /tmp/crontab
