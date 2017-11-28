@@ -61,7 +61,7 @@ useradd -mNg www-data -G root -s /bin/zsh twinleaf
 passwd twinleaf
 
 header "Installing Composer..."
-wget https://getcomposer.org/installer && php installer --install-dir=/usr/local/bin --filename=composer
+wget -4 https://getcomposer.org/installer && php installer --install-dir=/usr/local/bin --filename=composer
 
 header "Installing Twinleaf..."
 cd /home/twinleaf
