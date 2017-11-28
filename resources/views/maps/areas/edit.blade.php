@@ -104,6 +104,49 @@
 
     var map;
 
+    function updateGeofence(path) {
+        var geofence = '';
+
+        for (var i = 0; i < path.length; i++) {
+            geofence += path.getAt(i).lat() + ',' + path.getAt(i).lng();
+
+            if (i != path.length - 1) {
+                geofence += '\n';
+            }
+        }
+
+        document.getElementById('formGeofence').value = geofence;
+    }
+
+    function addEditListeners(path) {
+        google.maps.event.addListener(path, 'set_at', function () {
+            updateGeofence(path);
+        });
+
+        google.maps.event.addListener(path, 'insert_at', function () {
+            updateGeofence(path);
+        });
+
+        google.maps.event.addListener(path, 'remove_at', function () {
+            updateGeofence(path);
+        });
+    }
+
+    function removeVertex(fence, vertex) {
+        if (vertex == undefined) {
+            return;
+        }
+
+        var path = fence.getPath();
+
+        if (path.length < 3) {
+            fence.setMap(null);
+            document.getElementById('formGeofence').value = '';
+        } else {
+            fence.getPath().removeAt(vertex);
+        }
+    }
+
     function initMap() {
         map = new google.maps.Map(document.getElementById("map_canvas"), {
             center: {lat: {{ $area->lat }}, lng: {{ $area->lng }}},
@@ -114,13 +157,21 @@
         @if ($fence = $area->geofence)
         var fence = new google.maps.Polygon({
             paths: JSON.parse('{!! $fence !!}'),
+            editable: true,
             strokeColor: '#605ca8',
             strokeOpacity: 0.8,
             strokeWeight: 3,
             fillColor: '#605ca8',
             fillOpacity: 0.1
-        })
-        fence.setMap(map)
+        });
+        fence.setMap(map);
+
+        google.maps.event.addListener(fence, 'rightclick', function(e) {
+            removeVertex(fence, e.vertex)
+        });
+
+        var path = fence.getPath()
+        addEditListeners(path);
         @else
         var drawingManager = new google.maps.drawing.DrawingManager({
             drawingMode: google.maps.drawing.OverlayType.POLYGON,
@@ -129,31 +180,26 @@
                 position: google.maps.ControlPosition.TOP_CENTER,
                 drawingModes: [ google.maps.drawing.OverlayType.POLYGON ]
             },
-            polylineOptions: {
+            polygonOptions: {
                 strokeWeight: 2,
                 strokeColor: '#605ca8',
                 clickable: false,
                 zIndex: 1,
-                editable: false
-            },
-            polygonOptions: {
-                editable:false
+                editable: true
             }
         });
 
         drawingManager.setMap(map);
 
-        google.maps.event.addDomListener(drawingManager, 'polygoncomplete', function(polygon) {
-            path = polygon.getPath();
-            for(var i = 0; i < path.length; i++) {
-                document.getElementById("formGeofence").value += path.getAt(i).lat() + "," + path.getAt(i).lng();
-                if (i != path.length-1) {
-                    document.getElementById("formGeofence").value += '\n';
-                }
-            }
-            drawingManager.setOptions({
-                drawingControl: false
+        google.maps.event.addDomListener(drawingManager, 'polygoncomplete', function(fence) {
+            path = fence.getPath();
+            addEditListeners(path);
+
+            google.maps.event.addListener(fence, 'rightclick', function(e) {
+                removeVertex(fence, e.vertex)
             });
+
+            updateGeofence(path);
         });
 
         google.maps.event.addDomListener(document.getElementById("map_canvas"), 'ready', function() {
