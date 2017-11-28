@@ -72,6 +72,7 @@ echo "Downloading files..."
 cd /home/twinleaf
 sudo -Hu twinleaf git clone https://github.com/Galacticaa/Twinleaf.git twinleaf
 
+cd /home/twinleaf/twinleaf
 echo "Setting permissions..."
 chmod 0440 /etc/sudoers.d/twinleaf
 chmod -R ug+rwx bin storage bootstrap/cache
@@ -81,7 +82,6 @@ read -p "Enter the password for the MySQL root user: " _PASSWORD
 echo "CREATE DATABASE twinleaf" | mysql -u root -p$_PASSWORD
 
 echo "Writing database config..."
-cd /home/twinleaf/twinleaf
 sudo -Hu twinleaf cp install/.env .env
 sudo -Hu twinleaf sed -i 's/_URL_/http:\/\/'$_HOSTNAME'/' .env
 sudo -Hu twinleaf sed -i 's/_PASS_/'$_PASSWORD'/' .env
@@ -104,7 +104,7 @@ systemctl restart nginx.service
 
 
 header "Installing crontab entries..."
-sudo -Hu twinleaf crontab -l ? /tmp/crontab
+sudo -Hu twinleaf crontab -l > /tmp/crontab
 echo "* * * * * cd /home/twinleaf/twinleaf && /usr/bin/php artisan schedule:run >> /home/twinleaf/twinleaf/storage/logs/cron.log 2>&1" >> /tmp/crontab
 sudo -Hu twinleaf crontab /tmp/crontab
 rm /tmp/crontab
