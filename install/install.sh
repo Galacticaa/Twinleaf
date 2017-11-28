@@ -56,7 +56,6 @@ systemctl restart mysql.service
 
 header "Configuring Twinleaf user..."
 echo "twinleaf ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/twinleaf
-chmod 0440 /etc/sudoers.d/twinleaf
 useradd -mNg www-data -G root -s /bin/zsh twinleaf
 passwd twinleaf
 
@@ -66,6 +65,11 @@ wget -4 https://getcomposer.org/installer && php installer --install-dir=/usr/lo
 header "Installing Twinleaf..."
 cd /home/twinleaf
 sudo -Hu twinleaf git clone https://github.com/Galacticaa/Twinleaf.git twinleaf
+
+echo "Setting permissions..."
+chmod 0440 /etc/sudoers.d/twinleaf
+chmod -R ug+rwx bin storage bootstrap/cache
+
 read -p "Enter the password for the MySQL root user: " _PASSWORD
 echo "CREATE DATABASE twinleaf" | mysql -u root -p$_PASSWORD
 cd /home/twinleaf/twinleaf
