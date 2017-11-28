@@ -103,6 +103,7 @@
     });
 
     var map;
+    var drawingManager;
 
     function updateGeofence(path) {
         var geofence = '';
@@ -138,12 +139,12 @@
         }
 
         var path = fence.getPath();
+        path.removeAt(vertex);
 
-        if (path.length < 3) {
+        if (path.length < 2) {
             fence.setMap(null);
+            drawingManager.setDrawingMode('polygon');
             document.getElementById('formGeofence').value = '';
-        } else {
-            fence.getPath().removeAt(vertex);
         }
     }
 
@@ -173,13 +174,9 @@
         var path = fence.getPath()
         addEditListeners(path);
         @else
-        var drawingManager = new google.maps.drawing.DrawingManager({
+        drawingManager = new google.maps.drawing.DrawingManager({
             drawingMode: google.maps.drawing.OverlayType.POLYGON,
-            drawingControl: true,
-            drawingControlOptions: {
-                position: google.maps.ControlPosition.TOP_CENTER,
-                drawingModes: [ google.maps.drawing.OverlayType.POLYGON ]
-            },
+            drawingControl: false,
             polygonOptions: {
                 strokeWeight: 2,
                 strokeColor: '#605ca8',
@@ -198,6 +195,8 @@
             google.maps.event.addListener(fence, 'rightclick', function(e) {
                 removeVertex(fence, e.vertex)
             });
+
+            drawingManager.setDrawingMode(null);
 
             updateGeofence(path);
         });
