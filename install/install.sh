@@ -45,6 +45,7 @@ apt-get install -y build-essential curl git htop tmux tree unzip wget zsh
 apt-get install -y python python-dev python-pip python-software-properties
 apt-get install -y nginx nodejs-legacy npm python-certbot-nginx openjdk-8-jre-headless
 pip install --upgrade pip
+pip install virtualenv
 
 apt-get install -y mysql-client mysql-server php7.1 php7.1-fpm php7.1-mbstring php7.1-mysql php7.1-xml
 wget -4 https://getcomposer.org/installer && php installer --install-dir=/usr/local/bin --filename=composer
