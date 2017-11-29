@@ -26,7 +26,7 @@ Trait Restartable
         }
 
         $cmd = sprintf(
-            "cd %s && tmux new-session -s \"%s\" -d %s runserver.py -cf \"%s\" 2>&1",
+            "cd %s && sudo -Hu twinleaf tmux new-session -s \"%s\" -d %s runserver.py -cf \"%s\" 2>&1",
             storage_path('maps/rocketmap'),
             $this->getSessionName(),
             Setting::first()->python_command,
@@ -61,7 +61,7 @@ Trait Restartable
             }
 
             foreach ($pids as $pid) {
-                system('kill -15 '.$pid);
+                system('sudo -Hu twinleaf kill -15 '.$pid);
             }
 
             sleep(2);
