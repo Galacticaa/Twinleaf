@@ -59,7 +59,7 @@ class RocketMapController extends Controller
             exec("cd {$dir} && {$sudo} chmod -v 770 config geofences 2>&1", $output);
 
             $output[] = "Creating new Python virtual environment...";
-            exec("{$sudo} virtualenv {$dir}", $output)
+            exec("{$sudo} virtualenv {$dir}", $output);
 
             $pip = $this->config->pip_command;
             $output[] = "Using {$pip} to install in {$dir}...";
