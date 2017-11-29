@@ -71,8 +71,6 @@ echo "www-data ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/www-data
 
 
 header "Installing Twinleaf!"
-echo "Saving popular Git host's public keys..."
-ssh-keyscan -t rsa bitbucket.org github.com | sudo -Hu twinleaf tee -a /home/twinleaf/.ssh/known_hosts
 echo "Downloading files..."
 cd /home/twinleaf
 sudo -Hu twinleaf git clone https://github.com/Galacticaa/Twinleaf.git twinleaf
@@ -115,5 +113,21 @@ echo "* * * * * cd /home/twinleaf/twinleaf && /usr/bin/php artisan schedule:run 
 sudo -Hu twinleaf crontab /tmp/crontab
 rm /tmp/crontab
 
+
+header "Configuring Git"
+echo "Saving host key for Bitbucket..."
+ssh-keyscan -t rsa bitbucket.org | sudo -Hu twinleaf tee -a /home/twinleaf/.ssh/known_hosts
+echo "Saving host key for Github..."
+ssh-keyscan -t rsa github.com | sudo -Hu twinleaf tee -a /home/twinleaf/.ssh/known_hosts
+echo "Creating SSH key for Twinleaf..."
+sudo -u twinleaf ssh-keygen -t rsa -b 4096 -N '' -f /home/twinleaf/.ssh/id_rsa
+
 echo
 header "All done!"
+echo "The public key for Twinleaf is printed below."
+echo "You'll need to add this to Github or Bitbucket"
+echo "if your map is hosted as a private repository."
+echo
+cat /home/twinleaf/.ssh/id_rsa.pub
+echo
+echo
