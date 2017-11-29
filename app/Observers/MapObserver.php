@@ -15,7 +15,7 @@ class MapObserver
             $map->writeLog('create', sprintf(
                 'Map "<a href="%s">%s</a>" was created.',
                 $map->url(), $map->name
-            ), (bool) $map->getOriginal('id'));
+            ), null, (bool) $map->getOriginal('id'));
         }
     }
 

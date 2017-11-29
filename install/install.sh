@@ -116,12 +116,12 @@ rm /tmp/crontab
 
 
 header "Configuring Git"
+echo "Creating SSH key for Twinleaf..."
+sudo -u twinleaf ssh-keygen -t rsa -b 4096 -N '' -f /home/twinleaf/.ssh/id_rsa
 echo "Saving host key for Bitbucket..."
 ssh-keyscan -t rsa bitbucket.org | sudo -Hu twinleaf tee -a /home/twinleaf/.ssh/known_hosts
 echo "Saving host key for Github..."
 ssh-keyscan -t rsa github.com | sudo -Hu twinleaf tee -a /home/twinleaf/.ssh/known_hosts
-echo "Creating SSH key for Twinleaf..."
-sudo -u twinleaf ssh-keygen -t rsa -b 4096 -N '' -f /home/twinleaf/.ssh/id_rsa
 
 echo
 header "All done!"
