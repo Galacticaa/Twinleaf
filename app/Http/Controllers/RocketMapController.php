@@ -55,12 +55,15 @@ class RocketMapController extends Controller
         $checkFile = $dir.'/.twinleaf_installed';
 
         if (!file_exists($checkFile)) {
-            $output = ["Setting directory permissions"];
+            $output = ["Setting directory permissions..."];
             exec("cd {$dir} && {$sudo} chmod -v 770 config geofences 2>&1", $output);
+
+            $output[] = "Creating new Python virtual environment...";
+            exec("{$sudo} virtualenv {$dir}", $output)
 
             $pip = $this->config->pip_command;
             $output[] = "Using {$pip} to install in {$dir}...";
-            exec("cd {$dir} && {$pip} install --user -r requirements.txt 2>&1", $output);
+            exec("cd {$dir} && {$sudo} {$pip} install -r requirements.txt 2>&1", $output);
 
             $output[] = "Completed pip install!";
             exec(

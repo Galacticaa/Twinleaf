@@ -45,6 +45,7 @@ apt-get install -y build-essential curl git htop tmux tree unzip wget zsh
 apt-get install -y python python-dev python-pip python-software-properties
 apt-get install -y nginx nodejs-legacy npm python-certbot-nginx openjdk-8-jre-headless
 pip install --upgrade pip
+pip install virtualenv
 
 apt-get install -y mysql-client mysql-server php7.1 php7.1-fpm php7.1-mbstring php7.1-mysql php7.1-xml
 wget -4 https://getcomposer.org/installer && php installer --install-dir=/usr/local/bin --filename=composer
@@ -61,15 +62,16 @@ systemctl daemon-reload
 systemctl restart mysql.service
 
 
-header "Configuring Twinleaf user..."
-echo "twinleaf ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/twinleaf
+header "Configuring Twinleaf user"
+echo "Creating user..."
 useradd -mNg www-data -G root -s /bin/zsh twinleaf
 passwd twinleaf
+echo "Adding users to sudoers..."
+echo "twinleaf ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/twinleaf
+echo "www-data ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/www-data
 
 
 header "Installing Twinleaf!"
-echo "Saving popular Git host's public keys..."
-ssh-keyscan -t rsa bitbucket.org github.com | sudo -Hu twinleaf tee -a /home/twinleaf/.ssh/known_hosts
 echo "Downloading files..."
 cd /home/twinleaf
 sudo -Hu twinleaf git clone https://github.com/Galacticaa/Twinleaf.git twinleaf
@@ -112,5 +114,21 @@ echo "* * * * * cd /home/twinleaf/twinleaf && /usr/bin/php artisan schedule:run 
 sudo -Hu twinleaf crontab /tmp/crontab
 rm /tmp/crontab
 
+
+header "Configuring Git"
+echo "Saving host key for Bitbucket..."
+ssh-keyscan -t rsa bitbucket.org | sudo -Hu twinleaf tee -a /home/twinleaf/.ssh/known_hosts
+echo "Saving host key for Github..."
+ssh-keyscan -t rsa github.com | sudo -Hu twinleaf tee -a /home/twinleaf/.ssh/known_hosts
+echo "Creating SSH key for Twinleaf..."
+sudo -u twinleaf ssh-keygen -t rsa -b 4096 -N '' -f /home/twinleaf/.ssh/id_rsa
+
 echo
 header "All done!"
+echo "The public key for Twinleaf is printed below."
+echo "You'll need to add this to Github or Bitbucket"
+echo "if your map is hosted as a private repository."
+echo
+cat /home/twinleaf/.ssh/id_rsa.pub
+echo
+echo
