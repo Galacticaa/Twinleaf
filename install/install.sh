@@ -68,6 +68,8 @@ passwd twinleaf
 
 
 header "Installing Twinleaf!"
+echo "Saving popular Git host's public keys..."
+ssh-keyscan -t rsa bitbucket.org github.com | sudo -Hu twinleaf tee -a /home/twinleaf/.ssh/known_hosts
 echo "Downloading files..."
 cd /home/twinleaf
 sudo -Hu twinleaf git clone https://github.com/Galacticaa/Twinleaf.git twinleaf
@@ -75,7 +77,8 @@ sudo -Hu twinleaf git clone https://github.com/Galacticaa/Twinleaf.git twinleaf
 cd /home/twinleaf/twinleaf
 echo "Setting permissions..."
 chmod 0440 /etc/sudoers.d/twinleaf
-chmod -R ug+rwx bin storage bootstrap/cache
+chmod -R g+s . && chmod -R ug+rwx bin storage bootstrap/cache
+
 
 echo "Creating database..."
 read -p "Enter the password for the MySQL root user: " _PASSWORD

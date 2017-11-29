@@ -13,12 +13,14 @@ class RocketMapController extends Controller
 
     public function __construct()
     {
+        set_time_limit(0);
         $this->config = Setting::first();
     }
 
     public function download()
     {
         $output = [];
+        $sudo = 'sudo -Hu twinleaf';
         $mapRoot = storage_path('maps');
         $mapDir = $mapRoot.'/rocketmap';
         $checkFile = $mapDir.'/.twinleaf_downloaded';
@@ -26,15 +28,19 @@ class RocketMapController extends Controller
         if (file_exists($checkFile)) {
             return ['downloaded' => true];
         } elseif (!is_dir($mapRoot)) {
-            exec("mkdir -pv {$mapRoot} 2>&1", $output);
+            exec("{$sudo} mkdir -pv {$mapRoot} 2>&1", $output);
         } elseif (is_dir($mapDir)) {
-            exec("rm -rvf {$mapDir} 2>&1", $output);
+            exec("{$sudo} rm -rvf {$mapDir} 2>&1", $output);
         }
 
         $repo = $this->config->map_repo;
         $branch = $this->config->map_branch;
 
-        exec("git clone {$repo} {$mapDir} 2>&1 && cd {$mapDir} && git checkout {$branch} 2>&1 && touch {$checkFile}", $output);
+        exec(
+            "{$sudo} git clone {$repo} {$mapDir} 2>&1 && cd {$mapDir} && ".
+            "{$sudo} git checkout {$branch} 2>&1 && {$sudo} touch {$checkFile}",
+            $output
+        );
 
         return [
             'downloaded' => file_exists($checkFile),
@@ -44,18 +50,24 @@ class RocketMapController extends Controller
 
     public function install()
     {
+        $sudo = 'sudo -Hu twinleaf';
         $dir = storage_path('maps/rocketmap');
         $checkFile = $dir.'/.twinleaf_installed';
 
         if (!file_exists($checkFile)) {
-            $pip = $this->config->pip_command;
-            $npm = 'sudo -H npm';
+            $output = ["Setting directory permissions"];
+            exec("cd {$dir} && {$sudo} chmod -v 770 config geofences 2>&1", $output);
 
-            $output = ["Using {$pip} to install in {$dir}..."];
-            exec("cd {$dir} && {$pip} install -r requirements.txt 2>&1", $output);
+            $pip = $this->config->pip_command;
+            $output[] = "Using {$pip} to install in {$dir}...";
+            exec("cd {$dir} && {$pip} install --user -r requirements.txt 2>&1", $output);
 
             $output[] = "Completed pip install!";
-            exec("cd {$dir} && {$npm} install 2>&1 && echo 'Completed npm install!' && {$npm} run build 2>&1 && touch {$checkFile}", $output);
+            exec(
+                "cd {$dir} && {$sudo} npm install 2>&1 && echo 'Completed npm install!' && ".
+                "{$sudo} npm run build 2>&1 && {$sudo} touch {$checkFile}",
+                $output
+            );
         }
 
         return [
@@ -69,7 +81,7 @@ class RocketMapController extends Controller
         $mapDir = storage_path('maps/rocketmap/config/'.$map->code);
 
         if (is_dir($mapDir)) {
-            system('rm -rf '.$mapDir);
+            system('sudo -u twinleaf rm -rf '.$mapDir);
         }
 
         return ['nuked' => true];
@@ -133,7 +145,7 @@ class RocketMapController extends Controller
         }
 
         if (!is_dir($path = $path.'/'.$map->code)) {
-            system('mkdir '.$path);
+            system("sudo -u twinleaf mkdir {$path} && sudo -u twinleaf chmod 770 {$path}");
         }
 
         if (\DB::statement("CREATE DATABASE IF NOT EXISTS `{$map->db_name}`")) {

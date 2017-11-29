@@ -12,7 +12,7 @@ Trait Loggable
             'contentId' => $this->id,
             'contentType' => $this->logType,
             'action' => $action,
-            'description' => $message ?: $this->defaultLogMessage(),
+            'description' => $message ?: $this->defaultLogMessage($action),
         ];
 
         if ($details) {
