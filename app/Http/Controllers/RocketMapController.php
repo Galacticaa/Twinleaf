@@ -13,7 +13,6 @@ class RocketMapController extends Controller
 
     public function __construct()
     {
-        set_time_limit(0);
         $this->config = Setting::first();
     }
 
