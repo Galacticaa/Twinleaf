@@ -24,7 +24,7 @@ class SettingController extends Controller
 
         'map_repo' => 'https://github.com/RocketMap/RocketMap.git',
         'map_branch' => 'develop',
-        'pip_command' => 'sudo -H pip',
+        'pip_command' => 'pip',
         'python_command' => 'python',
     ];
 
@@ -59,7 +59,11 @@ class SettingController extends Controller
     public function update(Request $request, Setting $setting)
     {
         foreach ($this->settings as $s => $default) {
-            $setting->$s = $request->get($s) ?? $default;
+            $setting->$s = $request->get($s) ?? (
+                in_array($default, ['pip', 'python'])
+                 ? storage_path('maps/rocketmap/bin/'.$default)
+                 : $default
+            );
         }
 
         $setting->email_domains = explode("\n", preg_replace(
