@@ -19,6 +19,22 @@ class Account extends Model
         'updated_at',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        // First sort by activation date so that the newest accounts
+        // will always be first in the CSV and thus logged in first.
+        // After that, do the same for registration and finally sort
+        // unregistered accounts with the oldest made accounts being
+        // first in the list to be processed by Kinan for creation.
+        static::addGlobalScope('sorted', function ($query) {
+            return $query->orderBy('activated_at', 'desc')
+                         ->orderBy('registered_at', 'desc')
+                         ->orderBy('created_at', 'asc');
+        });
+    }
+
     public function area()
     {
         return $this->belongsTo('Twinleaf\MapArea', 'map_area_id');
