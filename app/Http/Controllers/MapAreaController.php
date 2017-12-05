@@ -29,6 +29,10 @@ class MapAreaController extends Controller
     public function store(StoreMapArea $request)
     {
         $area = MapArea::create($request->all());
+        $area->speed_scan = $request->get('speed_scan', false);
+        $area->beehive = $request->get('beehive', false);
+        $area->save();
+
         $map = Map::find($area->map_id);
 
         return redirect()->route('maps.areas.show', [
