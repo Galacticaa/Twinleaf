@@ -65,12 +65,7 @@ class UpdateAccounts extends Command
             return;
         }
 
-        if ($area->isUp() && $area->stop() && $area->start()) {
-            $area->writeLog('restart', sprintf(
-                '[cron] Restarted <a href="%s">%s</a>.',
-                $area->url(), $area->name
-            ));
-        }
+        $this->kickstart($area);
 
         $this->info("Completed update for the {$area->slug} area.");
     }
@@ -92,5 +87,21 @@ class UpdateAccounts extends Command
         ));
 
         return false !== file_put_contents($path, $csv);
+    }
+
+    protected function kickstart(MapArea $area, $action = 'start')
+    {
+        if ($area->isUp()) {
+            $action = 'restart';
+
+            $area->stop();
+        }
+
+        if ($area->start()) {
+            $area->writeLog($action, sprintf(
+                '[cron] %sed <a href="%s">%s</a>.',
+                ucfirst($action), $area->url(), $area->name
+            ));
+        }
     }
 }
