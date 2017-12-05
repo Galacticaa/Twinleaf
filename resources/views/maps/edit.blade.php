@@ -101,7 +101,7 @@
     </div>
     <button type="button" class="btn btn-danger btn-lg pull-right" data-toggle="modal" data-target="#deleteModal">Delete map</button>
     <button type="submit" class="btn btn-primary btn-lg">Save map</button>
-    <a href="{{ route('dashboard') }}" class="text-danger btn-lg">cancel</a>
+    <a href="{{ route('maps.show', ['map' => $map->code]) }}" class="text-danger btn-lg">cancel</a>
 </form>
 
 <div id="deleteModal" class="modal modal-danger" tabindex="-1" role="dialog" aria-labelled-by="deleteModalLabel">
