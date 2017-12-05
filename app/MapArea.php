@@ -51,7 +51,7 @@ class MapArea extends Model
     public function accountsToCsv()
     {
         $csv = '';
-        $accounts = $this->accounts()->activated();
+        $accounts = $this->accounts()->activated()->get();
 
         foreach ($accounts as $account) {
             $csv .= $account->format().PHP_EOL;

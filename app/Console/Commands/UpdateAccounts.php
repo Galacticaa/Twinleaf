@@ -76,7 +76,7 @@ class UpdateAccounts extends Command
 
         $path = storage_path("maps/rocketmap/config/{$area->map->code}/{$area->slug}.csv");
 
-        if ($csv == file_get_contents($path)) {
+        if (is_file($path) && $csv == file_get_contents($path)) {
             $this->line("Skipping area {$area->name}, accounts are identical.");
             return null;
         }
