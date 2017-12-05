@@ -202,7 +202,7 @@ class RocketMapController extends Controller
 
         $proxies = '';
 
-        foreach ($area->proxies() as $proxy) {
+        foreach ($area->proxies()->get() as $proxy) {
             $proxies .= $proxy->url.PHP_EOL;
         }
 

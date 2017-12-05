@@ -136,7 +136,7 @@ class MapArea extends Model
         }
 
         $coords = json_decode($this->geofence);
-        $fence = '';
+        $fence = '[Geofence]'.PHP_EOL;
 
         foreach ($coords as $marker) {
             $fence .= $marker->lat.','.$marker->lng.PHP_EOL;
