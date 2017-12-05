@@ -172,15 +172,7 @@ class RocketMapController extends Controller
 
     public function writeAccounts(MapArea $area)
     {
-        $accounts = '';
-
-        foreach ($area->accounts as $account) {
-            if ($account->activated_at === null) {
-                continue;
-            }
-
-            $accounts .= $account->format().PHP_EOL;
-        }
+        $accounts = $area->accountsToCsv();
 
         if (empty(trim($accounts))) {
             // It's not technically a success, but we don't want
