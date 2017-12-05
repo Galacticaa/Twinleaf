@@ -77,11 +77,7 @@ class UpdateAccounts extends Command
 
     protected function writeAccounts(MapArea $area)
     {
-        $csv = '';
-
-        foreach ($area->accounts as $account) {
-            $csv .= $account->format().PHP_EOL;
-        }
+        $csv = $area->accountsToCsv();
 
         $path = storage_path("maps/rocketmap/config/{$area->map->code}/{$area->slug}.csv");
 

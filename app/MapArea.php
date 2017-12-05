@@ -48,6 +48,18 @@ class MapArea extends Model
         return $this->hasMany(Account::class);
     }
 
+    public function accountsToCsv()
+    {
+        $csv = '';
+        $accounts = $this->accounts()->activated();
+
+        foreach ($accounts as $account) {
+            $csv .= $account->format().PHP_EOL;
+        }
+
+        return $csv;
+    }
+
     public function proxies()
     {
         return $this->hasMany(Proxy::class);
@@ -65,7 +77,7 @@ class MapArea extends Model
     public function scopeWithActivatedAccounts($query)
     {
         return $query->with(['accounts' => function ($q) {
-            $q->activated()->orderBy('activated_at', 'desc');
+            $q->activated();
         }]);
     }
 
