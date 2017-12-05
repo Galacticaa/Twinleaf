@@ -54,13 +54,13 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="formLocation">Web Address</label>
-                        <input type="text" class="form-control" id="formUrl" placeholder="https://map.example.com/" name="url" value="{{ $map->url }}">
+                        <input type="text" class="form-control" id="formUrl" placeholder="https://map.example.com/" name="url">
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="formAnalyticsKey">Google Analytics Key</label>
-                        <input type="text" class="form-control" id="formAnalyticsKey" name="analytics_key" value="{{ $map->analytics_key }}">
+                        <input type="text" class="form-control" id="formAnalyticsKey" name="analytics_key">
                     </div>
                 </div>
             </div>
