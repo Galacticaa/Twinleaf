@@ -147,11 +147,23 @@
                         <input type="text" class="form-control" required id="formCaptchaKey" name="captcha_key" value="{{ $settings->captcha_key }}">
                         <span class="help-block">Copy the API key listed on your <a href="https://2captcha.com/?from=3536085">2captcha.com</a> dashboard.</span>
                     </div>
-                    <div class="form-group">
-                        <label for="formEmailDomains">Email Domains</label>
-                        <textarea name="email_domains" id="formEmailDomains" rows="5"
-                            class="form-control">{{ implode("\n", $settings->email_domains ?? []) }}</textarea>
-                        <span class="help-block">Domain names to use when registering new game accounts. One per line.</span>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="formEmailDomains">Email Domains</label>
+                                <textarea name="email_domains" id="formEmailDomains" rows="5"
+                                    class="form-control">{{ implode("\n", $settings->email_domains ?? []) }}</textarea>
+                                <span class="help-block">Domain names to use when registering new game accounts. One per line.</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="formProxies">Proxy List</label>
+                                <textarea name="proxies" id="formProxies" rows="5"
+                                    class="form-control">{{ $settings->proxies ?? '' }}</textarea>
+                                <span class="help-block">List of proxies to use for creation, separated by comma.</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

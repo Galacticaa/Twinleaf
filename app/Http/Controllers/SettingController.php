@@ -10,8 +10,6 @@ class SettingController extends Controller
     protected $settings = [
         'automatic_captchas' => false,
         'manual_captchas' => false,
-
-        'disable_proxy_check' => false,
         'captcha_key' => '',
         'captcha_refresh' => null,
         'captcha_timeout' => null,
@@ -23,6 +21,9 @@ class SettingController extends Controller
         'login_retries' => null,
         'altitude_cache' => false,
         'disable_version_check' => false,
+
+        'disable_proxy_check' => false,
+        'proxies' => '',
 
         'map_repo' => 'https://github.com/RocketMap/RocketMap.git',
         'map_branch' => 'develop',
