@@ -10,6 +10,8 @@ class SettingController extends Controller
     protected $settings = [
         'automatic_captchas' => false,
         'manual_captchas' => false,
+
+        'disable_proxy_check' => false,
         'captcha_key' => '',
         'captcha_refresh' => null,
         'captcha_timeout' => null,
