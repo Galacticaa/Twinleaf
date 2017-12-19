@@ -29,6 +29,8 @@ class MapArea extends Model
         'beehive',
         'workers',
         'workers_per_hive',
+        'spin_pokestops',
+        'max_stop_spins',
         'scan_duration',
         'rest_interval',
         'max_empty',

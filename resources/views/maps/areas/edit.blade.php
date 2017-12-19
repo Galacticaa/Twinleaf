@@ -325,7 +325,7 @@
                 </div>
                 <div class="box-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="formSpeedScan">
                                     <input type="checkbox" name="speed_scan" id="formSpeedScan" value="1" @if ($area->speed_scan) checked @endif>
@@ -340,7 +340,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="formBeehive"><input type="checkbox" id="formBeehive" name="beehive" value="1" @if ($area->beehive) checked @endif> Beehive Mode</label>
                                 <div class="input-group">
@@ -349,6 +349,17 @@
                                     <div class="input-group-addon">
                                         per hive
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="formSpinPokestops">
+                                    <input type="checkbox" id="formSpinPokestops" name="spin_pokestops" value="1" @if ($area->spin_pokestops) checked @endif> Spin Pokestops</label>
+                                <div class="input-group">
+                                    <label for="formMaxStopSpins" class="sr-only">Maximum Pokestop Spins</label>
+                                    <input type="number" min="0" class="form-control" id="formMaxStopSpins" name="max_stop_spins" value="{{ $area->max_stop_spins }}">
+                                    <div class="input-group-addon">max spins</div>
                                 </div>
                             </div>
                         </div>
