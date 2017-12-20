@@ -1,22 +1,11 @@
-@extends ('adminlte::page')
+@extends ('layouts.twinleaf')
 
 @section ('title', 'Editing '.$area->name)
 
-@section ('css')
-<link href="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/skins/square/purple.css" rel="stylesheet">
-<style type="text/css">
-#map_canvas { height: 331px; width: 100%;}
-</style>
-@stop
-
 @section ('js')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/icheck.min.js"></script>
+@parent
 <script>
     $(function() {
-        $('input').iCheck({
-            checkboxClass: 'icheckbox_square-purple'
-        });
-
         function set_status(txt, val, forceButton = false) {
             $('#saveStatus').html(txt + '&hellip;');
 
@@ -37,12 +26,6 @@
                 $('.modal-footer', '#saveModal').append(closebtn);
             }
         }
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            }
-        });
 
         $('#saveModal').on('show.bs.modal', function (e) {
             $('.modal-footer', '#saveModal').empty();
@@ -433,7 +416,7 @@
             </div>
             <div class="modal-body">
                 <div class="progress progress-sm">
-                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemax="100" style="min-width: 3em; width: 0%;"></div>
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemax="100"></div>
                 </div>
                 <p class="lead text-center" id="saveStatus">Loading&hellip;</p>
             </div>

@@ -1,8 +1,9 @@
-@extends ('adminlte::page')
+@extends ('layouts.twinleaf')
 
 @section ('title', $map->name)
 
 @section ('js')
+@parent
 <script>
     $(function() {
         function set_status(txt, val, forceButton = false) {
@@ -25,12 +26,6 @@
                 $('.modal-footer', '#installModal').append(closebtn);
             }
         }
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            }
-        });
 
         $('#installModal').on('show.bs.modal', function (e) {
             $('.modal-footer', '#installModal').empty();
@@ -191,7 +186,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="progress progress-sm">
-                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemax="100" style="min-width: 3em; width: 0%;"></div>
+                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemax="100"></div>
                         </div>
                         <p class="lead text-center" id="installStatus">Loading&hellip;</p>
                     </div>

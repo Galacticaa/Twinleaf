@@ -1,14 +1,8 @@
-@extends ('adminlte::page')
+@extends ('layouts.twinleaf')
 
 @section ('title', $area->name)
 
-@section ('css')
-<link href="//cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css" rel="stylesheet">
-@stop
-
 @section ('js')
-<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
 <script>
     $(function() {
         $('#accounts-table').DataTable()
@@ -33,12 +27,6 @@
                 $('.modal-footer', '#installModal').append(closebtn);
             }
         }
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            }
-        });
 
         $('#installModal').on('show.bs.modal', function (e) {
             $('.modal-footer', '#installModal').empty();
@@ -237,7 +225,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="progress progress-sm">
-                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemax="100" style="min-width: 3em; width: 0%;"></div>
+                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemax="100"></div>
                         </div>
                         <p class="lead text-center" id="installStatus">Loading&hellip;</p>
                     </div>
