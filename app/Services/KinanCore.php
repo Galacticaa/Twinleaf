@@ -46,10 +46,16 @@ class KinanCore
             return;
         }
 
+        $options = '-t 15';
+
+        if (Setting::first()->disable_proxy_check) {
+            $options .= ' -npc';
+        }
+
         $cmd_parts = [
             "cd {$this->basePath} &&",
             "tmux new-session -s tls_creator -d",
-            "java -jar KinanCity-core.jar -a accounts.csv -t 10 2>&1",
+            "java -jar KinanCity-core.jar -a accounts.csv {$options} 2>&1",
         ];
 
         system(implode(' ', $cmd_parts));

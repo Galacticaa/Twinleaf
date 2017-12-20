@@ -53,6 +53,12 @@ min-seconds-left: 15
 @if ($config->long_lures)
 lure-duration: 360
 @endif
+@if ($area->spin_pokestops)
+pokestop-spinning
+@if ($area->max_stop_spins)
+account-max-spins: {{ $area->max_stop_spins }}
+@endif
+@endif
 
 proxy-file: config/{{ $area->map->code }}/{{ $area->slug }}.txt
 proxy-display: full

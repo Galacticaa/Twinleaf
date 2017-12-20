@@ -99,6 +99,7 @@ class MapAreaController extends Controller
         $area->fill($request->all());
         $area->speed_scan = $request->get('speed_scan', false);
         $area->beehive = $request->get('beehive', false);
+        $area->spin_pokestops = $request->get('spin_pokestops', false);
         $area->geofence = $request->get('geofence');
         $area->save();
 

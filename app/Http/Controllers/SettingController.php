@@ -22,6 +22,9 @@ class SettingController extends Controller
         'altitude_cache' => false,
         'disable_version_check' => false,
 
+        'disable_proxy_check' => false,
+        'proxies' => '',
+
         'map_repo' => 'https://github.com/RocketMap/RocketMap.git',
         'map_branch' => 'develop',
         'pip_command' => 'pip',

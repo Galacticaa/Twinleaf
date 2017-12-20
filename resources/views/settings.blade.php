@@ -132,15 +132,38 @@
                     <h3 class="box-title">Account Creation</h3>
                 </div>
                 <div class="box-body">
+                    <div class=form-group">
+                        <label for="formDisableProxyCheck">
+                            <input type="checkbox" id="formDisableProxyCheck" name="disable_proxy_check" value="1" @if ($settings->disable_proxy_check) checked @endif>
+                            Disable proxy check
+                        </label>
+                        <span class="help-block">
+                            Enable this option to skip checking proxies each time accounts are made.
+                            <br>Can save upwards of 20 minutes per run.
+                        </span>
+                    </div>
                     <div class="form-group">
                         <label for="formCaptchaKey">2Captcha Key</label>
                         <input type="text" class="form-control" required id="formCaptchaKey" name="captcha_key" value="{{ $settings->captcha_key }}">
+                        <span class="help-block">Copy the API key listed on your <a href="https://2captcha.com/?from=3536085">2captcha.com</a> dashboard.</span>
                     </div>
-                    <div class="form-group">
-                        <label for="formEmailDomains">Email Domains</label>
-                        <textarea name="email_domains" id="formEmailDomains" rows="5"
-                            class="form-control">{{ implode("\n", $settings->email_domains ?? []) }}</textarea>
-                        <span class="help-block">Domain names to use when registering new game accounts. One per line.</span>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="formEmailDomains">Email Domains</label>
+                                <textarea name="email_domains" id="formEmailDomains" rows="5"
+                                    class="form-control">{{ implode("\n", $settings->email_domains ?? []) }}</textarea>
+                                <span class="help-block">Domain names to use when registering new game accounts. One per line.</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="formProxies">Proxy List</label>
+                                <textarea name="proxies" id="formProxies" rows="5"
+                                    class="form-control">{{ $settings->proxies ?? '' }}</textarea>
+                                <span class="help-block">List of proxies to use for creation, separated by comma.</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

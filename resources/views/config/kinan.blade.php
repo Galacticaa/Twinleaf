@@ -1,9 +1,10 @@
 # 2 Captcha API Key
 twoCaptcha.key={{ $config->captcha_key }}
 
-# List of proxies
-#proxies=
-#proxy=
+@if (str_contains($config->proxies, ','))
+proxies={{ trim($config->proxies) }}
+@endif
+
 # Dump results 0=never, 1=onError, 2=Always
 dumpResult=1
 

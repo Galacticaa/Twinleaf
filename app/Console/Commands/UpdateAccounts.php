@@ -91,17 +91,25 @@ class UpdateAccounts extends Command
 
     protected function kickstart(MapArea $area, $action = 'start')
     {
+        $pids = $area->getPids(true);
+        $log = 'start';
+
         if ($area->isUp()) {
-            $action = 'restart';
+            $log = 'restart';
 
-            $area->stop();
+            if ($area->stop() && $area->start()) {
+                $msg = '[cron] Restarted <a href="%s">%s</a>.';
+            } else {
+                $msg = '[cron] Failed to restart <a href="%s">%s</a>!';
+            }
+        } elseif ($area->start()) {
+            $msg = '[cron] Started <a href="%s">%s</a>.';
+        } else {
+            $msg = '[cron] Failed to start <a href="%s">%s</a>!';
         }
 
-        if ($area->start()) {
-            $area->writeLog($action, sprintf(
-                '[cron] %sed <a href="%s">%s</a>.',
-                ucfirst($action), $area->url(), $area->name
-            ));
-        }
+        $area->writeLog($log ?? 'error', sprintf(
+            $msg, $area->url(), $area->name
+        ), "Attempted {$log} on PIDs: {$pids}");
     }
 }
