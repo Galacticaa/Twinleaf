@@ -115,23 +115,18 @@ class RocketMapController extends Controller
 
     protected function configureArea(MapArea $area)
     {
-        $path = storage_path('maps/rocketmap/config');
-        if (!is_dir($path)) {
+        if (!is_dir($path = storage_path('maps/rocketmap/config'))) {
             return [
                 'success' => false,
                 'error' => "Config directory doesn't exist. Is RocketMap installed?",
             ];
         }
 
-        $path .= "/{$area->map->code}/{$area->slug}.ini";
-
-        $config = view('config.rocketmap.scanner')->with([
-            'config' => $this->config,
-            'area' => $area,
-        ]);
-
         return [
-            'success' => false !== file_put_contents($path, $config),
+            'success' => false !== file_put_contents(
+                "{$path}/{$area->map->code}/{$area->slug}.ini",
+                $area->makeConfigFile()
+            ),
         ];
     }
 
@@ -200,11 +195,7 @@ class RocketMapController extends Controller
             $area->save();
         }
 
-        $proxies = '';
-
-        foreach ($area->proxies()->get() as $proxy) {
-            $proxies .= $proxy->url.PHP_EOL;
-        }
+        $proxies = $area->proxiesToCsv();
 
         $path = storage_path("maps/rocketmap/config/{$area->map->code}/{$area->slug}.txt");
 

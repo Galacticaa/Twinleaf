@@ -3,6 +3,7 @@
 @section ('title', $area->name)
 
 @section ('js')
+@parent
 <script>
     $(function() {
         $('#accounts-table').DataTable()

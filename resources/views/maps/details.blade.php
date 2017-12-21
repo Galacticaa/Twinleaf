@@ -170,7 +170,7 @@
                 <a href="{{ route('maps.edit', ['map' => $map]) }}" class="btn btn-block btn-default">
                     <b>Edit map settings</b>
                 </a>
-                @unless ($map->hasUpdatedConfig())
+                @unless ($map->hasLatestConfig())
                 <button id="applyConfig" class="btn btn-block btn-success">
                     <b>Apply config</b>
                 </button>
@@ -248,6 +248,11 @@
                         <tr>
                             <td><b>{{ $area->name }}</b></td>
                             <td>{{ $area->accounts->count() }} accounts</td>
+                            @if ($area->hasLatestConfig())
+                            <td class="text-success">latest config</td>
+                            @else
+                            <td class="text-warning">needs update</td>
+                            @endif
                             @if (!$area->isInstalled())
                             <td class="text-muted"><i class="fa fa-circle"></i> Not installed</td>
                             @elseif ($area->isUp())

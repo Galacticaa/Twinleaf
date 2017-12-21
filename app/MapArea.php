@@ -53,9 +53,8 @@ class MapArea extends Model
     public function accountsToCsv()
     {
         $csv = '';
-        $accounts = $this->accounts()->activated()->get();
 
-        foreach ($accounts as $account) {
+        foreach ($this->accounts()->activated()->get() as $account) {
             $csv .= $account->format().PHP_EOL;
         }
 
@@ -65,6 +64,17 @@ class MapArea extends Model
     public function proxies()
     {
         return $this->hasMany(Proxy::class);
+    }
+
+    public function proxiesToCsv()
+    {
+        $csv = '';
+
+        foreach ($this->proxies()->get() as $proxy) {
+            $csv .= $proxy->url.PHP_EOL;
+        }
+
+        return $csv;
     }
 
     public function scopeDueUpdate($query)
@@ -187,6 +197,27 @@ class MapArea extends Model
         }
 
         return $this->locationArray;
+    }
+
+    public function hasLatestConfig()
+    {
+        if (!$this->isInstalled()) {
+            return false;
+        }
+
+        $file = storage_path("maps/rocketmap/config/{$this->map->code}/{$this->slug}");
+
+        return file_get_contents($file.'.ini') === $this->makeConfigFile()
+            && file_get_contents($file.'.csv') === $this->accountsToCsv()
+            && file_get_contents($file.'.txt') === $this->proxiesToCsv();
+    }
+
+    public function makeConfigFile()
+    {
+        return view('config.rocketmap.scanner')->with([
+            'config' => Setting::first(),
+            'area' => $this,
+        ])->render();
     }
 
     public function getConfigFile()

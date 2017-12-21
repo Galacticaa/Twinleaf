@@ -102,7 +102,7 @@ class MapController extends Controller
         usleep(0.7 * 1000000);
 
         try {
-            if ($map->hasUpdatedConfig()) {
+            if ($map->hasLatestConfig()) {
                 $error = "Config for {$map->name} is already up to date!";
             } else {
                 $success = true;

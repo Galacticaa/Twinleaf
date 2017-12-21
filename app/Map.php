@@ -53,7 +53,7 @@ class Map extends Model
         return file_exists($map) && file_exists($config);
     }
 
-    public function hasUpdatedConfig()
+    public function hasLatestConfig()
     {
         if (!$this->isInstalled()) {
             throw new Exception("The map must be installed first.");
