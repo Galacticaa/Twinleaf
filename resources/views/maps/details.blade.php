@@ -170,9 +170,9 @@
                 <a href="{{ route('maps.edit', ['map' => $map]) }}" class="btn btn-block btn-default">
                     <b>Edit map settings</b>
                 </a>
-                <a id="applyConfig" href="#" class="btn btn-block btn-success">
+                <button id="applyConfig" class="btn btn-block btn-success">
                     <b>Apply config</b>
-                </a>
+                </button>
                 @if ($map->isDown())
                 <button id="startMap" class="btn btn-block btn-success" data-loading-text="<i class='fa fa-spinner'></i> Starting map&hellip;"><b>Start map</b></button>
                 @else
