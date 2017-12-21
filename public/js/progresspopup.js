@@ -45,6 +45,10 @@ $.fn.progressPopup = function(options) {
         var step = steps.shift();
         set_status(step.text, step.status);
 
+        if (step.status == 100) {
+            return;
+        }
+
         $.post(step.url, function (data) {
             if (data.success) {
                 perform_step(steps);

@@ -53,7 +53,7 @@
                                 set_status('Installing the map', 75);
 
                                 $.post('{{ route('services.rm.configure', ['map' => $map]) }}', function (data) {
-                                    if (data.written) {
+                                    if (data.success) {
                                         $('#installWarning').remove();
 
                                         set_status('Installation complete!', 100);
@@ -70,6 +70,23 @@
                     fail('downloading RocketMap');
                 }
             });
+        });
+
+        var configUpdater = $('#configUpdater').progressPopup({
+            title: 'Updating {{ $map->name }}',
+            trigger: '#applyConfig',
+            steps: [{
+                text: 'Checking configuration',
+                url: '{{ route('maps.check-config', ['map' => $map]) }}',
+                status: 20
+            }, {
+                text: 'Writing new configuration',
+                url: '{{ route('services.rm.configure', ['map' => $map]) }}',
+                status: 60
+            }, {
+                text: 'Map successfully updated!',
+                status: 100
+            }]
         });
 
         $('#startMap').on('click', function (e) {
@@ -152,6 +169,9 @@
                 </a>
                 <a href="{{ route('maps.edit', ['map' => $map]) }}" class="btn btn-block btn-default">
                     <b>Edit map settings</b>
+                </a>
+                <a id="applyConfig" href="#" class="btn btn-block btn-success">
+                    <b>Apply config</b>
                 </a>
                 @if ($map->isDown())
                 <button id="startMap" class="btn btn-block btn-success" data-loading-text="<i class='fa fa-spinner'></i> Starting map&hellip;"><b>Start map</b></button>
@@ -291,4 +311,6 @@
 
     </div>
 </div>
+
+<div id="configUpdater"></div>
 @stop

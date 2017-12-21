@@ -104,7 +104,7 @@ class RocketMapController extends Controller
     }
 
     public function configure(Map $map, MapArea $area = null) {
-        sleep(2);
+        usleep(1.5 * 1000000);
 
         if ($area !== null) {
             return $this->configureArea($area);
@@ -141,7 +141,7 @@ class RocketMapController extends Controller
 
         if (!is_dir($path)) {
             return [
-                'written' => false,
+                'success' => false,
                 'errors' => [ "Config directory doesn't exist. Is RocketMap installed?" ],
             ];
         }
@@ -158,14 +158,14 @@ class RocketMapController extends Controller
                 ])->render();
             } catch (\ErrorException $e) {
                 return [
-                    'written' => false,
+                    'success' => false,
                     'errors' => [$e->getMessage()],
                 ];
             }
         }
 
         return [
-            'written' => false !== file_put_contents($path.'.ini', $config),
+            'success' => false !== file_put_contents($path.'.ini', $config),
             'errors' => [],
         ];
     }

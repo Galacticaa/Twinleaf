@@ -3,6 +3,7 @@
 namespace Twinleaf\Http\Controllers;
 
 use Activity;
+use Exception;
 use Twinleaf\Map;
 use Twinleaf\Http\Requests\StoreMap;
 
@@ -88,6 +89,32 @@ class MapController extends Controller
         $map->save();
 
         return redirect()->route('maps.show', ['map' => $map]);
+    }
+
+    /**
+     * Run a diff against stored vs current configs
+     *
+     * @param  \Twinleaf\Map  $map
+     * @return \Illuminate\Http\Response
+     */
+    public function checkConfig(Map $map)
+    {
+        usleep(0.7 * 1000000);
+
+        try {
+            if ($map->hasUpdatedConfig()) {
+                $error = "Config for {$map->name} is already up to date!";
+            } else {
+                $success = true;
+            }
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+        }
+
+        return [
+            'success' => $success ?? false,
+            'error' => $error ?? null,
+        ];
     }
 
     /**

@@ -49,6 +49,7 @@ Route::prefix('settings/lures')->group(function () {
 });
 Route::resource('settings', 'SettingController');
 
+Route::post('maps/{map}/check-config', 'MapController@checkConfig')->name('maps.check-config');
 Route::resource('maps', 'MapController');
 Route::resource('maps.areas', 'MapAreaController');
 
