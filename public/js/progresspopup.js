@@ -22,25 +22,22 @@ $.fn.progressPopup = function(options) {
         return modal;
     }
 
-    function set_status(txt, val, forceButton = false) {
-        $('.status-percent', this.modal).html(txt + '&hellip;');
-
-        if (val === -1) {
-            $('.progress-bar').removeClass('bg-purple').addClass('progress-bar-danger');
-        } else {
-            $('.progress-bar').width(val+'%')
-
-            if (val >= 100) {
-                $('.progress-bar').removeClass('active');
-            }
-        }
-
-        if (val >= 100 || forceButton) {
+    function set_status(txt, val) {
+        if (val < 0 || val >= 100) {
+            $('.progress-bar').removeClass('active').removeClass('bg-purple');
+            $('.progress-bar').addClass('progress-bar-' + (val < 0 ? 'danger' : 'success'));
             $('.modal-footer', modal).append(
                 $('<button/>').text('Close')
                     .addClass('btn btn-default pull-right')
                     .attr('data-dismiss', 'modal')
             );
+        } else {
+            txt += '&hellip;';
+        }
+        $('.status-percent', this.modal).html(txt);
+
+        if (val > 0) {
+            $('.progress-bar').width(val+'%');
         }
     }
 
