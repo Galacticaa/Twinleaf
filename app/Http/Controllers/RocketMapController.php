@@ -94,13 +94,15 @@ class RocketMapController extends Controller
         sleep(1);
 
         if (!$area->map->isInstalled()) {
-            return [
-                'success' => false,
-                'error' => "Please install {$area->map->name} before its scan areas.",
-            ];
+            $error = "Please install {$area->map->name} before its scan areas.";
+        } elseif (!$area->accounts()->count()) {
+            $error = "Area {$area->name} needs accounts to run.";
         }
 
-        return ['success' => true, 'error' => false];
+        return [
+            'success' => !isset($error),
+            'error' => $error ?? null,
+        ];
     }
 
     public function configure(Map $map, MapArea $area = null) {
