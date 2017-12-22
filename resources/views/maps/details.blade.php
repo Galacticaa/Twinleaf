@@ -111,7 +111,9 @@
                 status: 85
             }, {
                 text: 'Successfully updated area {{ $area->name }}',
-                status: 100
+                done: function (el) {
+                    el.parent().removeClass('text-warning').addClass('text-success').text('latest config');
+                }, status: 100
             }]
         });
         @endforeach

@@ -46,6 +46,9 @@ $.fn.progressPopup = function(options) {
         set_status(step.text, step.status);
 
         if (step.status == 100) {
+            if ($.isFunction(step.done)) {
+                step.done($(config.trigger));
+            }
             return;
         }
 
