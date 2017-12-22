@@ -89,6 +89,33 @@
             }]
         });
 
+        @foreach ($map->areas as $area)
+        $('.area-progress[data-slug="{{ $area->slug }}"]').progressPopup({
+            title: 'Updating {{ $area->name }}',
+            trigger: '.area-apply[data-slug="{{ $area->slug }}"]',
+            steps: [{
+                text: 'Checking installation status',
+                url: '{{ route('services.rm.check', ['area' => $area]) }}',
+                status: 20
+            }, {
+                text: 'Writing configuration for {{ $area->name }}',
+                url: '{{ route('services.rm.configure', ['map' => $area->map, 'area' => $area]) }}',
+                status: 35
+            }, {
+                text: 'Writing accounts file',
+                url: '{{ route('services.rm.write_accounts', ['area' => $area]) }}',
+                status: 60
+            }, {
+                text: 'Writing proxy file',
+                url: '{{ route('services.rm.write-proxies', ['area' => $area]) }}',
+                status: 85
+            }, {
+                text: 'Successfully updated area {{ $area->name }}',
+                status: 100
+            }]
+        });
+        @endforeach
+
         $('#startMap').on('click', function (e) {
             $(this).button('loading');
 
@@ -251,7 +278,9 @@
                             @if ($area->hasLatestConfig())
                             <td class="text-success">latest config</td>
                             @else
-                            <td class="text-warning">needs update</td>
+                            <td class="text-warning">
+                                <button class="area-apply btn btn-xs btn-primary" data-slug="{{ $area->slug }}">Apply config</button>
+                            </td>
                             @endif
                             @if (!$area->isInstalled())
                             <td class="text-muted"><i class="fa fa-circle"></i> Not installed</td>
@@ -320,4 +349,7 @@
 </div>
 
 <div id="configUpdater"></div>
+@foreach ($map->areas as $area)
+<div class="area-progress" data-slug="{{ $area->slug }}"></div>
+@endforeach
 @stop
