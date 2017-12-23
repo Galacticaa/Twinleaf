@@ -80,6 +80,34 @@
             });
         });
 
+        @unless ($area->hasLatestConfig())
+        $('#applyConfig').progressPopup({
+            text: 'Updating {{ $area->name }}',
+            steps: [{
+                text: 'Checking installation status',
+                url: '{{ route('services.rm.check', ['area' => $area]) }}',
+                status: 20
+            }, {
+                text: 'Writing configuration for {{ $area->name }}',
+                url: '{{ route('services.rm.configure', ['map' => $area->map, 'area' => $area]) }}',
+                status: 35
+            }, {
+                text: 'Writing accounts file',
+                url: '{{ route('services.rm.write_accounts', ['area' => $area]) }}',
+                status: 60
+            }, {
+                text: 'Writing proxy file',
+                url: '{{ route('services.rm.write-proxies', ['area' => $area]) }}',
+                status: 85
+            }, {
+                text: 'Successfully updated area {{ $area->name }}',
+                done: function () {
+                    $('#applyConfig').remove();
+                }, status: 100
+            }]
+        });
+        @endunless
+
         $('#startScan').on('click', function (e) {
             $(this).button('loading');
 
@@ -183,6 +211,9 @@
                 <a href="{{ route('maps.areas.edit', ['map' => $area->map, 'area' => $area]) }}" class="btn btn-block btn-default">
                     <b>Edit area settings</b>
                 </a>
+                @unless ($area->hasLatestConfig())
+                <button id="applyConfig" class="btn btn-block btn-success"><b>Apply config</b></button>
+                @endunless
                 @if ($area->isDown())
                 <button id="startScan" class="btn btn-block btn-success"><b>Start scan</b></button>
                 @else
