@@ -72,9 +72,8 @@
             });
         });
 
-        var configUpdater = $('#configUpdater').progressPopup({
+        $('#applyConfig').progressPopup({
             title: 'Updating {{ $map->name }}',
-            trigger: '#applyConfig',
             steps: [{
                 text: 'Checking configuration',
                 url: '{{ route('maps.check-config', ['map' => $map]) }}',
@@ -90,9 +89,8 @@
         });
 
         @foreach ($map->areas as $area)
-        $('.area-progress[data-slug="{{ $area->slug }}"]').progressPopup({
+        $('.area-apply[data-slug="{{ $area->slug }}"]').progressPopup({
             title: 'Updating {{ $area->name }}',
-            trigger: '.area-apply[data-slug="{{ $area->slug }}"]',
             steps: [{
                 text: 'Checking installation status',
                 url: '{{ route('services.rm.check', ['area' => $area]) }}',
@@ -111,8 +109,9 @@
                 status: 85
             }, {
                 text: 'Successfully updated area {{ $area->name }}',
-                done: function (el) {
-                    el.parent().removeClass('text-warning').addClass('text-success').text('latest config');
+                done: function () {
+                    $('.area-apply[data-slug="{{ $area->slug }}"]').parent()
+                        .removeClass('text-warning').addClass('text-success').text('latest config');
                 }, status: 100
             }]
         });
@@ -351,9 +350,4 @@
 
     </div>
 </div>
-
-<div id="configUpdater"></div>
-@foreach ($map->areas as $area)
-<div class="area-progress" data-slug="{{ $area->slug }}"></div>
-@endforeach
 @stop

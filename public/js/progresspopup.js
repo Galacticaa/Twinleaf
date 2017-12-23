@@ -47,7 +47,7 @@ $.fn.progressPopup = function(options) {
 
         if (step.status == 100) {
             if ($.isFunction(step.done)) {
-                step.done($(config.trigger));
+                step.done();
             }
             return;
         }
@@ -62,7 +62,7 @@ $.fn.progressPopup = function(options) {
     }
 
     return this.each(function() {
-        $(config.trigger).on('click', function() {
+        $(this).on('click', function() {
             modal = build_modal().appendTo('body');
             modal.modal();
 
