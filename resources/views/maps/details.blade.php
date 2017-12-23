@@ -278,9 +278,11 @@
                             <td><b>{{ $area->name }}</b></td>
                             <td>{{ $area->accounts->count() }} accounts</td>
                             @if ($area->hasLatestConfig())
-                            <td class="text-success">latest config</td>
+                            <td class="text-success text-center">latest config</td>
+                            @elseif (!$area->accounts()->count())
+                            <td class="text-warning text-center">needs accounts</td>
                             @else
-                            <td class="text-warning">
+                            <td class="text-center">
                                 <button class="area-apply btn btn-xs btn-primary" data-slug="{{ $area->slug }}">Apply config</button>
                             </td>
                             @endif
