@@ -72,6 +72,7 @@
             });
         });
 
+        @unless ($map->hasLatestConfig())
         $('#applyConfig').progressPopup({
             title: 'Updating {{ $map->name }}',
             steps: [{
@@ -84,11 +85,15 @@
                 status: 60
             }, {
                 text: 'Map successfully updated!',
-                status: 100
+                done: function () {
+                    $('#applyConfig').remove();
+                }, status: 100
             }]
         });
+        @endunless
 
         @foreach ($map->areas as $area)
+        @unless ($area->hasLatestConfig())
         $('.area-apply[data-slug="{{ $area->slug }}"]').progressPopup({
             title: 'Updating {{ $area->name }}',
             steps: [{
@@ -115,6 +120,7 @@
                 }, status: 100
             }]
         });
+        @endunless
         @endforeach
 
         $('#startMap').on('click', function (e) {
@@ -202,7 +208,7 @@
                 <button id="applyConfig" class="btn btn-block btn-success">
                     <b>Apply config</b>
                 </button>
-                @endunless
+                @endif
                 @if ($map->isDown())
                 <button id="startMap" class="btn btn-block btn-success" data-loading-text="<i class='fa fa-spinner'></i> Starting map&hellip;"><b>Start map</b></button>
                 @else
