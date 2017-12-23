@@ -56,7 +56,7 @@ $.fn.progressPopup = function(options) {
             if (data.success) {
                 perform_step(steps);
             } else if (data.error) {
-                set_status(data.error, -1, true);
+                set_status(data.error, -1);
             }
         });
     }

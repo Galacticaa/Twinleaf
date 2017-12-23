@@ -42,7 +42,7 @@ class RocketMapController extends Controller
         );
 
         return [
-            'downloaded' => file_exists($checkFile),
+            'success' => file_exists($checkFile),
             'output' => $output ?? null,
         ];
     }
@@ -73,7 +73,7 @@ class RocketMapController extends Controller
         }
 
         return [
-            'installed' => file_exists($checkFile),
+            'success' => file_exists($checkFile),
             'output' => $output ?? null,
         ];
     }
@@ -86,7 +86,7 @@ class RocketMapController extends Controller
             system('sudo -u twinleaf rm -rf '.$mapDir);
         }
 
-        return ['nuked' => true];
+        return ['success' => true];
     }
 
     public function check(MapArea $area)

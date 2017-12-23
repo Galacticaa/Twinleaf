@@ -6,70 +6,30 @@
 @parent
 <script>
     $(function() {
-        function set_status(txt, val, forceButton = false) {
-            $('#installStatus').html(txt + '&hellip;');
-
-            if (val === -1) {
-                $('.progress-bar').addClass('progress-bar-danger');
-            } else {
-                $('.progress-bar').removeClass('progress-bar-danger').width(val+'%')
-
-                if (val >= 100) {
-                    $('.progress-bar').removeClass('active');
-                }
-            }
-
-            if (val >= 100 || forceButton) {
-                var closebtn = $('<button/>').addClass('btn btn-default pull-right')
-                                             .attr('data-dismiss', 'modal')
-                                             .text('Close');
-                $('.modal-footer', '#installModal').append(closebtn);
-            }
-        }
-
-        $('#installModal').on('show.bs.modal', function (e) {
-            $('.modal-footer', '#installModal').empty();
-
-            set_status('Loading', 0);
-        });
-
-        $('#installModal').on('shown.bs.modal', function (e) {
-            function fail(txt) {
-                set_status('Install failed' + (txt ? (' while ' + txt + '.') : '!'), false, true);
-                $('.progress-bar').addClass('progress-bar-danger');
-            }
-
-            set_status('Downloading RocketMap from Github...', 25);
-
-            $.post('{{ route('services.rm.download') }}', function (data) {
-                if (data.downloaded) {
-                    set_status('Installing RocketMap packages...', 45);
-
-                    $.post('{{ route('services.rm.install') }}', function (data) {
-                        if (data.installed) {
-                            set_status('Cleaning old files...', 55);
-
-                            $.post('{{ route('services.rm.clean', ['map' => $map]) }}', function (data) {
-                                set_status('Installing the map', 75);
-
-                                $.post('{{ route('services.rm.configure', ['map' => $map]) }}', function (data) {
-                                    if (data.success) {
-                                        $('#installWarning').remove();
-
-                                        set_status('Installation complete!', 100);
-                                    } else {
-                                        fail('writing config files');
-                                    }
-                                });
-                            });
-                        } else {
-                            fail('installing RocketMap');
-                        }
-                    });
-                } else {
-                    fail('downloading RocketMap');
-                }
-            });
+        $('#install-map').progressPopup({
+            title: 'Installing {{ $map->name }}',
+            steps: [{
+                text: 'Downloading RocketMap from Github',
+                url: '{{ route('services.rm.download') }}',
+                status: 25
+            }, {
+                text: 'Installing RocketMap packages',
+                url: '{{ route('services.rm.install') }}',
+                status: 45
+            }, {
+                text: 'Cleaning old files',
+                url: '{{ route('services.rm.clean', ['map' => $map]) }}',
+                status: 55
+            }, {
+                text: 'Installing the map',
+                url: '{{ route('services.rm.configure', ['map' => $map]) }}',
+                status: 75
+            }, {
+                text: 'Installation complete!',
+                done: function () {
+                    $('#installWarning').remove();
+                }, status: 100;
+            }]
         });
 
         @unless ($map->hasLatestConfig())
@@ -231,24 +191,7 @@
                     Your map won't do much while it's not installed!<br>
                     It only takes a moment. Why not get it done?
                 </p>
-                <button class="btn btn-lg" data-toggle="modal" data-target="#installModal">Install {{ $map->name }}</button>
-            </div>
-        </div>
-        <div id="installModal" class="modal fade" tabindex="-1" role="dialog" aria-labelled-by="installModalLabel" data-backdrop="static" data-keyboard="false">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="installModalLabel">Installing {{ $map->name }}</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="progress progress-sm">
-                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemax="100"></div>
-                        </div>
-                        <p class="lead text-center" id="installStatus">Loading&hellip;</p>
-                    </div>
-                    <div class="modal-footer">
-                    </div>
-                </div>
+                <button class="btn btn-lg" id="install-map">Install {{ $map->name }}</button>
             </div>
         </div>
         @elseif ($map->isDown())
