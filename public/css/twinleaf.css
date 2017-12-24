@@ -1,0 +1,9 @@
+.progress .progress-bar {
+    min-width: 3em;
+    width: 0%;
+}
+
+#map_canvas {
+    height: 331px;
+    width: 100%;
+}

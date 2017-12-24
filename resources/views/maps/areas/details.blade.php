@@ -1,95 +1,48 @@
-@extends ('adminlte::page')
+@extends ('layouts.twinleaf')
 
 @section ('title', $area->name)
 
-@section ('css')
-<link href="//cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css" rel="stylesheet">
-@stop
-
 @section ('js')
-<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+@parent
 <script>
     $(function() {
         $('#accounts-table').DataTable()
 
-        function set_status(txt, val, forceButton = false) {
-            $('#installStatus').html(txt + '&hellip;');
-
-            if (val === -1) {
-                $('.progress-bar').addClass('progress-bar-danger');
-            } else {
-                $('.progress-bar').removeClass('progress-bar-danger').width(val+'%')
-
-                if (val >= 100) {
-                    $('.progress-bar').removeClass('active');
-                }
-            }
-
-            if (val >= 100 || forceButton) {
-                var closebtn = $('<button/>').addClass('btn btn-default pull-right')
-                                             .attr('data-dismiss', 'modal')
-                                             .text('Close');
-                $('.modal-footer', '#installModal').append(closebtn);
-            }
+        function complete(text) {
+            return {done: function () {
+                $('#applyConfig').remove();
+                $('#installWarning').remove();
+            }, text: text, status: 100 };
         }
 
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            }
+        @unless ($area->hasLatestConfig())
+        var steps = [{
+            text: 'Checking installation status',
+            url: '{{ route('services.rm.check', ['area' => $area]) }}',
+            status: 20
+        }, {
+            text: 'Writing configuration for {{ $area->name }}',
+            url: '{{ route('services.rm.configure', ['map' => $area->map, 'area' => $area]) }}',
+            status: 35
+        }, {
+            text: 'Writing accounts file',
+            url: '{{ route('services.rm.write_accounts', ['area' => $area]) }}',
+            status: 60
+        }, {
+            text: 'Writing proxy file',
+            url: '{{ route('services.rm.write-proxies', ['area' => $area]) }}',
+            status: 85
+        }];
+
+        $('#applyConfig').progressPopup({
+            text: 'Updating {{ $area->name }}',
+            steps: steps.concat(complete('Successfully updated area {{ $area->name }}'))
         });
-
-        $('#installModal').on('show.bs.modal', function (e) {
-            $('.modal-footer', '#installModal').empty();
-
-            set_status('Loading', 0);
+        $('#install-area').progressPopup({
+            text: 'Installing Scan for {{ $area->name }}',
+            steps: steps.concat(complete('Installation complete!'))
         });
-
-        $('#installModal').on('shown.bs.modal', function (e) {
-            function fail(txt, useOwn = false) {
-                if (useOwn) {
-                    set_status('Install failed! ' + txt, false, true);
-                } else {
-                    set_status('Install failed' + (txt ? (' while ' + txt + '.') : '!'), false, true);
-                }
-                $('#installStatus').addClass('text-danger');
-                $('.progress-bar').addClass('progress-bar-danger');
-            }
-
-            set_status('Checking installation status', 20);
-
-            $.post('{{ route('services.rm.check', ['area' => $area]) }}', function (data) {
-                if (data.success) {
-                    set_status('Writing configuration for {{ $area->name }}', 35);
-
-                    $.post('{{ route('services.rm.configure', ['map' => $area->map, 'area' => $area]) }}', function (data) {
-                        if (data.success) {
-
-                            set_status('Writing accounts file', 60);
-
-                            $.post('{{ route('services.rm.write_accounts', ['area' => $area]) }}', function (data) {
-                                set_status('Writing proxy file', 85);
-
-                                $.post('{{ route('services.rm.write-proxies', ['area' => $area]) }}', function (data) {
-                                    if (data.success) {
-                                        $('#installWarning').remove();
-
-                                        set_status('Installation complete!', 100);
-                                    } else {
-                                        fail(data.error, true);
-                                    }
-                                });
-                            });
-                        } else {
-                            fail(data.error, true);
-                        }
-                    });
-                } else {
-                    fail(data.error, true);
-                }
-            });
-        });
+        @endunless
 
         $('#startScan').on('click', function (e) {
             $(this).button('loading');
@@ -194,6 +147,9 @@
                 <a href="{{ route('maps.areas.edit', ['map' => $area->map, 'area' => $area]) }}" class="btn btn-block btn-default">
                     <b>Edit area settings</b>
                 </a>
+                @unless ($area->hasLatestConfig())
+                <button id="applyConfig" class="btn btn-block btn-success"><b>Apply config</b></button>
+                @endunless
                 @if ($area->isDown())
                 <button id="startScan" class="btn btn-block btn-success"><b>Start scan</b></button>
                 @else
@@ -226,24 +182,7 @@
                     Your map won't do much while it's not installed!<br>
                     It only takes a moment. Why not get it done?
                 </p>
-                <button class="btn btn-lg" data-toggle="modal" data-target="#installModal">Install {{ $area->name }}</button>
-            </div>
-        </div>
-        <div id="installModal" class="modal fade" tabindex="-1" role="dialog" aria-labelled-by="installModalLabel" data-backdrop="static" data-keyboard="false">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="installModalLabel">Installing {{ $area->name }}</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="progress progress-sm">
-                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemax="100" style="min-width: 3em; width: 0%;"></div>
-                        </div>
-                        <p class="lead text-center" id="installStatus">Loading&hellip;</p>
-                    </div>
-                    <div class="modal-footer">
-                    </div>
-                </div>
+                <button id="install-area" class="btn btn-lg">Install {{ $area->name }}</button>
             </div>
         </div>
         @elseif ($area->isDown())

@@ -1,81 +1,87 @@
-@extends ('adminlte::page')
+@extends ('layouts.twinleaf')
 
 @section ('title', $map->name)
 
 @section ('js')
+@parent
 <script>
     $(function() {
-        function set_status(txt, val, forceButton = false) {
-            $('#installStatus').html(txt + '&hellip;');
-
-            if (val === -1) {
-                $('.progress-bar').addClass('progress-bar-danger');
-            } else {
-                $('.progress-bar').removeClass('progress-bar-danger').width(val+'%')
-
-                if (val >= 100) {
-                    $('.progress-bar').removeClass('active');
-                }
-            }
-
-            if (val >= 100 || forceButton) {
-                var closebtn = $('<button/>').addClass('btn btn-default pull-right')
-                                             .attr('data-dismiss', 'modal')
-                                             .text('Close');
-                $('.modal-footer', '#installModal').append(closebtn);
-            }
-        }
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            }
+        $('#install-map').progressPopup({
+            title: 'Installing {{ $map->name }}',
+            steps: [{
+                text: 'Downloading RocketMap from Github',
+                url: '{{ route('services.rm.download') }}',
+                status: 25
+            }, {
+                text: 'Installing RocketMap packages',
+                url: '{{ route('services.rm.install') }}',
+                status: 45
+            }, {
+                text: 'Cleaning old files',
+                url: '{{ route('services.rm.clean', ['map' => $map]) }}',
+                status: 55
+            }, {
+                text: 'Installing the map',
+                url: '{{ route('services.rm.configure', ['map' => $map]) }}',
+                status: 75
+            }, {
+                text: 'Installation complete!',
+                done: function () {
+                    $('#installWarning').remove();
+                }, status: 100;
+            }]
         });
 
-        $('#installModal').on('show.bs.modal', function (e) {
-            $('.modal-footer', '#installModal').empty();
-
-            set_status('Loading', 0);
+        @unless ($map->hasLatestConfig())
+        $('#applyConfig').progressPopup({
+            title: 'Updating {{ $map->name }}',
+            steps: [{
+                text: 'Checking configuration',
+                url: '{{ route('maps.check-config', ['map' => $map]) }}',
+                status: 20
+            }, {
+                text: 'Writing new configuration',
+                url: '{{ route('services.rm.configure', ['map' => $map]) }}',
+                status: 60
+            }, {
+                text: 'Map successfully updated!',
+                done: function () {
+                    $('#applyConfig').remove();
+                }, status: 100
+            }]
         });
+        @endunless
 
-        $('#installModal').on('shown.bs.modal', function (e) {
-            function fail(txt) {
-                set_status('Install failed' + (txt ? (' while ' + txt + '.') : '!'), false, true);
-                $('.progress-bar').addClass('progress-bar-danger');
-            }
-
-            set_status('Downloading RocketMap from Github...', 25);
-
-            $.post('{{ route('services.rm.download') }}', function (data) {
-                if (data.downloaded) {
-                    set_status('Installing RocketMap packages...', 45);
-
-                    $.post('{{ route('services.rm.install') }}', function (data) {
-                        if (data.installed) {
-                            set_status('Cleaning old files...', 55);
-
-                            $.post('{{ route('services.rm.clean', ['map' => $map]) }}', function (data) {
-                                set_status('Installing the map', 75);
-
-                                $.post('{{ route('services.rm.configure', ['map' => $map]) }}', function (data) {
-                                    if (data.written) {
-                                        $('#installWarning').remove();
-
-                                        set_status('Installation complete!', 100);
-                                    } else {
-                                        fail('writing config files');
-                                    }
-                                });
-                            });
-                        } else {
-                            fail('installing RocketMap');
-                        }
-                    });
-                } else {
-                    fail('downloading RocketMap');
-                }
-            });
+        @foreach ($map->areas as $area)
+        @unless ($area->hasLatestConfig())
+        $('.area-apply[data-slug="{{ $area->slug }}"]').progressPopup({
+            title: 'Updating {{ $area->name }}',
+            steps: [{
+                text: 'Checking installation status',
+                url: '{{ route('services.rm.check', ['area' => $area]) }}',
+                status: 20
+            }, {
+                text: 'Writing configuration for {{ $area->name }}',
+                url: '{{ route('services.rm.configure', ['map' => $area->map, 'area' => $area]) }}',
+                status: 35
+            }, {
+                text: 'Writing accounts file',
+                url: '{{ route('services.rm.write_accounts', ['area' => $area]) }}',
+                status: 60
+            }, {
+                text: 'Writing proxy file',
+                url: '{{ route('services.rm.write-proxies', ['area' => $area]) }}',
+                status: 85
+            }, {
+                text: 'Successfully updated area {{ $area->name }}',
+                done: function () {
+                    $('.area-apply[data-slug="{{ $area->slug }}"]').parent()
+                        .removeClass('text-warning').addClass('text-success').text('latest config');
+                }, status: 100
+            }]
         });
+        @endunless
+        @endforeach
 
         $('#startMap').on('click', function (e) {
             $(this).button('loading');
@@ -158,6 +164,11 @@
                 <a href="{{ route('maps.edit', ['map' => $map]) }}" class="btn btn-block btn-default">
                     <b>Edit map settings</b>
                 </a>
+                @unless ($map->hasLatestConfig())
+                <button id="applyConfig" class="btn btn-block btn-success">
+                    <b>Apply config</b>
+                </button>
+                @endif
                 @if ($map->isDown())
                 <button id="startMap" class="btn btn-block btn-success" data-loading-text="<i class='fa fa-spinner'></i> Starting map&hellip;"><b>Start map</b></button>
                 @else
@@ -180,24 +191,7 @@
                     Your map won't do much while it's not installed!<br>
                     It only takes a moment. Why not get it done?
                 </p>
-                <button class="btn btn-lg" data-toggle="modal" data-target="#installModal">Install {{ $map->name }}</button>
-            </div>
-        </div>
-        <div id="installModal" class="modal fade" tabindex="-1" role="dialog" aria-labelled-by="installModalLabel" data-backdrop="static" data-keyboard="false">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="installModalLabel">Installing {{ $map->name }}</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="progress progress-sm">
-                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemax="100" style="min-width: 3em; width: 0%;"></div>
-                        </div>
-                        <p class="lead text-center" id="installStatus">Loading&hellip;</p>
-                    </div>
-                    <div class="modal-footer">
-                    </div>
-                </div>
+                <button class="btn btn-lg" id="install-map">Install {{ $map->name }}</button>
             </div>
         </div>
         @elseif ($map->isDown())
@@ -231,6 +225,15 @@
                         <tr>
                             <td><b>{{ $area->name }}</b></td>
                             <td>{{ $area->accounts->count() }} accounts</td>
+                            @if ($area->hasLatestConfig())
+                            <td class="text-success text-center">latest config</td>
+                            @elseif (!$area->accounts()->count())
+                            <td class="text-warning text-center">needs accounts</td>
+                            @else
+                            <td class="text-center">
+                                <button class="area-apply btn btn-xs btn-primary" data-slug="{{ $area->slug }}">Apply config</button>
+                            </td>
+                            @endif
                             @if (!$area->isInstalled())
                             <td class="text-muted"><i class="fa fa-circle"></i> Not installed</td>
                             @elseif ($area->isUp())

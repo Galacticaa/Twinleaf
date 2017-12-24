@@ -1,4 +1,4 @@
-@extends ('adminlte::page')
+@extends ('layouts.twinleaf')
 
 @section ('title', 'Proxy Ban Check')
 
@@ -91,12 +91,6 @@
                 })
             });
         }
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            }
-        });
 
         var proxies = JSON.parse('{!! (string) $proxies !!}');
         const total = proxies.length * 2;

@@ -42,7 +42,7 @@ class RocketMapController extends Controller
         );
 
         return [
-            'downloaded' => file_exists($checkFile),
+            'success' => file_exists($checkFile),
             'output' => $output ?? null,
         ];
     }
@@ -73,7 +73,7 @@ class RocketMapController extends Controller
         }
 
         return [
-            'installed' => file_exists($checkFile),
+            'success' => file_exists($checkFile),
             'output' => $output ?? null,
         ];
     }
@@ -86,7 +86,7 @@ class RocketMapController extends Controller
             system('sudo -u twinleaf rm -rf '.$mapDir);
         }
 
-        return ['nuked' => true];
+        return ['success' => true];
     }
 
     public function check(MapArea $area)
@@ -94,17 +94,19 @@ class RocketMapController extends Controller
         sleep(1);
 
         if (!$area->map->isInstalled()) {
-            return [
-                'success' => false,
-                'error' => "Please install {$area->map->name} before its scan areas.",
-            ];
+            $error = "Please install {$area->map->name} before its scan areas.";
+        } elseif (!$area->accounts()->count()) {
+            $error = "Area {$area->name} needs accounts to run.";
         }
 
-        return ['success' => true, 'error' => false];
+        return [
+            'success' => !isset($error),
+            'error' => $error ?? null,
+        ];
     }
 
     public function configure(Map $map, MapArea $area = null) {
-        sleep(2);
+        usleep(1.5 * 1000000);
 
         if ($area !== null) {
             return $this->configureArea($area);
@@ -115,23 +117,18 @@ class RocketMapController extends Controller
 
     protected function configureArea(MapArea $area)
     {
-        $path = storage_path('maps/rocketmap/config');
-        if (!is_dir($path)) {
+        if (!is_dir($path = storage_path('maps/rocketmap/config'))) {
             return [
                 'success' => false,
                 'error' => "Config directory doesn't exist. Is RocketMap installed?",
             ];
         }
 
-        $path .= "/{$area->map->code}/{$area->slug}.ini";
-
-        $config = view('config.rocketmap.scanner')->with([
-            'config' => $this->config,
-            'area' => $area,
-        ]);
-
         return [
-            'success' => false !== file_put_contents($path, $config),
+            'success' => false !== file_put_contents(
+                "{$path}/{$area->map->code}/{$area->slug}.ini",
+                $area->makeConfigFile()
+            ),
         ];
     }
 
@@ -141,7 +138,7 @@ class RocketMapController extends Controller
 
         if (!is_dir($path)) {
             return [
-                'written' => false,
+                'success' => false,
                 'errors' => [ "Config directory doesn't exist. Is RocketMap installed?" ],
             ];
         }
@@ -158,14 +155,14 @@ class RocketMapController extends Controller
                 ])->render();
             } catch (\ErrorException $e) {
                 return [
-                    'written' => false,
+                    'success' => false,
                     'errors' => [$e->getMessage()],
                 ];
             }
         }
 
         return [
-            'written' => false !== file_put_contents($path.'.ini', $config),
+            'success' => false !== file_put_contents($path.'.ini', $config),
             'errors' => [],
         ];
     }
@@ -200,11 +197,7 @@ class RocketMapController extends Controller
             $area->save();
         }
 
-        $proxies = '';
-
-        foreach ($area->proxies()->get() as $proxy) {
-            $proxies .= $proxy->url.PHP_EOL;
-        }
+        $proxies = $area->proxiesToCsv();
 
         $path = storage_path("maps/rocketmap/config/{$area->map->code}/{$area->slug}.txt");
 

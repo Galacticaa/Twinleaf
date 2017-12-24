@@ -2,6 +2,7 @@
 
 namespace Twinleaf;
 
+use Exception;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -50,6 +51,21 @@ class Map extends Model
         $config = storage_path("maps/rocketmap/config/{$this->code}.ini");
 
         return file_exists($map) && file_exists($config);
+    }
+
+    public function hasLatestConfig()
+    {
+        if (!$this->isInstalled()) {
+            throw new Exception("The map must be installed first.");
+        }
+
+        $old = file_get_contents(storage_path("maps/rocketmap/config/{$this->code}.ini"));
+        $new = view('config.rocketmap.server')->with([
+            'config' => Setting::first(),
+            'map' => $this,
+        ])->render();
+
+        return $old === $new;
     }
 
     public function getConfigFile()

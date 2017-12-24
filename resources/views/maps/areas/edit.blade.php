@@ -1,107 +1,10 @@
-@extends ('adminlte::page')
+@extends ('layouts.twinleaf')
 
 @section ('title', 'Editing '.$area->name)
 
-@section ('css')
-<link href="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/skins/square/purple.css" rel="stylesheet">
-<style type="text/css">
-#map_canvas { height: 331px; width: 100%;}
-</style>
-@stop
-
 @section ('js')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/icheck.min.js"></script>
+@parent
 <script>
-    $(function() {
-        $('input').iCheck({
-            checkboxClass: 'icheckbox_square-purple'
-        });
-
-        function set_status(txt, val, forceButton = false) {
-            $('#saveStatus').html(txt + '&hellip;');
-
-            if (val === -1) {
-                $('.progress-bar').addClass('progress-bar-danger');
-            } else {
-                $('.progress-bar').removeClass('progress-bar-danger').width(val+'%')
-
-                if (val >= 100) {
-                    $('.progress-bar').removeClass('active');
-                }
-            }
-
-            if (val >= 100 || forceButton) {
-                var closebtn = $('<button/>').addClass('btn btn-default pull-right')
-                                             .attr('data-dismiss', 'modal')
-                                             .text('Close');
-                $('.modal-footer', '#saveModal').append(closebtn);
-            }
-        }
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            }
-        });
-
-        $('#saveModal').on('show.bs.modal', function (e) {
-            $('.modal-footer', '#saveModal').empty();
-
-            set_status('Loading', 0);
-        });
-
-        $('#saveModal').on('shown.bs.modal', function (e) {
-            function fail(txt, useOwn = false) {
-                if (useOwn) {
-                    set_status('Install failed! ' + txt, false, true);
-                } else {
-                    set_status('Install failed' + (txt ? (' while ' + txt + '.') : '!'), false, true);
-                }
-                $('#saveStatus').addClass('text-danger');
-                $('.progress-bar').addClass('progress-bar-danger');
-            }
-
-            set_status('Saving area settings', 10);
-
-            $.post('{{ route('maps.areas.update', ['map' => $map, 'area' => $area]) }}', $('#areaForm').serialize(), function (data) {
-                if (data.success) {
-                    set_status('Checking installation status', 20);
-
-                    $.post('{{ route('services.rm.check', ['area' => $area]) }}', function (data) {
-                        if (data.success) {
-                            set_status('Writing configuration for {{ $area->name }}', 35);
-
-                            $.post('{{ route('services.rm.configure', ['map' => $area->map, 'area' => $area]) }}', function (data) {
-                                if (data.success) {
-
-                                    set_status('Writing accounts file', 60);
-
-                                    $.post('{{ route('services.rm.write_accounts', ['area' => $area]) }}', function (data) {
-                                        set_status('Writing proxy file', 85);
-
-                                        $.post('{{ route('services.rm.write-proxies', ['area' => $area]) }}', function (data) {
-                                            if (data.success) {
-                                                set_status('Area updated!', 100);
-                                            } else {
-                                                fail(data.error, true);
-                                            }
-                                        });
-                                    });
-                                } else {
-                                    fail(data.error, true);
-                                }
-                            });
-                        } else {
-                            fail(data.error, true);
-                        }
-                    });
-                } else {
-                    fail("Something didn't work as it should've.", true)
-                }
-            });
-        });
-    });
-
     var map;
     var drawingManager;
 
@@ -421,27 +324,9 @@
         </div>
     </div>
     <button type="button" class="btn btn-danger btn-lg pull-right" data-toggle="modal" data-target="#deleteModal">Delete scan area</button>
-    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#saveModal">Save scan area</button>
+    <button type="submit" class="btn btn-primary btn-lg">Save scan area</button>
     <a href="{{ route('maps.areas.show', ['map' => $map, 'area' => $area]) }}" class="text-danger btn-lg">cancel</a>
 </form>
-
-<div id="saveModal" class="modal fade" tabindex="-1" role="dialog" aria-labelled-by="saveModalLabel" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="saveModalLabel">Saving {{ $area->name }}</h4>
-            </div>
-            <div class="modal-body">
-                <div class="progress progress-sm">
-                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemax="100" style="min-width: 3em; width: 0%;"></div>
-                </div>
-                <p class="lead text-center" id="saveStatus">Loading&hellip;</p>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
-</div>
 
 <div id="deleteModal" class="modal modal-danger" tabindex="-1" role="dialog" aria-labelled-by="deleteModalLabel">
     <div class="modal-dialog" role="document">
