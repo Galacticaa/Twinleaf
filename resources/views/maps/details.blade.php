@@ -28,7 +28,7 @@
                 text: 'Installation complete!',
                 done: function () {
                     $('#installWarning').remove();
-                }, status: 100;
+                }, status: 100
             }]
         });
 
