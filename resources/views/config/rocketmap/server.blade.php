@@ -1,6 +1,10 @@
 host: 0.0.0.0
 port: {{ 8000 + $map->id }}
+
 name: {{ $map->name }}
+meta_description: {{ $map->description }}
+meta_image: {{ $map->image_url }}
+meta_url: {{ $map->url }}
 
 gmaps-key: {{ $config->gmaps_key }}
 @if ($map->analytics_key)

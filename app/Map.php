@@ -20,6 +20,8 @@ class Map extends Model
     protected $fillable = [
         'name',
         'code',
+        'description',
+        'image_url',
         'url',
         'location',
         'analytics_key',

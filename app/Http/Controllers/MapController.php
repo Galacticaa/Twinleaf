@@ -27,7 +27,6 @@ class MapController extends Controller
      */
     public function store(StoreMap $request)
     {
-        #$map = Map::create(array_except($request->all(), ['_token']));
         $map = Map::create($request->all());
 
         return redirect()->route('maps.show', ['map' => $map]);
