@@ -2,9 +2,17 @@
 
 @section ('title', 'Task Manager')
 
+@section ('css')
+<link href="//cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css" rel="stylesheet">
+@stop
+
 @section ('js')
+<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
 <script>
     $(function() {
+        $('#tasks-table').DataTable();
+
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -33,7 +41,7 @@
 @section ('content')
 <div class="box box-primary">
     <div class="box-body">
-        <table id="accounts-table" class="table table-bordered table-hover">
+        <table id="tasks-table" class="table table-bordered table-hover">
             <thead>
                 <tr>
                     <th>Process</th>
@@ -58,6 +66,32 @@
                         </button>
                     </td>
                 </tr>
+                @foreach ($maps as $map)
+                <tr>
+                    <td>Map: <a href="/maps/{{ $map->code }}">{{ $map->name }}</a></td>
+                    @if ($map->isUp())
+                    <td class="text-success"><i class="fa fa-circle"></i> Running</td>
+                    <td></td>
+                    @else
+                    <td class="text-danger"><i class="fa fa-circle"></i> Not running!</td>
+                    <td></td>
+                    @endif
+                </tr>
+                @foreach ($map->areas()->whereIsEnabled(true)->get() as $area)
+                <tr>
+                    <td>Scan: <a href="/maps/{{ $map->code }}/areas/{{ $area->slug }}">
+                            {{ $map->name }} / {{ $area->name }}
+                    </a></td>
+                    @if ($area->isUp())
+                    <td class="text-success"><i class="fa fa-circle"></i> Running!</td>
+                    <td></td>
+                    @else
+                    <td class="text-danger"><i class="fa fa-circle"></i> Not running!</td>
+                    <td></td>
+                    @endif
+                </tr>
+                @endforeach
+                @endforeach
             </tbody>
         </table>
     </div>
