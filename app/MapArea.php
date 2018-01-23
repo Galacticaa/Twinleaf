@@ -10,6 +10,13 @@ class MapArea extends Model
     use Traits\Loggable;
     use Traits\Restartable;
 
+    protected $casts = [
+        'beehive' => 'boolean',
+        'is_enabled' => 'boolean',
+        'speed_scan' => 'boolean',
+        'spin_pokestops' => 'boolean',
+    ];
+
     protected $dates = [
         'created_at',
         'updated_at',

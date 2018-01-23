@@ -225,7 +225,7 @@
                     <tbody>
                         @foreach ($map->areas as $area)
                         <tr>
-                            <td><b>{{ $area->name }}</b></td>
+                            <td class="{{ $area->is_enabled ? '' : 'text-muted' }}"><b>{{ $area->name }}</b></td>
                             <td>{{ $area->accounts->count() }} accounts</td>
                             @if ($map->isInstalled() && $map->hasLatestConfig())
                             <td class="text-success text-center">latest config</td>

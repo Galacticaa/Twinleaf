@@ -146,6 +146,12 @@
     <input type="hidden" name="map_id" value="{{ $map->id }}">
     <div class="box box-primary">
         <div class="box-header with-border">
+            <div class="pull-right">
+                <label for="formEnableScan" style="margin-bottom: 0;">
+                    Enable scan&nbsp;
+                    <input name="enable_scan" id="formEnableScan" type="checkbox" value="1" {{ $area->is_enabled ? ' checked="checked"' : '' }}>
+                </label>
+            </div>
             <h3 class="box-title">Basic Details</h3>
         </div>
         <div class="box-body">

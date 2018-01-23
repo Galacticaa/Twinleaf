@@ -97,8 +97,9 @@ class MapAreaController extends Controller
     public function update(StoreMapArea $request, Map $map, MapArea $area)
     {
         $area->fill($request->all());
-        $area->speed_scan = $request->get('speed_scan', false);
         $area->beehive = $request->get('beehive', false);
+        $area->is_enabled = $request->get('enable_scan', false);
+        $area->speed_scan = $request->get('speed_scan', false);
         $area->spin_pokestops = $request->get('spin_pokestops', false);
         $area->geofence = $request->get('geofence');
         $area->save();
