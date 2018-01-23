@@ -2,15 +2,6 @@
 
 @section ('title', 'Settings')
 
-@section ('css')
-@parent
-<style type="text/css">
-    .nav-tabs-custom {
-        background: transparent;
-    }
-</style>
-@stop
-
 @section ('content_header')
 <h1>Settings</h1>
 <ol class="breadcrumb">

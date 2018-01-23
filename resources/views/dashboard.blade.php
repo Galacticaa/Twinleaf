@@ -5,11 +5,6 @@
 @section ('css')
 @parent
 <link rel="stylesheet" type="text/css" href="http://jvectormap.com/css/jquery-jvectormap-2.0.3.css"/>
-<style type="text/css">
-    #map {
-        height: 560px;
-    }
-</style>
 @stop
 
 @section ('js')
@@ -93,7 +88,7 @@
         </div>
     </div>
     <div class="col-md-6">
-        <h3 style="margin-top: 0;">Recent Activity</h3>
+        <h3 class="mt-0">Recent Activity</h3>
         @if ($logsByDate)
         <ul class="timeline">
             @foreach ($logsByDate as $date => $logs)

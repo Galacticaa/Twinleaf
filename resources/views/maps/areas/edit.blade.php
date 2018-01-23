@@ -147,7 +147,7 @@
     <div class="box box-primary">
         <div class="box-header with-border">
             <div class="pull-right">
-                <label for="formEnableScan" style="margin-bottom: 0;">
+                <label for="formEnableScan" class="mb-0">
                     Enable scan&nbsp;
                     <input name="enable_scan" id="formEnableScan" type="checkbox" value="1" {{ $area->is_enabled ? ' checked="checked"' : '' }}>
                 </label>

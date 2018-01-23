@@ -16,12 +16,12 @@
 
             var $icon = $('<span class="info-box-icon" />').append($('<i class="fa fa-hourglass-half"/>'));
             var $spinner = '<i class="fa fa-spinner fa-spin"></i>';
-            var $content = $('<div class="info-box-content" style="padding-top: 0;" />')
+            var $content = $('<div class="info-box-content" />')
                             .append($('<span/>').addClass('info-box-text')
-                                .html('<p class="lead" style="margin-bottom: 0;">'+url+'</p>'))
-                            .append($('<span style="height: 25px;" />').addClass('info-box-number')
-                                .append($('<div style="width: 50%;" class="pogocheck pull-right"/>').text('Pogo: ').append($spinner))
-                                .append($('<div style="width: 50%;" class="ptccheck"/>').text('PTC: ').append($spinner)))
+                                .html('<p class="lead" class="mb-0">'+url+'</p>'))
+                            .append($('<span />').addClass('info-box-number')
+                                .append($('<div class="pogocheck pull-right"/>').text('Pogo: ').append($spinner))
+                                .append($('<div class="ptccheck"/>').text('PTC: ').append($spinner)))
                             .append($('<div/>').addClass('progress').append(
                                 $('<div/>').addClass('progress-bar').width('20%')
                             )).append($('<span/>').addClass('progress-description').text('Checking PTC...'));
