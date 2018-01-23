@@ -1,4 +1,4 @@
-@extends ('adminlte::page')
+@extends ('layouts.twinleaf')
 
 @section ('title', 'New Scan Area')
 

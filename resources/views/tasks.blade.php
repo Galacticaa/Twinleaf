@@ -1,23 +1,12 @@
-@extends ('adminlte::page')
+@extends ('layouts.twinleaf')
 
 @section ('title', 'Task Manager')
 
-@section ('css')
-<link href="//cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css" rel="stylesheet">
-@stop
-
 @section ('js')
-<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+@parent
 <script>
     $(function() {
         $('#tasks-table').DataTable();
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            }
-        });
 
         $('.reconfigure-creator').on('click', function (e) {
             $(this).button('loading');

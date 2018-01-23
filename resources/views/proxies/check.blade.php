@@ -3,6 +3,7 @@
 @section ('title', 'Proxy Ban Check')
 
 @section ('js')
+@parent
 <script>
     $(function() {
         var bancheckThreads = 20,

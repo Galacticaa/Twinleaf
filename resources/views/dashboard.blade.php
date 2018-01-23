@@ -1,8 +1,9 @@
-@extends ('adminlte::page')
+@extends ('layouts.twinleaf')
 
 @section ('title', 'Dashboard')
 
 @section ('css')
+@parent
 <link rel="stylesheet" type="text/css" href="http://jvectormap.com/css/jquery-jvectormap-2.0.3.css"/>
 <style type="text/css">
     #map {
@@ -12,16 +13,11 @@
 @stop
 
 @section ('js')
+@parent
 <script src="http://jvectormap.com/js/jquery-jvectormap-2.0.3.min.js"></script>
 <script src="http://jvectormap.com/js/jquery-jvectormap-uk_regions-merc.js"></script>
 <script>
     $(function() {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            }
-        });
-
         $('#map').vectorMap({
             map: 'uk_regions_merc',
             backgroundColor: 'transparent',
