@@ -42,6 +42,10 @@ class UpdateAccounts extends Command
     {
         $areas = MapArea::dueUpdate()->withActivatedAccounts()->get();
 
+        if (file_exists($file = storage_path('restart.txt'))) {
+            unlink($file);
+        }
+
         foreach ($areas as $area) {
             $this->updateArea($area);
         }
@@ -65,7 +69,7 @@ class UpdateAccounts extends Command
             return;
         }
 
-        $this->kickstart($area);
+        $this->fakestart($area);
 
         $this->info("Completed update for the {$area->slug} area.");
     }
@@ -87,6 +91,15 @@ class UpdateAccounts extends Command
         ));
 
         return false !== file_put_contents($path, $csv);
+    }
+
+    protected function fakestart(MapArea $area)
+    {
+        return false !== file_put_contents(
+            storage_path('restart.txt'),
+            "{$area->map->code}/{$area->slug} tla_{$area->slug}\n",
+            FILE_APPEND
+        );
     }
 
     protected function kickstart(MapArea $area, $action = 'start')
