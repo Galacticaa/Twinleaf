@@ -84,9 +84,14 @@ class MapArea extends Model
         return $csv;
     }
 
+    public function scopeEnabled($query)
+    {
+        return $query->where('is_enabled', '=', true);
+    }
+
     public function scopeDueUpdate($query)
     {
-        return $query->where(function ($q) {
+        return $query->enabled()->where(function ($q) {
             $interval = Carbon::now()->subMinutes(30);
 
             $q->whereNull('started_at')->orWhere('started_at', '<', $interval);

@@ -31,7 +31,7 @@
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <div class="pull-right">
-                        <label for="formEnableMap" style="margin-bottom: 0;">
+                        <label for="formEnableMap" class="mb-0">
                             Enable map&nbsp;
                             <input name="enable_map" id="formEnableMap" type="checkbox" value="1" {{ $map->is_enabled ? ' checked="checked"' : '' }}>
                         </label>
