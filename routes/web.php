@@ -40,7 +40,12 @@ Route::prefix('proxies')->group(function () {
 });
 
 Route::get('tasks', function () {
-    return view('tasks')->with('creator', new KinanCore);
+    $maps = Map::where('is_enabled', '=', true)->get();
+
+    return view('tasks', [
+        'creator' => new KinanCore,
+        'maps' => $maps,
+    ]);
 })->name('tasks');
 
 Route::prefix('settings/lures')->group(function () {

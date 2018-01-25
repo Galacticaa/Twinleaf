@@ -27,7 +27,6 @@ class MapController extends Controller
      */
     public function store(StoreMap $request)
     {
-        #$map = Map::create(array_except($request->all(), ['_token']));
         $map = Map::create($request->all());
 
         return redirect()->route('maps.show', ['map' => $map]);
@@ -85,7 +84,8 @@ class MapController extends Controller
      */
     public function update(StoreMap $request, Map $map)
     {
-        $map->fill($request->all());
+        $map->fill($request->except('enable_map'));
+        $map->is_enabled = $request->get('enable_map', false);
         $map->save();
 
         return redirect()->route('maps.show', ['map' => $map]);

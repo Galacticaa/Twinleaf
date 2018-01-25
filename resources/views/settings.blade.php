@@ -1,26 +1,6 @@
-@extends ('adminlte::page')
+@extends ('layouts.twinleaf')
 
 @section ('title', 'Settings')
-
-@section ('css')
-<link href="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/skins/square/purple.css" rel="stylesheet">
-<style type="text/css">
-    .nav-tabs-custom {
-        background: transparent;
-    }
-</style>
-@stop
-
-@section ('js')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/icheck.min.js"></script>
-<script>
-    $(function() {
-        $('input').iCheck({
-            checkboxClass: 'icheckbox_square-purple'
-        })
-    })
-</script>
-@stop
 
 @section ('content_header')
 <h1>Settings</h1>

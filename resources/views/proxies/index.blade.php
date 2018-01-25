@@ -1,14 +1,9 @@
-@extends ('adminlte::page')
+@extends ('layouts.twinleaf')
 
 @section ('title', 'Proxies')
 
-@section ('css')
-<link href="//cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css" rel="stylesheet">
-@stop
-
 @section ('js')
-<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+@parent
 <script>
     $(function() {
         $('.datatable').DataTable();
@@ -30,7 +25,7 @@
         <button class="btn btn-default pull-right" data-toggle="modal" data-target="#importModal">
             <i class="fa fa-upload"></i> Import
         </button>
-        <a class="btn bg-purple" href="{{ route('proxies.check') }}" style="margin-bottom: 10px;">
+        <a class="btn bg-purple mb-10" href="{{ route('proxies.check') }}">
             <i class="fa fa-search"></i> Run ban check
         </a>
         <div id="importModal" class="modal fade" tabindex="-1" role="dialog" aria-labelled-by="importModalLabel">

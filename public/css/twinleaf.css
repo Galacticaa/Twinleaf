@@ -1,9 +1,43 @@
+/* General */
+.mt-0 {
+    margin-top: 0;
+}
+.mb-0 {
+    margin-bottom: 0;
+}
+.mb-10 {
+    margin-bottom: 10px;
+}
+
+/* Proxy checker */
+#checkStatus .info-box-content {
+    padding-top: 0;
+}
+#checkStatus .info-box-number {
+    height: 25px;
+}
+.pogocheck, .ptccheck {
+    width: 50%;
+}
+
+/* Installer modals */
 .progress .progress-bar {
     min-width: 3em;
     width: 0%;
 }
 
+/* Dashboard map */
+#map {
+    height: 560px;
+}
+
+/* Geofence editor */
 #map_canvas {
     height: 331px;
     width: 100%;
+}
+
+/* Settings page tabs */
+.nav-tabs-custom {
+    background: transparent;
 }

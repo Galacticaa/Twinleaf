@@ -32,7 +32,7 @@
             }]
         });
 
-        @unless ($map->hasLatestConfig())
+        @if ($map->isInstalled() && !$map->hasLatestConfig())
         $('#applyConfig').progressPopup({
             title: 'Updating {{ $map->name }}',
             steps: [{
@@ -53,7 +53,7 @@
         @endunless
 
         @foreach ($map->areas as $area)
-        @unless ($area->hasLatestConfig())
+        @if ($map->isInstalled() && !$map->hasLatestConfig())
         $('.area-apply[data-slug="{{ $area->slug }}"]').progressPopup({
             title: 'Updating {{ $area->name }}',
             steps: [{
@@ -164,7 +164,8 @@
                 <a href="{{ route('maps.edit', ['map' => $map]) }}" class="btn btn-block btn-default">
                     <b>Edit map settings</b>
                 </a>
-                @unless ($map->hasLatestConfig())
+                @if ($map->isInstalled())
+                @if (!$map->hasLatestConfig())
                 <button id="applyConfig" class="btn btn-block btn-success">
                     <b>Apply config</b>
                 </button>
@@ -174,6 +175,7 @@
                 @else
                 <button id="restartMap" class="btn btn-block btn-warning"><b>Restart map</b></button>
                 <button id="stopMap" class="btn btn-block btn-danger"><b>Stop map</b></button>
+                @endif
                 @endif
             </div>
         </div>
@@ -223,9 +225,9 @@
                     <tbody>
                         @foreach ($map->areas as $area)
                         <tr>
-                            <td><b>{{ $area->name }}</b></td>
+                            <td class="{{ $area->is_enabled ? '' : 'text-muted' }}"><b>{{ $area->name }}</b></td>
                             <td>{{ $area->accounts->count() }} accounts</td>
-                            @if ($area->hasLatestConfig())
+                            @if ($map->isInstalled() && $map->hasLatestConfig())
                             <td class="text-success text-center">latest config</td>
                             @elseif (!$area->accounts()->count())
                             <td class="text-warning text-center">needs accounts</td>

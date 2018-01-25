@@ -10,6 +10,13 @@ class MapArea extends Model
     use Traits\Loggable;
     use Traits\Restartable;
 
+    protected $casts = [
+        'beehive' => 'boolean',
+        'is_enabled' => 'boolean',
+        'speed_scan' => 'boolean',
+        'spin_pokestops' => 'boolean',
+    ];
+
     protected $dates = [
         'created_at',
         'updated_at',
@@ -77,9 +84,14 @@ class MapArea extends Model
         return $csv;
     }
 
+    public function scopeEnabled($query)
+    {
+        return $query->where('is_enabled', '=', true);
+    }
+
     public function scopeDueUpdate($query)
     {
-        return $query->where(function ($q) {
+        return $query->enabled()->where(function ($q) {
             $interval = Carbon::now()->subMinutes(30);
 
             $q->whereNull('started_at')->orWhere('started_at', '<', $interval);

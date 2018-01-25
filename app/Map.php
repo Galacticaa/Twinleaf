@@ -11,6 +11,10 @@ class Map extends Model
     use Traits\Loggable;
     use Traits\Restartable;
 
+    protected $casts = [
+        'is_enabled' => 'boolean',
+    ];
+
     protected $dates = [
         'created_at',
         'updated_at',
@@ -20,6 +24,8 @@ class Map extends Model
     protected $fillable = [
         'name',
         'code',
+        'description',
+        'image_url',
         'url',
         'location',
         'analytics_key',

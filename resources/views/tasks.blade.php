@@ -1,15 +1,12 @@
-@extends ('adminlte::page')
+@extends ('layouts.twinleaf')
 
 @section ('title', 'Task Manager')
 
 @section ('js')
+@parent
 <script>
     $(function() {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            }
-        });
+        $('#tasks-table').DataTable();
 
         $('.reconfigure-creator').on('click', function (e) {
             $(this).button('loading');
@@ -33,7 +30,7 @@
 @section ('content')
 <div class="box box-primary">
     <div class="box-body">
-        <table id="accounts-table" class="table table-bordered table-hover">
+        <table id="tasks-table" class="table table-bordered table-hover">
             <thead>
                 <tr>
                     <th>Process</th>
@@ -58,6 +55,32 @@
                         </button>
                     </td>
                 </tr>
+                @foreach ($maps as $map)
+                <tr>
+                    <td>Map: <a href="/maps/{{ $map->code }}">{{ $map->name }}</a></td>
+                    @if ($map->isUp())
+                    <td class="text-success"><i class="fa fa-circle"></i> Running</td>
+                    <td></td>
+                    @else
+                    <td class="text-danger"><i class="fa fa-circle"></i> Not running!</td>
+                    <td></td>
+                    @endif
+                </tr>
+                @foreach ($map->areas()->whereIsEnabled(true)->get() as $area)
+                <tr>
+                    <td>Scan: <a href="/maps/{{ $map->code }}/areas/{{ $area->slug }}">
+                            {{ $map->name }} / {{ $area->name }}
+                    </a></td>
+                    @if ($area->isUp())
+                    <td class="text-success"><i class="fa fa-circle"></i> Running!</td>
+                    <td></td>
+                    @else
+                    <td class="text-danger"><i class="fa fa-circle"></i> Not running!</td>
+                    <td></td>
+                    @endif
+                </tr>
+                @endforeach
+                @endforeach
             </tbody>
         </table>
     </div>
