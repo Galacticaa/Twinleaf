@@ -42,8 +42,21 @@ Route::prefix('proxies')->group(function () {
 Route::get('tasks', function () {
     $maps = Map::where('is_enabled', '=', true)->get();
 
+    // Create a failsafe just in case we fail to get a PID
+    $processes = [0 => ['cpu' => '--', 'mem' => '--', 'cmd' => '']];
+
+    // Load resources for all maps at once
+    exec("ps -U twinleaf -u twinleaf -o pid,%cpu,%mem,cmd", $lines);
+
+    foreach ($lines as $line) {
+        list($pid, $cpu, $mem, $cmd) = preg_split('/\s+/', trim($line), 4);
+
+        $processes[$pid] = compact('cpu', 'mem', 'cmd');
+    }
+
     return view('tasks', [
         'creator' => new KinanCore,
+        'processes' => $processes,
         'maps' => $maps,
     ]);
 })->name('tasks');
