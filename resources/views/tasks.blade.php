@@ -42,7 +42,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($creator->getPids ?: [0] as $creatorPid)
+                @foreach ($creator->getPids() ?: [0] as $creatorPid)
                 <tr>
                     <td>{{ $creatorPid }}</td>
                     <td>Account Creator</td>
