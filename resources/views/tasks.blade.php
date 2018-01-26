@@ -74,7 +74,7 @@
                     @if ($map->isUp())
                     <td class="text-success"><i class="fa fa-circle"></i> Running</td>
                     <td>{{ $processes[$mapPid]['cpu'] }}%</td>
-                    <td>{{ $processes[$mapPid]['ram'] }}%</td>
+                    <td>{{ $processes[$mapPid]['mem'] }}%</td>
                     @else
                     <td class="text-danger"><i class="fa fa-circle"></i> Not running!</td>
                     <td colspan="3"></td>
