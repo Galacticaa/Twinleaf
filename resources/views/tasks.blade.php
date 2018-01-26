@@ -73,8 +73,8 @@
                     <td>Map: <a href="/maps/{{ $map->code }}">{{ $map->name }}</a></td>
                     @if ($map->isUp())
                     <td class="text-success"><i class="fa fa-circle"></i> Running</td>
-                    <td>{{ $resources[$mapPid]['cpu'] }}%</td>
-                    <td>{{ $resources[$mapPid]['ram'] }}%</td>
+                    <td>{{ $processes[$mapPid]['cpu'] }}%</td>
+                    <td>{{ $processes[$mapPid]['ram'] }}%</td>
                     @else
                     <td class="text-danger"><i class="fa fa-circle"></i> Not running!</td>
                     <td colspan="3"></td>
