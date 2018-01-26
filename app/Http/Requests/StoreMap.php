@@ -30,6 +30,8 @@ class StoreMap extends FormRequest
             'name' => 'required',
             'code' => 'required|'.$unique,
             'url' => 'required',
+            'description' => 'required|string',
+            'image_url' => 'required|string',
             'location' => 'required',
             'db_name' => 'required',
             'db_user' => 'required',
