@@ -117,7 +117,11 @@ return [
             'text' => 'Proxies',
             'route' => 'proxies.index',
             'icon' => 'globe',
-        ], [
+        ], 'DISCORD', [
+            'text' => 'Role Cleaner',
+            'route' => 'discord.clean',
+            'icon' => 'magic',
+        ], 'SYSTEM', [
             'text' => 'Task Manager',
             'route' => 'tasks',
             'icon' => 'tasks',

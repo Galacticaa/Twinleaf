@@ -123,7 +123,7 @@ class DiscordPrep extends Command
 
     protected function loadRemoteRoles()
     {
-        $roles = collect($this->discord->guild->getGuildRoles([
+        $roles = collect($this->guild()->getGuildRoles([
             'guild.id' => $this->serverId
         ]))->keyBy('id')->transform(function($item, $key) {
             return (object) $item;
@@ -136,7 +136,7 @@ class DiscordPrep extends Command
     {
         $this->info("Creating role {$name} with code {$code}");
 
-        $role = $this->discord->guild->createGuildRole([
+        $role = $this->guild()->createGuildRole([
             'guild.id' => $this->serverId,
             'name' => $name,
         ]);
@@ -145,5 +145,15 @@ class DiscordPrep extends Command
             'discord_id' => $role['id'],
             'position' => $role['position'],
         ]);
+    }
+
+    /**
+     * Access the Discord Guild API
+     *
+     * @return \GuzzleHttp\Client
+     */
+    protected function guild()
+    {
+        return $this->discord->guild;
     }
 }
