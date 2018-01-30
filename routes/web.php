@@ -37,8 +37,9 @@ Route::prefix('proxies')->group(function () {
 });
 
 Route::prefix('discord')->group(function () {
-    Route::get('clean', 'DiscordController@clean')->name('discord.clean');
-    Route::post('clean', 'DiscordController@purge')->name('discord.purge');
+    Route::get('clean', 'DiscordController@cleanup')->name('discord.clean');
+    Route::post('clean/channels', 'DiscordController@cleanChannels')->name('discord.purge-channels');
+    Route::post('clean/roles', 'DiscordController@cleanRoles')->name('discord.purge-roles');
 });
 
 Route::get('tasks', function () {

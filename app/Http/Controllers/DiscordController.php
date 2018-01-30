@@ -38,13 +38,28 @@ class DiscordController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function clean()
+    public function cleanup()
     {
-        $channels = $this->guild()->getGuildChannels(['guild.id' => $this->serverId]);
+        $channels = collect($this->guild()->getGuildChannels([
+            'guild.id' => $this->serverId
+        ]))->sortBy('position')->keyBy('id');
+
+        $channels->transform(function ($channel) {
+            return (object) $channel;
+        });
+
+        $categories = $channels->where('type', '=', 4);
+
+        $categories->transform(function ($category, $id) use ($channels) {
+            $category->channels = $channels->where('parent_id', '=', $id);
+
+            return (object) $category;
+        });
+
         $roles = $this->guild()->getGuildRoles(['guild.id' => $this->serverId]);
 
         return view('discord.clean', [
-            'channels' => collect($channels)->sortBy('position'),
+            'categories' => $categories,
             'roles' => collect($roles)->sortByDesc('position'),
         ]);
     }
@@ -55,7 +70,7 @@ class DiscordController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function purge(Request $request)
+    public function cleanRoles(Request $request)
     {
         $roles = $request->input('roles');
 
@@ -64,6 +79,31 @@ class DiscordController extends Controller
                 'guild.id' => $this->serverId,
                 'role.id' => $role,
             ]);
+        }
+
+        return redirect()->back();
+    }
+
+    /**
+     * Delete requested channels from Discord
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function cleanChannels(Request $request)
+    {
+        $channels = $request->input('channels');
+
+        foreach ($channels as $channel) {
+            $response = $this->discord->channel->deletecloseChannel([
+                'channel.id' => (int) $channel,
+            ]);
+
+            if ($response['code'] && $response['message']) {
+                return redirect()->back()->withErrors([
+                    'channels' => "<strong>Error #{$response['code']}</strong> - {$response['message']}",
+                ])->withInput();
+            }
         }
 
         return redirect()->back();
