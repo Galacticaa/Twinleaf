@@ -4,6 +4,7 @@ namespace Twinleaf\Console\Commands;
 
 use Twinleaf\MapArea;
 use Twinleaf\Discord\Role;
+use Twinleaf\Discord\Channel;
 use RestCord\DiscordClient;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -22,7 +23,7 @@ class DiscordPrep extends Command
      *
      * @var string
      */
-    protected $description = 'Prepare Discord with the relevant roles.';
+    protected $description = 'Prepare Discord with the relevant roles & channels.';
 
     /**
      * An instance of the Discord API
@@ -44,6 +45,13 @@ class DiscordPrep extends Command
      * @var Collection
      */
     protected $areas;
+
+    /**
+     * Collection of Discord channels
+     *
+     * @var Collection
+     */
+    protected $channels;
 
     /**
      * List of teams in the game
@@ -78,6 +86,10 @@ class DiscordPrep extends Command
     public function handle()
     {
         $this->processRoles();
+
+        $this->loadRemoteChannels();
+
+        $this->processCategories();
     }
 
     protected function processRoles()
@@ -132,7 +144,7 @@ class DiscordPrep extends Command
         return $roles->all();
     }
 
-    protected function createRole($code, $name, $createDb = true)
+    protected function createRole($code, $name)
     {
         $this->info("Creating role {$name} with code {$code}");
 
@@ -144,6 +156,74 @@ class DiscordPrep extends Command
         return Role::updateOrCreate(['code' => $code], [
             'discord_id' => $role['id'],
             'position' => $role['position'],
+        ]);
+    }
+
+    protected function processCategories()
+    {
+        $categories = $this->getRequiredCategories();
+        $categoriesLocal = Channel::whereType(4)->get()->keyBy('code');
+        $categoriesRemote = $this->channels->where('type', '=', 4);
+
+        foreach ($categories as $code => $name) {
+            $dbCat = $categoriesLocal[$code] ?? null;
+
+            if ($dbCat && $categoriesRemote->has($dbCat->discord_id)) {
+                $this->line("Category '{$name}' already exists.");
+                continue;
+            }
+
+            $this->createChannel($code, $name);
+        }
+    }
+
+    protected function getRequiredCategories()
+    {
+        $names = [];
+
+        foreach ($this->areas as $area) {
+            $code = 'area.'.$area->slug;
+            $names[$code] = $area->name;
+
+            $names[$code.'.raids'] = $area->name.' Raidar';
+            $names[$code.'.spawns'] = $area->name.' Spawns';
+        }
+
+        return $names;
+    }
+
+    protected function loadRemoteChannels()
+    {
+        $channels = collect($this->guild()->getGuildChannels([
+            'guild.id' => $this->serverId
+        ]))->sortBy(function ($channel, $key) {
+            return $channel['type'] . str_pad(
+                $channel['position'], 5, '0', STR_PAD_LEFT
+            );
+        });
+
+        $channels->transform(function ($channel) {
+            return (object) $channel;
+        });
+
+        $this->channels = $channels->keyBy('id');
+    }
+
+    protected function createChannel($code, $name, $parent = null)
+    {
+        $this->info("Creating category {$name} with code {$code}");
+
+        $category = $this->guild()->createGuildChannel([
+            'guild.id' => $this->serverId,
+            'name' => $name,
+            'type' => 4,
+        ]);
+
+        return Channel::updateOrCreate(['code' => $code], [
+            'discord_id' => $category['id'],
+            'position' => $category['position'],
+            'type' => $category['type'],
+            'parent_id' => 0,
         ]);
     }
 

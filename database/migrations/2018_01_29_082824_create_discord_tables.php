@@ -13,6 +13,16 @@ class CreateDiscordTables extends Migration
      */
     public function up()
     {
+        Schema::create('discord_channels', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('code');
+            $table->bigInteger('discord_id')->unsigned();
+            $table->string('type');
+            $table->integer('position');
+            $table->string('parent_id');
+            $table->timestamps();
+        });
+
         Schema::create('discord_roles', function (Blueprint $table) {
             $table->increments('id');
             $table->string('code');
@@ -30,5 +40,6 @@ class CreateDiscordTables extends Migration
     public function down()
     {
         Schema::dropIfExists('discord_roles');
+        Schema::dropIfExists('discord_channels');
     }
 }
