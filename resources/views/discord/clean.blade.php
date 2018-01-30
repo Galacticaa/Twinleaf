@@ -24,8 +24,8 @@
                         <div class="col-xs-6 col-sm-4 col-md-3">
                             <ul class="list-group">
                                 <li class="list-group-item">
-                                    <input type="checkbox" name="roles[]" value="{{ $role['id'] }}">
-                                    &nbsp;{{ $role['name'] }}
+                                    <input type="checkbox" name="roles[]" value="{{ $role->id }}">
+                                    &nbsp;{{ $role->name }}
                                 </li>
                             </ul>
                         </div>

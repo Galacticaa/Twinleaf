@@ -43,8 +43,8 @@ class DiscordController extends Controller
         $channels = collect($this->guild()->getGuildChannels([
             'guild.id' => $this->serverId
         ]))->sortBy(function ($channel, $key) {
-            return $channel['type'] . str_pad(
-                $channel['position'], 5, '0', STR_PAD_LEFT
+            return $channel->type . str_pad(
+                $channel->position, 5, '0', STR_PAD_LEFT
             );
         })->keyBy('id');
 
@@ -99,13 +99,17 @@ class DiscordController extends Controller
         $channels = $request->input('channels');
 
         foreach ($channels as $channel) {
-            $response = $this->discord->channel->deletecloseChannel([
-                'channel.id' => (int) $channel,
-            ]);
+            try {
+                $response = $this->discord->channel->deleteOrcloseChannel([
+                    'channel.id' => (int) $channel,
+                ]);
+            } catch (\GuzzleHttp\Command\Exception\CommandClientException $e) {
+                $response = $e->getResponse();
+                $code = $response->getStatusCode();
+                $message = $response->getReasonPhrase();
 
-            if ($response['code'] && $response['message']) {
                 return redirect()->back()->withErrors([
-                    'channels' => "<strong>Error #{$response['code']}</strong> - {$response['message']}",
+                    'channels' => "<strong>Error #{$code}</strong> - {$message}",
                 ])->withInput();
             }
         }

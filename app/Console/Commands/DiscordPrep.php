@@ -6,6 +6,7 @@ use Twinleaf\MapArea;
 use Twinleaf\Discord\Role;
 use Twinleaf\Discord\Channel;
 use RestCord\DiscordClient;
+use RestCord\Model\Channel\Overwrite;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -52,6 +53,7 @@ class DiscordPrep extends Command
      * @var Collection
      */
     protected $channels;
+    protected $roles;
 
     /**
      * List of teams in the game
@@ -85,6 +87,8 @@ class DiscordPrep extends Command
      */
     public function handle()
     {
+        $this->loadRemoteRoles();
+
         $this->processRoles();
 
         $this->loadRemoteChannels();
@@ -96,7 +100,7 @@ class DiscordPrep extends Command
     {
         $roles = $this->getRequiredRoles();
         $rolesLocal = Role::all()->keyBy('code');
-        $rolesRemote = $this->loadRemoteRoles();
+        $rolesRemote = $this->roles->all();
 
         foreach ($roles as $code => $name) {
             $dbRole = $rolesLocal[$code] ?? null;
@@ -141,7 +145,7 @@ class DiscordPrep extends Command
             return (object) $item;
         });
 
-        return $roles->all();
+        $this->roles = $roles;
     }
 
     protected function createRole($code, $name)
@@ -165,15 +169,15 @@ class DiscordPrep extends Command
         $categoriesLocal = Channel::whereType(4)->get()->keyBy('code');
         $categoriesRemote = $this->channels->where('type', '=', 4);
 
-        foreach ($categories as $code => $name) {
+        foreach ($categories as $code => $category) {
             $dbCat = $categoriesLocal[$code] ?? null;
 
             if ($dbCat && $categoriesRemote->has($dbCat->discord_id)) {
-                $this->line("Category '{$name}' already exists.");
+                $this->line("Category '{$category['name']}' already exists.");
                 continue;
             }
 
-            $this->createChannel($code, $name);
+            $this->createChannel($code, $category);
         }
     }
 
@@ -181,15 +185,52 @@ class DiscordPrep extends Command
     {
         $names = [];
 
+        $readOnly = new Overwrite([
+            'id' => $this->findRole('@everyone'),
+            'type' => 'role',
+            'deny' => 1024,
+        ]);
+        $exceptDevs = new Overwrite([
+            'id' => $this->findRole('developers')->id,
+            'type' => 'role',
+            'allow' => 1024,
+        ]);
+
         foreach ($this->areas as $area) {
             $code = 'area.'.$area->slug;
-            $names[$code] = $area->name;
+            $names[$code] = [
+                'name' => $area->name,
+                'permissions' => [$readOnly, $exceptDevs, new Overwrite([
+                    'id' => $this->findRole($area->name)->id,
+                    'type' => 'role',
+                    'allow' => 1024,
+                ])],
+            ];
 
-            $names[$code.'.raids'] = $area->name.' Raidar';
-            $names[$code.'.spawns'] = $area->name.' Spawns';
+            $names[$code.'.raids'] = [
+                'name' => $area->name.' Raidar',
+                'permissions' => [$readOnly, $exceptDevs, new Overwrite([
+                    'id' => $this->findRole($area->slug.'-raids')->id,
+                    'type' => 'role',
+                    'allow' => 1024,
+                ])],
+            ];
+            $names[$code.'.spawns'] = [
+                'name' => $area->name.' Spawns',
+                'permissions' => [$readOnly, $exceptDevs, new Overwrite([
+                    'id' => $this->findRole($area->slug.'-pokemon')->id,
+                    'type' => 'role',
+                    'allow' => 1024,
+                ])],
+            ];
         }
 
         return $names;
+    }
+
+    protected function findRole($name)
+    {
+        return $this->roles->where('name', '=', $name)->first();
     }
 
     protected function loadRemoteChannels()
@@ -197,32 +238,34 @@ class DiscordPrep extends Command
         $channels = collect($this->guild()->getGuildChannels([
             'guild.id' => $this->serverId
         ]))->sortBy(function ($channel, $key) {
-            return $channel['type'] . str_pad(
-                $channel['position'], 5, '0', STR_PAD_LEFT
+            return $channel->type . str_pad(
+                $channel->position, 5, '0', STR_PAD_LEFT
             );
-        });
-
-        $channels->transform(function ($channel) {
-            return (object) $channel;
         });
 
         $this->channels = $channels->keyBy('id');
     }
 
-    protected function createChannel($code, $name, $parent = null)
+    protected function createChannel($code, $category, $parent = null)
     {
-        $this->info("Creating category {$name} with code {$code}");
+        $this->info("Creating category {$category['name']} with code {$code}");
 
-        $category = $this->guild()->createGuildChannel([
+        $data = [
             'guild.id' => $this->serverId,
-            'name' => $name,
+            'name' => $category['name'],
             'type' => 4,
-        ]);
+        ];
+
+        if (count($category['permissions'])) {
+            $data['permission_overwrites'] = $category['permissions'];
+        }
+
+        $category = $this->guild()->createGuildChannel($data);
 
         return Channel::updateOrCreate(['code' => $code], [
-            'discord_id' => $category['id'],
-            'position' => $category['position'],
-            'type' => $category['type'],
+            'discord_id' => $category->id,
+            'position' => $category->position,
+            'type' => $category->type,
             'parent_id' => 0,
         ]);
     }
