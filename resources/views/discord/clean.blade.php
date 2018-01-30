@@ -86,8 +86,13 @@
                             <ul class="list-group">
                                 @foreach ($category->channels as $id => $channel)
                                 <li class="list-group-item">
-                                    <input type="checkbox" name="channels[]" value="{{ $id }}">
-                                    &nbsp;{{ $channel->name }}
+                                    <input type="checkbox" name="channels[]" value="{{ $id }}">&nbsp;
+                                    @if ($channel->type === 2)
+                                    <i class="fa fa-volume-up"></i>
+                                    @elseif ($channel->type === 0)
+                                    <i class="fa fa-hashtag"></i>
+                                    @endif
+                                    &nbsp;{{ $channel->name }} ({{ $channel->type }})
                                 </li>
                                 @endforeach
                             </ul>

@@ -42,7 +42,11 @@ class DiscordController extends Controller
     {
         $channels = collect($this->guild()->getGuildChannels([
             'guild.id' => $this->serverId
-        ]))->sortBy('position')->keyBy('id');
+        ]))->sortBy(function ($channel, $key) {
+            return $channel['type'] . str_pad(
+                $channel['position'], 5, '0', STR_PAD_LEFT
+            );
+        })->keyBy('id');
 
         $channels->transform(function ($channel) {
             return (object) $channel;
