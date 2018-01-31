@@ -94,6 +94,7 @@ class DiscordPrep extends Command
         $this->loadRemoteChannels();
 
         $this->processCategories();
+        $this->processChannels();
     }
 
     protected function processRoles()
@@ -185,52 +186,70 @@ class DiscordPrep extends Command
     {
         $names = [];
 
-        $readOnly = new Overwrite([
-            'id' => $this->findRole('@everyone'),
-            'type' => 'role',
-            'deny' => 1024,
-        ]);
-        $exceptDevs = new Overwrite([
-            'id' => $this->findRole('developers')->id,
-            'type' => 'role',
-            'allow' => 1024,
-        ]);
-
         foreach ($this->areas as $area) {
             $code = 'area.'.$area->slug;
             $names[$code] = [
                 'name' => $area->name,
-                'permissions' => [$readOnly, $exceptDevs, new Overwrite([
-                    'id' => $this->findRole($area->name)->id,
-                    'type' => 'role',
-                    'allow' => 1024,
-                ])],
+                'permissions' => $this->allowFor($area->name),
             ];
 
             $names[$code.'.raids'] = [
                 'name' => $area->name.' Raidar',
-                'permissions' => [$readOnly, $exceptDevs, new Overwrite([
-                    'id' => $this->findRole($area->slug.'-raids')->id,
-                    'type' => 'role',
-                    'allow' => 1024,
-                ])],
+                'permissions' => $this->allowFor($area->slug.'-raids'),
             ];
             $names[$code.'.spawns'] = [
                 'name' => $area->name.' Spawns',
-                'permissions' => [$readOnly, $exceptDevs, new Overwrite([
-                    'id' => $this->findRole($area->slug.'-pokemon')->id,
-                    'type' => 'role',
-                    'allow' => 1024,
-                ])],
+                'permissions' => $this->allowFor($area->slug.'-pokemon'),
             ];
         }
 
         return $names;
     }
 
-    protected function findRole($name)
+    protected function processChannels()
     {
-        return $this->roles->where('name', '=', $name)->first();
+        $channels = $this->getRequiredChannels();
+        $channelsLocal = Channel::whereType(0)->get()->keyBy('code');
+        $channelsRemote = $this->channels->where('type', '=', 0);
+
+        foreach ($channels as $code => $channel) {
+            $dbChan = $channelsLocal[$code] ?? null;
+
+            if ($dbChan && $channelsRemote->has($dbChan->discord_id)) {
+                $this->line("Channel '{$channel['name']}' already exists.");
+                continue;
+            }
+
+            $this->createChannel($code, $channel);
+        }
+    }
+
+    protected function getRequiredChannels()
+    {
+        $channels = [];
+
+        foreach ($this->areas as $area) {
+            $prefix = "area.{$area->slug}.";
+            $parent = $this->channels
+                ->where('type', '=', 4)
+                ->where('name', '=', $area->name)
+                ->first();
+
+            $channels[$prefix.'lounge'] = [
+                'name' => 'lounge',
+                'parent' => $parent->id,
+            ];
+
+            foreach ($this->teams as $team) {
+                $channels[$prefix.$team] = [
+                    'name' => $team.'-chat',
+                    'parent' => $parent->id,
+                    'permissions' => $this->allowFor($area->slug.'-'.$team),
+                ];
+            }
+        }
+
+        return $channels;
     }
 
     protected function loadRemoteChannels()
@@ -246,28 +265,78 @@ class DiscordPrep extends Command
         $this->channels = $channels->keyBy('id');
     }
 
-    protected function createChannel($code, $category, $parent = null)
+    protected function createChannel($code, $channel)
     {
-        $this->info("Creating category {$category['name']} with code {$code}");
+        $parent = $channel['parent'] ?? 0;
+        $type = $parent ? 'channel' : 'category';
+        $this->info("Creating {$type} {$channel['name']} with code {$code}");
 
         $data = [
             'guild.id' => $this->serverId,
-            'name' => $category['name'],
-            'type' => 4,
+            'name' => $channel['name'],
+            'type' => $parent ? 0 : 4,
         ];
 
-        if (count($category['permissions'])) {
-            $data['permission_overwrites'] = $category['permissions'];
+        if ($parent) {
+            $data['parent_id'] = (int) $parent;
         }
 
-        $category = $this->guild()->createGuildChannel($data);
+        if (isset($channel['permissions']) && count($channel['permissions'])) {
+            $data['permission_overwrites'] = $channel['permissions'];
+        }
+
+        $channel = $this->guild()->createGuildChannel($data);
 
         return Channel::updateOrCreate(['code' => $code], [
-            'discord_id' => $category->id,
-            'position' => $category->position,
-            'type' => $category->type,
-            'parent_id' => 0,
+            'discord_id' => $channel->id,
+            'position' => $channel->position,
+            'type' => $channel->type,
+            'parent_id' => $parent,
         ]);
+    }
+
+    /**
+     * Make a set of Overwites that allow access to a role
+     *
+     * @param  string   $role
+     * @return Overwrite[]
+     */
+    protected function allowFor($role)
+    {
+        return [
+            $this->makeReadPermission(),
+            $this->makeReadPermission('developers', true),
+            $this->makeReadPermission($role, true),
+        ];
+    }
+
+    /**
+     * Generate a new Overwrite for a given role
+     *
+     * @param  string   $role   The role permissions will apply to
+     * @param  boolean  $allow  Whether to allow or deny read access
+     * @return Overwrite
+     */
+    protected function makeReadPermission($role = '@everyone', $allow = false)
+    {
+        $allow = $allow ? 'allow' : 'deny';
+
+        return new Overwrite([
+            'id' => $this->findRole($role)->id,
+            'type' => 'role',
+            $allow => 1024,
+        ]);
+    }
+
+    /**
+     * Search for a role by name
+     *
+     * @param  string  $name
+     * @return object
+     */
+    protected function findRole($name)
+    {
+        return $this->roles->where('name', '=', $name)->first();
     }
 
     /**
