@@ -286,6 +286,7 @@ class DiscordPrep extends Command
         }
 
         $channel = $this->guild()->createGuildChannel($data);
+        $this->channels[$channel->id] = $channel;
 
         return Channel::updateOrCreate(['code' => $code], [
             'discord_id' => $channel->id,
