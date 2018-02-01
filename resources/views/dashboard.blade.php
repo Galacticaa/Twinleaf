@@ -15,6 +15,19 @@
             rotateControl: false,
             zoom: 0
         });
+
+        @foreach ($maps as $map)
+        @foreach ($map->areas as $area)
+
+        var {{ $area->slug }} = new google.maps.Polygon({
+            paths: JSON.parse('{!! $area->geofence !!}'),
+            strokeWeight: 1
+        });
+
+        {{ $area->slug }}.setMap(map);
+
+        @endforeach
+        @endforeach
     }
 
     $(function() {
