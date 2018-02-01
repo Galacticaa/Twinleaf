@@ -24,7 +24,6 @@
         @foreach (json_decode($area->geofence) as $marker)
         bounds.extend(new google.maps.LatLng({{ $marker->lat }}, {{ $marker->lng }}))
         @endforeach
-        map.fitBounds(bounds);
 
         var {{ $area->slug }} = new google.maps.Polygon({
             paths: JSON.parse('{!! $area->geofence !!}'),
@@ -34,6 +33,25 @@
 
         @endforeach
         @endforeach
+
+        map.setCenter({lat: {{ $area->lat }}, lng: {{ $area->lng }}});
+        setTimeout(panandzoom, 50);
+    }
+
+    function justzoom() {
+        map.setZoom(map.getZoom()+1);
+        setTimeout(panandzoom, 100);
+    }
+
+    function panandzoom() {
+        map.setCenter(bounds.getNorthEast());
+
+        var cb = map.getBounds();
+        if (cb.contains(bounds.getNorthEast()) && cb.contains(bounds.getSouthWest())) {
+            setTimeout(justzoom, 75);
+        } else {
+            setTimeout(map.panTo(bounds.getCenter()), 75);
+        }
     }
 
     $(function() {
