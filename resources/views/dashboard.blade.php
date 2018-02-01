@@ -2,43 +2,59 @@
 
 @section ('title', 'Dashboard')
 
-@section ('css')
-@parent
-<link rel="stylesheet" type="text/css" href="http://jvectormap.com/css/jquery-jvectormap-2.0.3.css"/>
-@stop
-
 @section ('js')
 @parent
-<script src="http://jvectormap.com/js/jquery-jvectormap-2.0.3.min.js"></script>
-<script src="http://jvectormap.com/js/jquery-jvectormap-uk_regions-merc.js"></script>
 <script>
-    $(function() {
-        $('#map').vectorMap({
-            map: 'uk_regions_merc',
-            backgroundColor: 'transparent',
-            regionStyle: {
-                initial: {
-                    fill: 'rgba(210, 214, 222, 1)',
-                    'fill-opacity': 1,
-                }
-            },
-            markerStyle: {
-                initial: {
-                    fill: '#1f88f5',
-                    stroke: '#383f47'
-                }
-            },
-            markers: [
-                @foreach ($maps as $i => $map)
-                @if ($i == 0) { @else , { @endif latLng: [{{ $map->location }}], name: '{{ $map->name }}', style: { r: '14px' }
-                @foreach ($map->areas as $area)
-                }, { latLng: [{{ $area->location }}], name: '{{ $area->name }}', style: { fill: 'orange', r: '{{ $area->radius * .3 }}px' }
-                @endforeach
-                }
-                @endforeach
-            ]
+    var map, bounds;
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 0, lng: 0},
+            mapTypeId: google.maps.MapTypeId.MAP,
+            streetViewControl: false,
+            rotateControl: false,
+            zoom: 0
         });
 
+        bounds = new google.maps.LatLngBounds();
+
+        @foreach ($maps as $map)
+        @foreach ($map->areas as $area)
+
+        @foreach (json_decode($area->geofence) as $marker)
+        bounds.extend(new google.maps.LatLng({{ $marker->lat }}, {{ $marker->lng }}))
+        @endforeach
+
+        var {{ $area->slug }} = new google.maps.Polygon({
+            paths: JSON.parse('{!! $area->geofence !!}'),
+            strokeWeight: 1
+        });
+        {{ $area->slug }}.setMap(map);
+
+        @endforeach
+        @endforeach
+
+        map.setCenter({lat: {{ $area->lat }}, lng: {{ $area->lng }}});
+        setTimeout(panandzoom, 50);
+    }
+
+    function justzoom() {
+        map.setZoom(map.getZoom()+1);
+        setTimeout(panandzoom, 100);
+    }
+
+    function panandzoom() {
+        map.setCenter(bounds.getNorthEast());
+
+        var cb = map.getBounds();
+        if (cb.contains(bounds.getNorthEast()) && cb.contains(bounds.getSouthWest())) {
+            setTimeout(justzoom, 75);
+        } else {
+            setTimeout(map.panTo(bounds.getCenter()), 75);
+        }
+    }
+
+    $(function() {
         $('#activateLures').bind('click', function() {
             $.post('{{ route('long-lures.enable') }}', function(data) {
                 if (data.success === true) {
@@ -55,6 +71,9 @@
             });
         });
     });
+</script>
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key={{ \Twinleaf\Setting::first()->gmaps_key }}&callback=initMap">
 </script>
 @stop
 
