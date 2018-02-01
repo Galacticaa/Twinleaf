@@ -5,7 +5,7 @@
 @section ('js')
 @parent
 <script>
-    var map;
+    var map, bounds;
 
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
@@ -16,14 +16,20 @@
             zoom: 0
         });
 
+        bounds = new google.maps.LatLngBounds();
+
         @foreach ($maps as $map)
         @foreach ($map->areas as $area)
+
+        @foreach (json_decode($area->geofence) as $marker)
+        bounds.extend(new google.maps.LatLng({{ $marker->lat }}, {{ $marker->lng }}))
+        @endforeach
+        map.fitBounds(bounds);
 
         var {{ $area->slug }} = new google.maps.Polygon({
             paths: JSON.parse('{!! $area->geofence !!}'),
             strokeWeight: 1
         });
-
         {{ $area->slug }}.setMap(map);
 
         @endforeach
