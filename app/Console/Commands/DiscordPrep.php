@@ -159,8 +159,8 @@ class DiscordPrep extends Command
         ]);
 
         return Role::updateOrCreate(['code' => $code], [
-            'discord_id' => $role['id'],
-            'position' => $role['position'],
+            'discord_id' => $role->id,
+            'position' => $role->position,
         ]);
     }
 

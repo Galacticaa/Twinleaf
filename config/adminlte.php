@@ -118,7 +118,7 @@ return [
             'route' => 'proxies.index',
             'icon' => 'globe',
         ], 'DISCORD', [
-            'text' => 'Role Cleaner',
+            'text' => 'Cleanup Tool',
             'route' => 'discord.clean',
             'icon' => 'magic',
         ], 'SYSTEM', [
