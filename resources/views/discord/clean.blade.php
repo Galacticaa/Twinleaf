@@ -144,7 +144,7 @@
 @parent
     <script>
         $(function() {
-            $('.list-group-item').bind('click', function() {
+            $('h3, .list-group-item').bind('click', function() {
                 $('input', this).iCheck('toggle');
             });
 
