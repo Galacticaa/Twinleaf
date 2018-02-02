@@ -46,7 +46,9 @@
         @endforeach
 
         map.setCenter({lat: {{ $area->lat }}, lng: {{ $area->lng }}});
-        setTimeout(panandzoom, 50);
+        google.maps.event.addListenerOnce(map, 'bounds_changed', function() {
+            panandzoom();
+        });
     }
 
     function justzoom() {
