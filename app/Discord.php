@@ -14,7 +14,11 @@ class Discord
 
     public function __construct()
     {
-        $this->config = Config::first();
+        try {
+            $this->config = Config::first();
+        } catch (\Exception $e) {
+            return;
+        }
 
         $this->client = new DiscordClient([
             'token' => $this->config->bot_token,
@@ -24,7 +28,7 @@ class Discord
 
     public function getGuildId()
     {
-        return $this->config->guild_id;
+        return $this->config->guild_id ?? null;
     }
 
     public function __call($method, array $args)
