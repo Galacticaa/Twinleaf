@@ -3,12 +3,11 @@
 namespace Twinleaf\Console\Commands;
 
 use Twinleaf\MapArea;
+use Twinleaf\Discord;
 use Twinleaf\Discord\Role;
 use Twinleaf\Discord\Channel;
-use RestCord\DiscordClient;
 use RestCord\Model\Channel\Overwrite;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 
 class DiscordPrep extends Command
 {
@@ -38,7 +37,7 @@ class DiscordPrep extends Command
      *
      * @var integer
      */
-    protected $serverId;
+    protected $guildId;
 
     /**
      * Collection of Map Areas
@@ -71,13 +70,10 @@ class DiscordPrep extends Command
     {
         parent::__construct();
 
-        $this->discord = new DiscordClient([
-            'token' => env('DISCORD_BOT_TOKEN'),
-            'logger' => Log::getMonolog(),
-        ]);
-
         $this->areas = MapArea::enabled()->get();
-        $this->serverId = (int) env('DISCORD_SERVER_ID');
+
+        $this->discord = new Discord;
+        $this->guildId = (int) $this->discord->getGuildId();
     }
 
     /**
@@ -141,7 +137,7 @@ class DiscordPrep extends Command
     protected function loadRemoteRoles()
     {
         $roles = collect($this->guild()->getGuildRoles([
-            'guild.id' => $this->serverId
+            'guild.id' => $this->guildId
         ]))->keyBy('id')->transform(function($item, $key) {
             return (object) $item;
         });
@@ -154,7 +150,7 @@ class DiscordPrep extends Command
         $this->info("Creating role {$name} with code {$code}");
 
         $role = $this->guild()->createGuildRole([
-            'guild.id' => $this->serverId,
+            'guild.id' => $this->guildId,
             'name' => $name,
         ]);
 
@@ -255,7 +251,7 @@ class DiscordPrep extends Command
     protected function loadRemoteChannels()
     {
         $channels = collect($this->guild()->getGuildChannels([
-            'guild.id' => $this->serverId
+            'guild.id' => $this->guildId
         ]))->sortBy(function ($channel, $key) {
             return $channel->type . str_pad(
                 $channel->position, 5, '0', STR_PAD_LEFT
@@ -272,7 +268,7 @@ class DiscordPrep extends Command
         $this->info("Creating {$type} {$channel['name']} with code {$code}");
 
         $data = [
-            'guild.id' => $this->serverId,
+            'guild.id' => $this->guildId,
             'name' => $channel['name'],
             'type' => $parent ? 0 : 4,
         ];

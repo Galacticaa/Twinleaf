@@ -3,9 +3,8 @@
 namespace Twinleaf\Http\Controllers;
 
 use Twinleaf\Map;
-use RestCord\DiscordClient;
+use Twinleaf\Discord;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class DiscordController extends Controller
 {
@@ -21,16 +20,12 @@ class DiscordController extends Controller
      *
      * @var integer
      */
-    protected $serverId;
+    protected $guildId;
 
     public function __construct()
     {
-        $this->discord = new DiscordClient([
-            'token' => env('DISCORD_BOT_TOKEN'),
-            'logger' => Log::getMonolog(),
-        ]);
-
-        $this->serverId = (int) env('DISCORD_SERVER_ID');
+        $this->discord = new Discord;
+        $this->guildId = (int) $this->discord->getGuildId();
     }
 
     /**
@@ -41,7 +36,7 @@ class DiscordController extends Controller
     public function cleanup()
     {
         $channels = collect($this->guild()->getGuildChannels([
-            'guild.id' => $this->serverId
+            'guild.id' => $this->guildId
         ]))->sortBy(function ($channel, $key) {
             return $channel->type . str_pad(
                 $channel->position, 5, '0', STR_PAD_LEFT
@@ -60,7 +55,7 @@ class DiscordController extends Controller
             return (object) $category;
         });
 
-        $roles = $this->guild()->getGuildRoles(['guild.id' => $this->serverId]);
+        $roles = $this->guild()->getGuildRoles(['guild.id' => $this->guildId]);
 
         return view('discord.clean', [
             'categories' => $categories,
@@ -80,7 +75,7 @@ class DiscordController extends Controller
 
         foreach ($roles as $role) {
             $response = $this->guild()->deleteGuildRole([
-                'guild.id' => $this->serverId,
+                'guild.id' => $this->guildId,
                 'role.id' => $role,
             ]);
         }

@@ -36,10 +36,11 @@ Route::prefix('proxies')->group(function () {
     Route::post('check/{proxy}/pogo', 'ProxyController@checkPogo')->name('proxies.check-pogo');
 });
 
-Route::prefix('discord')->group(function () {
-    Route::get('clean', 'DiscordController@cleanup')->name('discord.clean');
-    Route::post('clean/channels', 'DiscordController@cleanChannels')->name('discord.purge-channels');
-    Route::post('clean/roles', 'DiscordController@cleanRoles')->name('discord.purge-roles');
+Route::prefix('discord')->name('discord.')->group(function () {
+    Route::get('clean', 'DiscordController@cleanup')->name('clean');
+    Route::post('clean/channels', 'DiscordController@cleanChannels')->name('purge-channels');
+    Route::post('clean/roles', 'DiscordController@cleanRoles')->name('purge-roles');
+    Route::resource('config', 'Discord\ConfigController');
 });
 
 Route::get('tasks', function () {
