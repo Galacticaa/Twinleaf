@@ -25,9 +25,20 @@
         bounds.extend(new google.maps.LatLng({{ $marker->lat }}, {{ $marker->lng }}))
         @endforeach
 
+        var colour;
+        @if (!$area->is_enabled)
+            colour = '#666';
+        @else
+            colour = '{{ $area->isUp() ? 'green' : 'red' }}';
+        @endif
+
         var {{ $area->slug }} = new google.maps.Polygon({
             paths: JSON.parse('{!! $area->geofence !!}'),
-            strokeWeight: 1
+            fillColor: colour,
+            fillOpacity: 0.1,
+            strokeColor: colour,
+            strokeOpacity: 0.8,
+            strokeWeight: 2
         });
         {{ $area->slug }}.setMap(map);
 
