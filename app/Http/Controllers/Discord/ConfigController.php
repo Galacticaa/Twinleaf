@@ -3,6 +3,7 @@
 namespace Twinleaf\Http\Controllers\Discord;
 
 use Twinleaf\Map;
+use Twinleaf\Rules\HexColour;
 use Twinleaf\Discord\Config;
 use Twinleaf\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -42,6 +43,9 @@ class ConfigController extends Controller
         $data = $request->validate([
             'bot_token' => 'nullable|string',
             'guild_id' => 'nullable|integer',
+            'colours.instinct' => ['nullable', new HexColour],
+            'colours.mystic' => ['nullable', new HexColour],
+            'colours.valor' => ['nullable', new HexColour],
         ]);
 
         $config->update($data);

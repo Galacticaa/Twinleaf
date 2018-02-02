@@ -10,11 +10,12 @@
 @stop
 
 @section ('content')
-<form class="form-horizontal" role="form"
-    method="POST" action="{{ route('discord.config.update', ['id' => 1]) }}">
+<form role="form" method="POST" action="{{
+    route('discord.config.update', ['id' => 1])
+}}">
     {{ csrf_field() }}
     {{ method_field('PUT') }}
-    <div class="box box-primary">
+    <div class="box box-primary form-horizontal">
         <div class="box-header with-border">
             <h3 class="box-title">API Credentials</h3>
         </div>
@@ -48,7 +49,48 @@
             </div>
         </div>
     </div>
+
+    <div class="box box-default">
+        <div class="box-header">
+            <h3 class="box-title">Team Colours</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                @foreach ($config->colours as $team => $colour)
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="discordTeam{{ ucfirst($team) }}">{{ ucfirst($team) }}</label>
+                        <div class="input-group" id="cp-{{ $team }}">
+                            <input id="discordTeam{{ ucfirst($team) }}" name="colours[{{ $team }}]"
+                                value="{{ $colour }}" type="text" class="form-control">
+                            <div class="input-group-addon">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
     <button type="submit" class="btn btn-primary btn-lg">Save Discord configuration</button>
     &nbsp;<a href="/settings" class="text-danger btn-lg">cancel</a>
 </form>
+@stop
+
+@section ('css')
+@parent
+<link rel="stylesheet" type="text/css" href="https://farbelous.github.io/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css">
+@stop
+
+@section ('js')
+@parent
+<script src="https://farbelous.github.io/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js"></script>
+<script>
+    $(function() {
+        $('#cp-instinct, #cp-mystic, #cp-valor').colorpicker({
+            useAlpha: false,
+            format: 'hex'
+        });
+    });
+</script>
 @stop

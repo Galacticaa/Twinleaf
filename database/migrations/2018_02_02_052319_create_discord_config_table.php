@@ -18,6 +18,7 @@ class CreateDiscordConfigTable extends Migration
             $table->increments('id');
             $table->string('bot_token')->nullable();
             $table->bigInteger('guild_id')->nullable();
+            $table->text('colours')->nullable();
             $table->timestamps();
         });
 

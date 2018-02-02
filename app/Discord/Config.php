@@ -18,7 +18,7 @@ class Config extends Model
      *
      * @var array
      */
-    protected $fillable = ['bot_token', 'guild_id'];
+    protected $fillable = ['bot_token', 'guild_id', 'colours'];
 
     /**
      * The attributes that should be cast to native types.
@@ -27,5 +27,6 @@ class Config extends Model
      */
     protected $casts = [
         'guild_id' => 'integer',
+        'colours' => 'array',
     ];
 }
