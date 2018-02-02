@@ -6,6 +6,7 @@ use Twinleaf\MapArea;
 use Twinleaf\Discord;
 use Twinleaf\Discord\Role;
 use Twinleaf\Discord\Channel;
+use Twinleaf\Discord\Config;
 use RestCord\Model\Channel\Overwrite;
 use Illuminate\Console\Command;
 
@@ -99,36 +100,50 @@ class DiscordPrep extends Command
         $rolesLocal = Role::all()->keyBy('code');
         $rolesRemote = $this->roles->all();
 
-        foreach ($roles as $code => $name) {
+        foreach ($roles as $code => $role) {
             $dbRole = $rolesLocal[$code] ?? null;
 
             if ($dbRole && array_key_exists($dbRole->discord_id, $rolesRemote)) {
-                $this->line("Role '{$name}' already exists.");
+                $this->line("Role '{$role['name']}' already exists.");
                 continue;
             }
 
-            $this->createRole($code, $name);
+            $this->createRole($code, $role['name'], $role['colour'] ?? null);
         }
     }
 
     protected function getRequiredRoles()
     {
-        $names = ['global.champions' => 'Champions'];
+        $colours = Config::first()->coloursAsInt();
+        $names = ['global.champions' => [
+            'name' => 'Champions',
+        ]];
 
         foreach ($this->teams as $team) {
-            $names['global.'.$team] = ucfirst($team);
+            $names['global.'.$team] = [
+                'name' => ucfirst($team),
+                'colour' => $colours[$team],
+            ];
         }
 
         foreach ($this->areas as $area) {
             $code = 'area.'.$area->slug;
-            $names[$code] = $area->name;
+            $names[$code] = [
+                'name' => $area->name,
+            ];
 
-            foreach (['mystic', 'instinct', 'valor'] as $team) {
-                $names[$code.'.'.$team] = $area->slug.'-'.$team;
+            foreach ($this->teams as $team) {
+                $names[$code.'.'.$team] = [
+                    'name' => $area->slug.'-'.$team,
+                ];
             }
 
-            $names[$code.'.spawns'] = $area->slug.'-pokemon';
-            $names[$code.'.raids'] = $area->slug.'-raids';
+            $names[$code.'.spawns'] = [
+                'name' => $area->slug.'-pokemon',
+            ];
+            $names[$code.'.raids'] = [
+                'name' => $area->slug.'-raids',
+            ];
         }
 
         return $names;
@@ -145,14 +160,20 @@ class DiscordPrep extends Command
         $this->roles = $roles;
     }
 
-    protected function createRole($code, $name)
+    protected function createRole($code, $name, $colour = null)
     {
         $this->info("Creating role {$name} with code {$code}");
 
-        $role = $this->guild()->createGuildRole([
+        $data = [
             'guild.id' => $this->guildId,
             'name' => $name,
-        ]);
+        ];
+
+        if ($colour) {
+            $data['color'] = $colour;
+        }
+
+        $role = $this->guild()->createGuildRole($data);
 
         return Role::updateOrCreate(['code' => $code], [
             'discord_id' => $role->id,

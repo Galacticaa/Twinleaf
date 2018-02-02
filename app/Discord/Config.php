@@ -29,4 +29,15 @@ class Config extends Model
         'guild_id' => 'integer',
         'colours' => 'array',
     ];
+
+    public function coloursAsInt()
+    {
+        $colours = $this->colours;
+
+        foreach ($colours as $key => $colour) {
+            $colours[$key] = hexdec($colour);
+        }
+
+        return $colours;
+    }
 }
