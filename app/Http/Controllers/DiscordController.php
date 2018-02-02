@@ -25,7 +25,7 @@ class DiscordController extends Controller
     public function __construct()
     {
         $this->discord = new Discord;
-        $this->guildId = (int) $this->discord->getGuildId();
+        $this->guildId = $this->discord->getGuildId();
     }
 
     /**

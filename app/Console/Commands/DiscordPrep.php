@@ -73,7 +73,7 @@ class DiscordPrep extends Command
         $this->areas = MapArea::enabled()->get();
 
         $this->discord = new Discord;
-        $this->guildId = (int) $this->discord->getGuildId();
+        $this->guildId = $this->discord->getGuildId();
     }
 
     /**
