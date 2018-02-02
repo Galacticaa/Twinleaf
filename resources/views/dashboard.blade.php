@@ -13,7 +13,7 @@
             mapTypeId: google.maps.MapTypeId.MAP,
             streetViewControl: false,
             rotateControl: false,
-            zoom: 0
+            zoom: 3
         });
 
         bounds = new google.maps.LatLngBounds();
