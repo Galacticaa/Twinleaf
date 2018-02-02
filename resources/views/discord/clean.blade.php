@@ -92,7 +92,7 @@
                                     @elseif ($channel->type === 0)
                                     <i class="fa fa-hashtag"></i>
                                     @endif
-                                    &nbsp;{{ $channel->name }} ({{ $channel->type }})
+                                    &nbsp;{{ $channel->name }}
                                 </li>
                                 @endforeach
                             </ul>
