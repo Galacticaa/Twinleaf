@@ -174,6 +174,7 @@ class DiscordPrep extends Command
         }
 
         $role = $this->guild()->createGuildRole($data);
+        $this->roles[$role->id] = $role;
 
         return Role::updateOrCreate(['code' => $code], [
             'discord_id' => $role->id,
