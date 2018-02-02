@@ -80,13 +80,14 @@
                         @foreach ($categories as $id => $category)
                         <div class="col-sm-6 col-md-4">
                             <h3>
-                                <input type="checkbox" name="channels[]" value="{{ $id }}">
+                                <input type="checkbox" name="channels[]" data-type="4" value="{{ $id }}">
                                 &nbsp;{{ $category->name }}
                             </h3>
                             <ul class="list-group">
                                 @foreach ($category->channels as $id => $channel)
                                 <li class="list-group-item">
-                                    <input type="checkbox" name="channels[]" value="{{ $id }}">&nbsp;
+                                    <input type="checkbox" name="channels[]"
+                                        data-type="{{ $channel->type }}" value="{{ $id }}">&nbsp;
                                     @if ($channel->type === 2)
                                     <i class="fa fa-volume-up"></i>
                                     @elseif ($channel->type === 0)
@@ -148,15 +149,24 @@
             });
 
             $('.btn-purge').bind('click', function() {
-                var target = $(this).data('purge'),
+                var checkedBoxes = '.list-group-item :checkbox:checked',
+                    target = $(this).data('purge'),
                     modal = '#modal-' + target,
                     tab = '#tab-' + target,
                     list = $('ul', modal);
 
                 list.html('');
 
-                $('.list-group-item :checkbox:checked', tab).each(function() {
-                    var role = $(this).parent().parent().text();
+                if (tab == '#tab-channels') {
+                    checkedBoxes += ', h3 :checkbox:checked';
+                }
+
+                $(checkedBoxes, tab).each(function() {
+                    var role = $(this).parent().parent().text().replace(/\u00a0/g, '');
+
+                    if (tab == '#tab-channels' && $(this).data('type') != 4) {
+                        role = $('h3', $(this).parent().parent().parent().parent()).text() + ' /' + role;
+                    }
 
                     list.append('<li>' + role + '</li>');
                 });
