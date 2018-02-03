@@ -89,7 +89,22 @@
     $(function() {
         $('#cp-instinct, #cp-mystic, #cp-valor').colorpicker({
             useAlpha: false,
-            format: 'hex'
+            format: 'hex',
+            extensions: [{
+                name: 'swatches',
+                colors: {
+                    'deepblue': '#00f',
+                    'softblue': '#07f',
+                    'brightblue': '#2cf',
+                    'deepred': '#b50809',
+                    'softred': '#d74444',
+                    'brightred': '#f00',
+                    'deepyellow': '#f0c30f',
+                    'softyellow': '#fff000',
+                    'brightyellow': '#fdff00'
+                },
+                namesAsValues: false
+            }]
         });
     });
 </script>
