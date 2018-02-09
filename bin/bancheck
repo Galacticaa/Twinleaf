@@ -3,17 +3,16 @@
 Timeout=5
 MaxRetries=3
 
-PogoAgent="Niantic App"
-PtcAgent="pokemongo/1 CFNetwork/758.5.3 Darwin/15.6.0"
+Agent="pokemongo/0 CFNetwork/893.14.2 Darwin/17.3.0"
 PogoUrl="https://pgorelease.nianticlabs.com/plfe/version"
-PtcUrl="https://sso.pokemon.com/sso/login?service=https%3A%2F%2Fsso.pokemon.com%2Fsso%2Foauth2.0%2FcallbackAuthorize"
+PtcUrl="https://sso.pokemon.com/sso/login?service=https%3A%2F%2Fsso.pokemon.com%2Fsso%2Foauth2.0%2FcallbackAuthorize&locale=en_GB"
 
 curl_params="-sw HTTP_STATUS:%{http_code} -m ${Timeout} --retry ${MaxRetries} -x $2"
 
 if [ $1 == 'pogo' ]; then
-    response=$(curl $curl_params -A "$PogoAgent" $PogoUrl)
+    response=$(curl $curl_params -A "$Agent" $PogoUrl)
 elif [ $1 == 'ptc' ]; then
-    response=$(curl $curl_params -A "$PtcAgent" $PtcUrl)
+    response=$(curl $curl_params -A "$Agent" $PtcUrl)
 fi;
 
 exit_code=$?
