@@ -4,10 +4,6 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
-    "repositories": [{
-        "type": "vcs",
-        "url": "https://github.com/dshoreman/restcord"
-    }],
     "require": {
         "php": ">=7.0.0",
         "fideloper/proxy": "~3.3",
@@ -16,7 +12,7 @@
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
         "regulus/activity-log": "^0.6.8",
-        "restcord/restcord": "dev-hotfix/updated-descriptions"
+        "restcord/restcord": "dev-develop#402ee5cd623e03ebab94ba85372b94b729e400b1"
     },
     "require-dev": {
         "filp/whoops": "~2.0",
