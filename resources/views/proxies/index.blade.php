@@ -7,6 +7,19 @@
 <script>
     $(function() {
         $('.datatable').DataTable();
+
+        /**
+         * Hide proxies text box when purging
+         */
+        $('input[name="mode"]').bind('ifChanged', function() {
+            const input = $('#formProxies').parent().parent();
+
+            if (this.value == 'p') {
+                input.hide();
+            } else {
+                input.show();
+            }
+        });
     });
 </script>
 @endsection
