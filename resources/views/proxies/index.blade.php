@@ -57,12 +57,16 @@
                                 <label class="col-sm-3">Import mode</label>
                                 <div class="col-sm-9 mb-10">
                                     <label class="radio-inline pt-0">
-                                        <input type="radio" name="mode" id="formOpAppend" value="a" checked>
+                                        <input type="radio" name="mode" value="a" checked>
                                         Append
                                     </label>
                                     <label class="radio-inline pt-0">
-                                        <input type="radio" name="mode" id="formOpReplace" value="r">
+                                        <input type="radio" name="mode" value="r">
                                         Replace
+                                    </label>
+                                    <label class="radio-inline pt-0">
+                                        <input type="radio" name="mode" value="p">
+                                        Purge
                                     </label>
                                 </div>
                             </div>

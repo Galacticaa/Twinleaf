@@ -31,23 +31,28 @@ class ProxyController extends Controller
     public function import(Request $request)
     {
         $provider = $request->get('provider');
+        $mode = $request->get('mode');
 
-        if (!config('proxy.providers.'.$provider)) {
+        if ($provider && !config('proxy.providers.'.$provider)) {
             return redirect()->back()->withErrors([
                 'provider' => 'Given provider is invalid.',
             ]);
+        } elseif ($mode == 'p') {
+            $proxies = [];
+        } else {
+            $proxies = $request->get('proxies');
+
+            if (!$proxies) {
+                return redirect()->back()->withErrors([
+                    'proxies' => 'Proxies are required.',
+                ]);
+            }
+
+            $proxies = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $proxies);
+            $proxies = explode("\n", $proxies);
         }
 
-        // Load proxies, stripping any blank lines
-        if (!$proxies = $request->get('proxies')) {
-            return redirect()->back()->withErrors([
-                'proxies' => 'Proxies are required.',
-            ]);
-        }
-        $proxies = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $proxies);
-        $proxies = explode("\n", $proxies);
-
-        if ($request->get('mode') == 'r') {
+        if ($mode == 'r' || $mode == 'p') {
             Proxy::whereProvider($provider)->delete();
         }
 
