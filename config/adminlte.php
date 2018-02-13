@@ -117,7 +117,15 @@ return [
             'text' => 'Proxies',
             'route' => 'proxies.index',
             'icon' => 'globe',
+        ], 'DISCORD', [
+            'text' => 'Cleanup Tool',
+            'route' => 'discord.clean',
+            'icon' => 'magic',
         ], [
+            'text' => 'Configuration',
+            'route' => 'discord.config.index',
+            'icon' => 'wrench',
+        ], 'SYSTEM', [
             'text' => 'Task Manager',
             'route' => 'tasks',
             'icon' => 'tasks',

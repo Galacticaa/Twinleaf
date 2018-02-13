@@ -116,6 +116,12 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'colours' => [
+            'instinct' => 'Team Instinct colour',
+            'mystic' => 'Team Mystic colour',
+            'valor' => 'Team Valor colour',
+        ],
+    ],
 
 ];
