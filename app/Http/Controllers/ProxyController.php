@@ -47,6 +47,10 @@ class ProxyController extends Controller
         $proxies = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $proxies);
         $proxies = explode("\n", $proxies);
 
+        if ($request->get('mode') == 'r') {
+            Proxy::whereProvider($provider)->delete();
+        }
+
         foreach ($proxies as $proxy) {
             $proxy = Proxy::firstOrNew(['url' => $proxy]);
             $proxy->provider = $provider;

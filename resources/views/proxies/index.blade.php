@@ -54,6 +54,19 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label class="col-sm-3">Import mode</label>
+                                <div class="col-sm-9 mb-10">
+                                    <label class="radio-inline pt-0">
+                                        <input type="radio" name="mode" id="formOpAppend" value="a" checked>
+                                        Append
+                                    </label>
+                                    <label class="radio-inline pt-0">
+                                        <input type="radio" name="mode" id="formOpReplace" value="r">
+                                        Replace
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label class="col-sm-3" for="formProxies">
                                     Proxy list
                                     <small class="help-block">one per line</small>
