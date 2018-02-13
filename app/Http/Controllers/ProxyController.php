@@ -32,8 +32,18 @@ class ProxyController extends Controller
     {
         $provider = $request->get('provider');
 
+        if (!config('proxy.providers.'.$provider)) {
+            return redirect()->back()->withErrors([
+                'provider' => 'Given provider is invalid.',
+            ]);
+        }
+
         // Load proxies, stripping any blank lines
-        $proxies = $request->get('proxies');
+        if (!$proxies = $request->get('proxies')) {
+            return redirect()->back()->withErrors([
+                'proxies' => 'Proxies are required.',
+            ]);
+        }
         $proxies = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $proxies);
         $proxies = explode("\n", $proxies);
 

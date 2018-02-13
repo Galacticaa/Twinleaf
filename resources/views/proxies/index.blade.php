@@ -37,6 +37,11 @@
                     <form class="form form-horizontal" action="{{ route('proxies.import') }}" method="POST">
                         {{ csrf_field() }}
                         <div class="modal-body">
+                            @if ($errors->any())
+                            <div class="alert alert-danger">
+                                {{ $errors->first() }}
+                            </div>
+                            @endif
                             <div class="form-group">
                                 <label class="col-sm-3" for="formProvider">Provider</label>
                                 <div class="col-sm-9">
