@@ -16,7 +16,10 @@ class ProxyController extends Controller
      */
     public function index()
     {
-        return view('proxies.index')->with('proxies', Proxy::with('area')->get());
+        return view('proxies.index')->with([
+            'proxies' => Proxy::with('area')->get(),
+            'providers' => config('proxy.providers'),
+        ]);
     }
 
     /**
@@ -27,13 +30,35 @@ class ProxyController extends Controller
      */
     public function import(Request $request)
     {
-        // Load proxies, stripping any blank lines
-        $proxies = $request->get('proxies');
-        $proxies = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $proxies);
-        $proxies = explode("\n", $proxies);
+        $provider = $request->get('provider');
+        $mode = $request->get('mode');
+
+        if ($provider && !config('proxy.providers.'.$provider)) {
+            return redirect()->back()->withErrors([
+                'provider' => 'Given provider is invalid.',
+            ]);
+        } elseif ($mode == 'p') {
+            $proxies = [];
+        } else {
+            $proxies = $request->get('proxies');
+
+            if (!$proxies) {
+                return redirect()->back()->withErrors([
+                    'proxies' => 'Proxies are required.',
+                ]);
+            }
+
+            $proxies = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $proxies);
+            $proxies = explode("\n", $proxies);
+        }
+
+        if ($mode == 'r' || $mode == 'p') {
+            Proxy::whereProvider($provider)->delete();
+        }
 
         foreach ($proxies as $proxy) {
             $proxy = Proxy::firstOrNew(['url' => $proxy]);
+            $proxy->provider = $provider;
             $proxy->save();
         }
 

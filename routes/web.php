@@ -28,15 +28,19 @@ Route::get('dashboard', function () {
             ->with('logsByDate', $logsByDate);
 })->name('dashboard');
 
-Route::post('accounts/{account}/replace', 'AccountController@replace')->name('accounts.replace');
-Route::post('maps/{map}/areas/{area}/regenerate', 'MapAreaController@regenerate')->name('maps.areas.regenerate');
-
 Route::prefix('proxies')->group(function () {
     Route::get('/', 'ProxyController@index')->name('proxies.index');
     Route::post('import', 'ProxyController@import')->name('proxies.import');
     Route::get('check', 'ProxyController@check')->name('proxies.check');
     Route::post('check/{proxy}/ptc', 'ProxyController@checkPtc')->name('proxies.check-ptc');
     Route::post('check/{proxy}/pogo', 'ProxyController@checkPogo')->name('proxies.check-pogo');
+});
+
+Route::prefix('discord')->name('discord.')->group(function () {
+    Route::get('clean', 'DiscordController@cleanup')->name('clean');
+    Route::post('clean/channels', 'DiscordController@cleanChannels')->name('purge-channels');
+    Route::post('clean/roles', 'DiscordController@cleanRoles')->name('purge-roles');
+    Route::resource('config', 'Discord\ConfigController');
 });
 
 Route::get('tasks', function () {
@@ -67,6 +71,9 @@ Route::prefix('settings/lures')->group(function () {
 });
 Route::resource('settings', 'SettingController');
 
+
+Route::post('accounts/{account}/replace', 'AccountController@replace')->name('accounts.replace');
+Route::post('maps/{map}/areas/{area}/regenerate', 'MapAreaController@regenerate')->name('maps.areas.regenerate');
 Route::post('maps/{map}/check-config', 'MapController@checkConfig')->name('maps.check-config');
 Route::resource('maps', 'MapController');
 Route::resource('maps.areas', 'MapAreaController');
