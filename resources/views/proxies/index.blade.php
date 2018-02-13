@@ -34,12 +34,28 @@
                     <div class="modal-header">
                         <h4 class="modal-title" id="importModalLabel">Import Proxies</h4>
                     </div>
-                    <form class="form" action="{{ route('proxies.import') }}" method="POST">
+                    <form class="form form-horizontal" action="{{ route('proxies.import') }}" method="POST">
                         {{ csrf_field() }}
                         <div class="modal-body">
                             <div class="form-group">
-                                <label for="formProxies">Proxy list, one per line</label>
-                                <textarea class="form-control" rows="10" name="proxies" id="formProxies"></textarea>
+                                <label class="col-sm-3" for="formProvider">Provider</label>
+                                <div class="col-sm-9">
+                                    <select name="provider" id="formProvider" class="form-control">
+                                        <option value="" selected disabled></option>
+                                        @foreach (config('proxy.providers') as $slug => $provider)
+                                        <option value="{{ $slug }}">{{ $provider['name'] }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3" for="formProxies">
+                                    Proxy list
+                                    <small class="help-block">one per line</small>
+                                </label>
+                                <div class="col-sm-9">
+                                    <textarea class="form-control" rows="10" name="proxies" id="formProxies"></textarea>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -58,6 +74,7 @@
             <thead>
                 <tr>
                     <th>Proxy</th>
+                    <th>Provider</th>
                     <th>Map Area</th>
                     <th>PTC Status</th>
                     <th>PoGo Status</th>
@@ -67,6 +84,13 @@
                 @forelse ($proxies as $proxy)
                 <tr>
                     <td>{{ $proxy->url }}</td>
+                    <td>
+                        @if ($proxy->provider)
+                        {{ $providers[$proxy->provider]['name'] }}
+                        @else
+                        <span class="text-muted">None</span>
+                        @endif
+                    </td>
                     @if ($proxy->area)
                     <td><a href="{{ route('maps.areas.show', ['map' => $proxy->area->map, 'area' => $proxy->area]) }}">{{ $proxy->area->name }}</a></td>
                     @else

@@ -16,7 +16,10 @@ class ProxyController extends Controller
      */
     public function index()
     {
-        return view('proxies.index')->with('proxies', Proxy::with('area')->get());
+        return view('proxies.index')->with([
+            'proxies' => Proxy::with('area')->get(),
+            'providers' => config('proxy.providers'),
+        ]);
     }
 
     /**
@@ -27,6 +30,8 @@ class ProxyController extends Controller
      */
     public function import(Request $request)
     {
+        $provider = $request->get('provider');
+
         // Load proxies, stripping any blank lines
         $proxies = $request->get('proxies');
         $proxies = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $proxies);
@@ -34,6 +39,7 @@ class ProxyController extends Controller
 
         foreach ($proxies as $proxy) {
             $proxy = Proxy::firstOrNew(['url' => $proxy]);
+            $proxy->provider = $provider;
             $proxy->save();
         }
 
