@@ -30,7 +30,8 @@ timedatectl set-timezone Etc/UTC
 
 read -p "Enter the domain name you'll access Twinleaf from: " _HOSTNAME
 read -p "Enter a name for the admin user: " _USERNAME
-read -p "Enter password: " _PASSWORD
+echo "Enter password: "
+read -s _PASSWORD
 
 
 header "Preparing software repositories..."
