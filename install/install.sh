@@ -26,8 +26,6 @@ function header {
     echo
 }
 
-timedatectl set-timezone Etc/UTC
-
 read -p "Enter the domain name you'll access Twinleaf from: " _HOSTNAME
 read -p "Enter a name for the admin user: " _USERNAME
 echo "Enter password: "
@@ -35,14 +33,12 @@ read -s _PASSWORD
 
 
 header "Preparing software repositories..."
-apt-get update
 add-apt-repository -y ppa:ondrej/php
 add-apt-repository -y ppa:certbot/certbot
 apt-get update
 
 
 header "Installing required software..."
-apt-get install -y build-essential curl git htop tmux tree unzip wget zsh
 apt-get install -y python python-dev python-pip python-software-properties
 apt-get install -y nginx nodejs-legacy npm python-certbot-nginx openjdk-8-jre-headless
 pip install --upgrade pip
