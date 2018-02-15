@@ -44,19 +44,13 @@ apt-get install -y nginx nodejs-legacy npm python-certbot-nginx openjdk-8-jre-he
 pip install --upgrade pip
 pip install virtualenv
 
-apt-get install -y mysql-client mysql-server php7.1 php7.1-fpm php7.1-mbstring php7.1-mysql php7.1-xml
+. mysql/install.sh
+apt-get install -y php7.1 php7.1-fpm php7.1-mbstring php7.1-mysql php7.1-xml
 wget -4 https://getcomposer.org/installer && php installer --install-dir=/usr/local/bin --filename=composer
 
 
 header "Configuring MySQL..."
-mysql_secure_installation
-echo "Increasing file and connection limits..."
-echo "LimitNOFILE=100000" >> /lib/systemd/system/mysql.service
-echo "max_connections = 1500" >> /etc/mysql/mysql.conf.d/mysqld.cnf
-echo "mysql soft nofile 81920\nmysql hard nofile 99920" >> /etc/security/limits.conf
-echo "Applying config..."
-systemctl daemon-reload
-systemctl restart mysql.service
+. mysql/postinstall.sh
 
 
 header "Configuring Twinleaf user"
