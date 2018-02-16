@@ -52,8 +52,10 @@ echo "$username ALL_(ALL) ALL" > /etc/sudoers.d/$username && echo " [OK]"
 echo
 echo
 echo "Installing essential software..."
-apt-get update
-apt-get install -qq build-essential curl git htop tmux tree ufw unzip wget zsh
+. install/software/core.sh
+. install/software/rocketmap.sh
+. install/software/kinan.sh
+. install/software/web.sh
 
 
 echo

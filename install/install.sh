@@ -32,26 +32,6 @@ echo "Enter password: "
 read -s _PASSWORD
 
 
-header "Preparing software repositories..."
-add-apt-repository -y ppa:ondrej/php
-add-apt-repository -y ppa:certbot/certbot
-apt-get update
-
-
-header "Installing required software..."
-apt-get install -y python python-dev python-pip python-software-properties
-apt-get install -y nginx nodejs-legacy npm python-certbot-nginx openjdk-8-jre-headless
-pip install --upgrade pip
-pip install virtualenv
-
-. mysql/install.sh
-apt-get install -y php7.1 php7.1-curl php7.1-fpm php7.1-gd php7.1-mbstring php7.1-mysql php7.1-xml php7.1-zip
-wget -4 https://getcomposer.org/installer && php installer --install-dir=/usr/local/bin --filename=composer
-
-
-header "Configuring MySQL..."
-. mysql/postinstall.sh
-
 
 header "Configuring Twinleaf user"
 echo "Creating user..."
