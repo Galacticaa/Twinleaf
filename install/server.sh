@@ -178,6 +178,7 @@ echo
 echo
 echo "Configuring Firewall..."
 ufw allow OpenSSH
+ufw limit ssh/tcp
 ufw allow Nginx\ Full
 ufw allow from $userIp to any port 873  # rsync
 ufw allow from $userIp to any port 3306 # mysql
