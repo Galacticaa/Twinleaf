@@ -127,16 +127,16 @@ echo
 echo
 echo
 echo "Installing MySQL..."
+debconf-set-selections <<< "mysql-server mysql-server/root_password password $mysqlRootPass"
+debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $mysqlRootPass"
 apt-get install -qq mysql-client mysql-server
 echo
 
 # Emulating mysql_secure_installation
-echo -n "Setting root password..."
-query "UPDATE mysql.user SET Password=PASSWORD('$mysqlRootPass') WHERE User='root'"
 echo -n "Preventing remote root login..."
 query "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')"
 echo -n "Removing anonymous users..."
-query "DELETE FROM mysql.user WHERE USER=''"
+query "DELETE FROM mysql.user WHERE User=''"
 echo -n "Dropping test database..."
 query "DROP DATABASE test"
 echo -n "Removing related privileges..."
@@ -178,10 +178,11 @@ echo
 echo
 echo "Configuring Firewall..."
 ufw allow OpenSSH
+ufw limit ssh/tcp
 ufw allow Nginx\ Full
 ufw allow from $userIp to any port 873  # rsync
 ufw allow from $userIp to any port 3306 # mysql
-ufw enable
+ufw --force enable
 ufw status
 echo
 
@@ -201,7 +202,7 @@ echo
 echo
 echo -n "Creating your personal non-root user '$username'..."
 useradd -mg users -G root,systemd-journal,www-data $username && echo " [OK]"
-echo "Adding you to the sudoers file..."
+echo -n "Adding you to the sudoers file..."
 echo "$username ALL_(ALL) ALL" > /etc/sudoers.d/$username && echo " [OK]"
 echo
 
