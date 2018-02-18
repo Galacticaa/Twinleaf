@@ -127,12 +127,12 @@ echo
 echo
 echo
 echo "Installing MySQL..."
+debconf-set-selections <<< "mysql-server mysql-server/root_password password $mysqlRootPass"
+debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $mysqlRootPass"
 apt-get install -qq mysql-client mysql-server
 echo
 
 # Emulating mysql_secure_installation
-echo -n "Setting root password..."
-query "UPDATE mysql.user SET Password=PASSWORD('$mysqlRootPass') WHERE User='root'"
 echo -n "Preventing remote root login..."
 query "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')"
 echo -n "Removing anonymous users..."
