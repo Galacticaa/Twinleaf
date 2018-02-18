@@ -75,19 +75,12 @@ cp /root/.ssh/authorized_keys2 /etc/skel/.ssh/ && echo " [OK]"
 
 echo
 echo
-echo -n "Creating your personal non-root user '$username'..."
-useradd -mg users -G root,systemd-journal,www-data $username && echo " [OK]"
-echo "Adding you to the sudoers file..."
-echo "$username ALL_(ALL) ALL" > /etc/sudoers.d/$username && echo " [OK]"
-
-
-echo
-echo
 echo "Installing essential software..."
 . install/software/core.sh
 . install/software/rocketmap.sh
 . install/software/kinan.sh
 . install/software/web.sh
+echo
 
 
 echo
@@ -95,7 +88,16 @@ echo
 if [[ -z "$githubUser" ]]; then
     echo "Skipping dotfiles, no Github username set."
 else
-    echo "Clone the dotfiles to user's homedir..."
+    echo "Cloning your dotfiles from Github..."
     git clone https://github.com/$githubUser/dotfiles.git /etc/skel/dotfiles
 fi
+echo
+
+
+echo
+echo
+echo -n "Creating your personal non-root user '$username'..."
+useradd -mg users -G root,systemd-journal,www-data $username && echo " [OK]"
+echo "Adding you to the sudoers file..."
+echo "$username ALL_(ALL) ALL" > /etc/sudoers.d/$username && echo " [OK]"
 echo
