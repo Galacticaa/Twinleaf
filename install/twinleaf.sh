@@ -26,40 +26,11 @@ function header {
     echo
 }
 
-timedatectl set-timezone Etc/UTC
-
 read -p "Enter the domain name you'll access Twinleaf from: " _HOSTNAME
 read -p "Enter a name for the admin user: " _USERNAME
-read -p "Enter password: " _PASSWORD
+echo "Enter password: "
+read -s _PASSWORD
 
-
-header "Preparing software repositories..."
-apt-get update
-add-apt-repository -y ppa:ondrej/php
-add-apt-repository -y ppa:certbot/certbot
-apt-get update
-
-
-header "Installing required software..."
-apt-get install -y build-essential curl git htop tmux tree unzip wget zsh
-apt-get install -y python python-dev python-pip python-software-properties
-apt-get install -y nginx nodejs-legacy npm python-certbot-nginx openjdk-8-jre-headless
-pip install --upgrade pip
-pip install virtualenv
-
-apt-get install -y mysql-client mysql-server php7.1 php7.1-fpm php7.1-mbstring php7.1-mysql php7.1-xml
-wget -4 https://getcomposer.org/installer && php installer --install-dir=/usr/local/bin --filename=composer
-
-
-header "Configuring MySQL..."
-mysql_secure_installation
-echo "Increasing file and connection limits..."
-echo "LimitNOFILE=100000" >> /lib/systemd/system/mysql.service
-echo "max_connections = 1500" >> /etc/mysql/mysql.conf.d/mysqld.cnf
-echo "mysql soft nofile 81920\nmysql hard nofile 99920" >> /etc/security/limits.conf
-echo "Applying config..."
-systemctl daemon-reload
-systemctl restart mysql.service
 
 
 header "Configuring Twinleaf user"
@@ -117,7 +88,7 @@ rm /tmp/crontab
 
 header "Configuring Git"
 echo "Creating SSH key for Twinleaf..."
-sudo -u twinleaf ssh-keygen -t rsa -b 4096 -N '' -f /home/twinleaf/.ssh/id_rsa
+sudo -Hu twinleaf ssh-keygen -t rsa -b 4096 -N '' -f /home/twinleaf/.ssh/id_rsa
 echo "Saving host key for Bitbucket..."
 ssh-keyscan -t rsa bitbucket.org | sudo -Hu twinleaf tee -a /home/twinleaf/.ssh/known_hosts
 echo "Saving host key for Github..."
