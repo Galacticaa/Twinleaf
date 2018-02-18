@@ -136,7 +136,7 @@ echo
 echo -n "Preventing remote root login..."
 query "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')"
 echo -n "Removing anonymous users..."
-query "DELETE FROM mysql.user WHERE USER=''"
+query "DELETE FROM mysql.user WHERE User=''"
 echo -n "Dropping test database..."
 query "DROP DATABASE test"
 echo -n "Removing related privileges..."
@@ -201,7 +201,7 @@ echo
 echo
 echo -n "Creating your personal non-root user '$username'..."
 useradd -mg users -G root,systemd-journal,www-data $username && echo " [OK]"
-echo "Adding you to the sudoers file..."
+echo -n "Adding you to the sudoers file..."
 echo "$username ALL_(ALL) ALL" > /etc/sudoers.d/$username && echo " [OK]"
 echo
 
