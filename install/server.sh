@@ -15,6 +15,38 @@ echo
 
 echo
 echo
+echo "It's never a good idea to leave MySQL without a root"
+echo "password. Choose one now and we'll set it for you."
+
+mysqlRootPass=""
+set_mysql_pass() {
+    read -sp "New password: " password
+    echo
+    read -sp "Confirm new password: " passconf
+    echo
+
+    ret=1
+    if [ "$password" != "$passconf" ]; then
+        echo "Sorry, passwords do not match."
+    elif [ "$password" = "" ]; then
+        echo "Sorry, you can't use an empty password here."
+    else
+        mysqlRootPass=$password; ret=0
+    fi
+
+    echo; return $ret
+}
+
+status=1
+while [ $status -eq 1 ]; do
+    set_mysql_pass
+
+    status=$?
+done
+echo
+
+echo
+echo
 echo "Thanks! Let's start configuring some things."
 echo
 
