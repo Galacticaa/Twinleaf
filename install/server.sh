@@ -54,6 +54,12 @@ echo
 
 echo
 echo
+echo "MySQL and Rsync will be restricted by firewall."
+read -p "Enter your IP Address: " userIp
+echo
+
+echo
+echo
 echo "Time to start setting up the server!"
 echo
 
@@ -165,6 +171,18 @@ echo
 echo
 echo "Installing Composer..."
 wget -4 https://getcomposer.org/installer && php installer --install-dir=/usr/local/bin --filename=composer
+echo
+
+
+echo
+echo
+echo "Configuring Firewall..."
+ufw allow OpenSSH
+ufw allow Nginx\ Full
+ufw allow from $userIp to any port 873  # rsync
+ufw allow from $userIp to any port 3306 # mysql
+ufw enable
+ufw status
 echo
 
 
