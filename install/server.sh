@@ -121,7 +121,7 @@ cp /root/.ssh/authorized_keys2 /etc/skel/.ssh/ && echo " [OK]"
 
 header "Installing essential software..."
 apt-get update
-apt-get install -qq build-essential curl git htop tmux tree ufw unzip wget zsh
+apt-get install -qq acl build-essential curl git htop tmux tree ufw unzip wget zsh
 echo
 
 
@@ -257,6 +257,7 @@ cd /home/twinleaf/twinleaf
 echo "Setting permissions..."
 chmod 0440 /etc/sudoers.d/*
 chmod -R g+s . && chmod -R ug+rwx bin storage bootstrap/cache
+setfacl -Rdm g:www-data:rw /home/twinleaf/twinleaf/storage
 
 
 echo -n "Creating database..."
