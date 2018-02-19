@@ -26,9 +26,11 @@ function header {
     echo
 }
 
-if [ ! "$(type -t query)" != 'function' ]; then
-    config="./.my.cnf"
+if [ -z "$config" ]; then
+    config="/tmp/.my.cnf"
+fi
 
+if [ "$(type -t query)" != 'function' ]; then
     query() {
         mysql --defaults-file="$config" -e "$1" && echo " [OK]"
     }
@@ -53,7 +55,8 @@ fi
 header "Configuring Twinleaf user"
 echo "Creating user..."
 useradd -mNg www-data -G root -s /bin/zsh twinleaf
-passwd twinleaf
+echo "twinleaf:$twinleafPass" | chpasswd
+
 echo "Adding users to sudoers..."
 echo "twinleaf ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/twinleaf
 echo "www-data ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/www-data
@@ -71,7 +74,7 @@ chmod -R g+s . && chmod -R ug+rwx bin storage bootstrap/cache
 
 
 echo "Creating database..."
-query "CREATE DATABASE twinleaf"
+query "CREATE DATABASE IF NOT EXISTS twinleaf"
 
 echo "Writing database config..."
 sudo -Hu twinleaf cp install/.env .env

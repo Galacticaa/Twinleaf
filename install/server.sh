@@ -66,10 +66,10 @@ echo
 
 echo
 echo
-echo -n "Setting locales..."
+echo "Setting locales..."
 echo "en_GB.UTF-8 UTF-8" > /etc/locale.gen
 echo "en_GB ISO-8859-1" >> /etc/locale.gen
-locale-gen && echo " [OK]"
+locale-gen
 echo
 
 
@@ -78,6 +78,14 @@ echo
 echo -n "Setting timezone..."
 echo "Etc/UTC" > /etc/timezone
 timedatectl set-timezone Etc/UTC && echo " [OK]"
+echo
+
+
+echo
+echo
+echo -n "Configuring shell..."
+wget -qO /tmp/termite.terminfo https://raw.githubusercontent.com/thestinger/termite/master/termite.terminfo
+tic -x /tmp/termite.terminfo && echo "[ OK]"
 echo
 
 
@@ -138,7 +146,7 @@ query "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '1
 echo -n "Removing anonymous users..."
 query "DELETE FROM mysql.user WHERE User=''"
 echo -n "Dropping test database..."
-query "DROP DATABASE test"
+query "DROP DATABASE IF EXISTS test"
 echo -n "Removing related privileges..."
 query "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'"
 echo -n "Reloading privileges..."
@@ -208,12 +216,7 @@ echo
 
 echo
 echo
-echo "All done!"
-echo
-
-echo
-echo
-read -n1 -srp "Press any key to install Twinleaf..."
+echo "All done! Proceeding to install Twinleaf..."
 echo
 
 wget -qO /tmp/twinleaf-install https://raw.githubusercontent.com/Galacticaa/Twinleaf/master/install/twinleaf.sh
