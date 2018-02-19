@@ -45,10 +45,12 @@
         @endforeach
         @endforeach
 
+        @if (isset($area))
         map.setCenter({lat: {{ $area->lat }}, lng: {{ $area->lng }}});
         google.maps.event.addListenerOnce(map, 'bounds_changed', function() {
             panandzoom();
         });
+        @endif
     }
 
     function justzoom() {
