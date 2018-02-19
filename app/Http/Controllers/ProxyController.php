@@ -67,6 +67,12 @@ class ProxyController extends Controller
 
     public function check(Request $request)
     {
+        $proxies = Proxy::dueBanCheck()->get();
+
+        if (!$proxies->count()) {
+            return redirect()->route('proxies.index');
+        }
+
         return view('proxies.check')->with('proxies', Proxy::dueBanCheck()->get());
     }
 
