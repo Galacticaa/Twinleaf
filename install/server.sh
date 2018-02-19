@@ -223,6 +223,8 @@ echo
 header "Setting up your account"
 echo -n "Creating user '$username'..."
 useradd -mg users -G root,systemd-journal,www-data $username && echo " [OK]"
+echo -n "Setting your password..."
+echo "$username:$twinleafPass" | chpasswd && echo " [OK]"
 echo -n "Adding you to the sudoers file..."
 echo "$username ALL=(ALL) ALL" > /etc/sudoers.d/$username && echo " [OK]"
 echo
