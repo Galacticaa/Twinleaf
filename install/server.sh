@@ -83,6 +83,14 @@ echo
 
 echo
 echo
+echo -n "Configuring shell..."
+wget -qO /tmp/termite.terminfo https://raw.githubusercontent.com/thestinger/termite/master/termite.terminfo
+tic -x /tmp/termite.terminfo && echo "[ OK]"
+echo
+
+
+echo
+echo
 echo -n "Preparing skeleton user..."
 mkdir /etc/skel/.ssh
 cp /root/.ssh/authorized_keys2 /etc/skel/.ssh/ && echo " [OK]"
