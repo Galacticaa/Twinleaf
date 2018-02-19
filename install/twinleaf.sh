@@ -26,9 +26,11 @@ function header {
     echo
 }
 
-if [ ! "$(type -t query)" != 'function' ]; then
-    config="./.my.cnf"
+if [ -z "$config" ]; then
+    config="/tmp/.my.cnf"
+fi
 
+if [ "$(type -t query)" != 'function' ]; then
     query() {
         mysql --defaults-file="$config" -e "$1" && echo " [OK]"
     }
