@@ -1,7 +1,7 @@
 #!/bin/bash
 
 status=1
-config=".my.cnf"
+config="/tmp/.my.cnf"
 mysqlRootPass=""
 
 set_mysql_pass() {
@@ -151,8 +151,6 @@ echo -n "Removing related privileges..."
 query "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'"
 echo -n "Reloading privileges..."
 query "FLUSH PRIVILEGES"
-echo -n "Cleaning up..."
-rm -f $config && echo " [OK]"
 
 # Configure some limits
 echo "Increasing file and connection limits..."
