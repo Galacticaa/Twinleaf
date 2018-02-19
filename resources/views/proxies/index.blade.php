@@ -151,7 +151,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="4"><p class="lead text-center">There aren't any proxies!</p></td>
+                    <td colspan="5"><p class="lead text-center">There aren't any proxies!</p></td>
                 </tr>
                 @endforelse
             </tbody>
