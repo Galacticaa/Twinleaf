@@ -9,6 +9,7 @@ use Twinleaf\Discord\Channel;
 use Twinleaf\Discord\Config;
 use RestCord\Model\Channel\Overwrite;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Schema;
 
 class DiscordPrep extends Command
 {
@@ -70,6 +71,10 @@ class DiscordPrep extends Command
     public function __construct()
     {
         parent::__construct();
+
+        if (!Schema::hasTable('map_areas')) {
+            return;
+        }
 
         $this->areas = MapArea::enabled()->get();
 
