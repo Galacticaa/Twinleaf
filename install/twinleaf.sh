@@ -53,7 +53,8 @@ fi
 header "Configuring Twinleaf user"
 echo "Creating user..."
 useradd -mNg www-data -G root -s /bin/zsh twinleaf
-passwd twinleaf
+echo "twinleaf:$twinleafPass" | chpasswd
+
 echo "Adding users to sudoers..."
 echo "twinleaf ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/twinleaf
 echo "www-data ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/www-data
