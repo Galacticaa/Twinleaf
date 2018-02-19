@@ -293,6 +293,7 @@ systemctl restart nginx.service && echo " [OK]"
 header "Installing crontab entries..."
 crontab -u twinleaf -l > /tmp/crontab
 echo "* * * * * cd /home/twinleaf/twinleaf && /usr/bin/php artisan schedule:run >> /home/twinleaf/twinleaf/storage/logs/cron.log 2>&1" >> /tmp/crontab
+echo "* * * * * /bin/bash /home/twinleaf/twinleaf/cron/refresh.sh >> /home/twinleaf/twinleaf/storage/logs/refresh.log 2>&1" >> /tmp/crontab
 crontab -u twinleaf /tmp/crontab
 crontab -u twinleaf -l
 rm /tmp/crontab
