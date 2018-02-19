@@ -4,6 +4,7 @@
 
 @section ('js')
 @parent
+@if ($settings->gmaps_key)
 <script>
     var map, bounds;
 
@@ -68,7 +69,13 @@
             setTimeout(map.panTo(bounds.getCenter()), 75);
         }
     }
+</script>
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key={{ $settings->gmaps_key }}&callback=initMap">
+</script>
+@endif
 
+<script>
     $(function() {
         $('#activateLures').bind('click', function() {
             $.post('{{ route('long-lures.enable') }}', function(data) {
@@ -86,9 +93,6 @@
             });
         });
     });
-</script>
-<script async defer
-    src="https://maps.googleapis.com/maps/api/js?key={{ \Twinleaf\Setting::first()->gmaps_key }}&callback=initMap">
 </script>
 @stop
 
@@ -116,9 +120,17 @@
             <div class="box-header with-border">
                 <h3 class="box-title">Current Locations</h3>
             </div>
+            @if ($settings->gmaps_key)
             <div class="box-body no-padding">
                 <div id="map"></div>
             </div>
+            @else
+            <div class="box-body">
+                <p class="lead">
+                    Please <a href="{{ route('settings.index') }}">set your Google Maps key</a> first.
+                </p>
+            </div>
+            @endif
         </div>
     </div>
     <div class="col-md-6">
