@@ -66,10 +66,10 @@ echo
 
 echo
 echo
-echo -n "Setting locales..."
+echo "Setting locales..."
 echo "en_GB.UTF-8 UTF-8" > /etc/locale.gen
 echo "en_GB ISO-8859-1" >> /etc/locale.gen
-locale-gen && echo " [OK]"
+locale-gen
 echo
 
 
