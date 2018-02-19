@@ -72,7 +72,7 @@ chmod -R g+s . && chmod -R ug+rwx bin storage bootstrap/cache
 
 
 echo "Creating database..."
-query "CREATE DATABASE twinleaf"
+query "CREATE DATABASE IF NOT EXISTS twinleaf"
 
 echo "Writing database config..."
 sudo -Hu twinleaf cp install/.env .env
