@@ -21,7 +21,7 @@ class Discord
         }
 
         $this->client = new DiscordClient([
-            'token' => $this->config->bot_token,
+            'token' => $this->config->bot_token ?? 'none',
             'logger' => Log::getMonolog(),
         ]);
     }
