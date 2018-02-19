@@ -21,7 +21,7 @@ function header {
     echo
     echo
     echo ' '$border
-    echo ' $   '$1'   #'
+    echo ' #   '$1'   #'
     echo ' '$border
     echo
 }
@@ -65,7 +65,7 @@ chmod 0440 /etc/sudoers.d/twinleaf
 chmod -R g+s . && chmod -R ug+rwx bin storage bootstrap/cache
 
 
-echo "Creating database..."
+echo -n "Creating database..."
 query "CREATE DATABASE IF NOT EXISTS twinleaf"
 echo -n "Cleaning up..."
 rm -f $config && echo " [OK]"
