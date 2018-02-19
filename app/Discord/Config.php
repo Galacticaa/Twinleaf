@@ -30,6 +30,28 @@ class Config extends Model
         'colours' => 'array',
     ];
 
+    /**
+     * An array of team names
+     *
+     * @var array
+     */
+    protected $teams = ['instinct', 'mystic', 'valor'];
+
+    public function getColoursAttribute($colours)
+    {
+        $colours = $colours ?? [];
+
+        foreach ($this->teams as $team) {
+            if (array_key_exists($team, $colours)) {
+                continue;
+            }
+
+            $colours[$team] = null;
+        }
+
+        return $colours;
+    }
+
     public function coloursAsInt()
     {
         $colours = $this->colours;

@@ -263,7 +263,7 @@ setfacl -Rdm g:www-data:rw /home/twinleaf/twinleaf/storage
 
 
 echo -n "Creating database..."
-query "CREATE DATABASE IF NOT EXISTS twinleaf" && echo " [OK]"
+query "CREATE DATABASE IF NOT EXISTS twinleaf"
 echo -n "Cleaning up..."
 rm -f $config && echo " [OK]"
 

@@ -38,7 +38,9 @@
         <button class="btn btn-default pull-right" data-toggle="modal" data-target="#importModal">
             <i class="fa fa-upload"></i> Import
         </button>
-        <a class="btn bg-purple mb-10" href="{{ route('proxies.check') }}">
+        <a class="btn bg-purple mb-10"
+            href="{{ route('proxies.check') }}"
+            @if (!$proxies->count()) disabled @endif>
             <i class="fa fa-search"></i> Run ban check
         </a>
         <div id="importModal" class="modal fade" tabindex="-1" role="dialog" aria-labelled-by="importModalLabel">
@@ -149,7 +151,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="4"><p class="lead text-center">There aren't any proxies!</p></td>
+                    <td colspan="5"><p class="lead text-center">There aren't any proxies!</p></td>
                 </tr>
                 @endforelse
             </tbody>

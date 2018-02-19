@@ -35,6 +35,10 @@ class DiscordController extends Controller
      */
     public function cleanup()
     {
+        if (!$this->guildId) {
+            return redirect()->action('Discord\ConfigController@index');
+        }
+
         $channels = collect($this->guild()->getGuildChannels([
             'guild.id' => $this->guildId
         ]))->sortBy(function ($channel, $key) {
