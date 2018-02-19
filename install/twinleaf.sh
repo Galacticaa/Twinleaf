@@ -26,10 +26,28 @@ function header {
     echo
 }
 
+if [ ! "$(type -t query)" != 'function' ]; then
+    config="./.my.cnf"
+
+    query() {
+        mysql --defaults-file="$config" -e "$1" && echo " [OK]"
+    }
+fi
+
 read -p "Enter the domain name you'll access Twinleaf from: " _HOSTNAME
 read -p "Enter a name for the admin user: " _USERNAME
 echo "Enter password: "
 read -s _PASSWORD
+
+echo
+echo
+if [ -z "$mysqlRootPass" ]; then
+    read -sp "Enter the MySQL root password: " mysqlRootPass
+
+    echo "[mysql]" > $config
+    echo "user=root" >> $config
+    echo "password='$mysqlRootPass'" >> $config
+fi
 
 
 
@@ -54,13 +72,12 @@ chmod -R g+s . && chmod -R ug+rwx bin storage bootstrap/cache
 
 
 echo "Creating database..."
-read -p "Enter the password for the MySQL root user: " _PASSWORD
-echo "CREATE DATABASE twinleaf" | mysql -u root -p$_PASSWORD
+query "CREATE DATABASE twinleaf"
 
 echo "Writing database config..."
 sudo -Hu twinleaf cp install/.env .env
 sudo -Hu twinleaf sed -i 's/_URL_/http:\/\/'$_HOSTNAME'/' .env
-sudo -Hu twinleaf sed -i 's/_PASS_/'$_PASSWORD'/' .env
+sudo -Hu twinleaf sed -i 's/_PASS_/'$mysqlRootPass'/' .env
 
 echo "Installing dependencies..."
 sudo -Hu twinleaf composer install
@@ -73,7 +90,7 @@ sudo -Hu twinleaf php artisan migrate --seed
 header "Configuring web server..."
 cp install/vhost.conf /etc/nginx/sites-available/twinleaf.conf
 sed -i 's/_HOSTNAME_/'$_HOSTNAME'/g' /etc/nginx/sites-available/twinleaf.conf
-echo "$_USERNAME:$(openssl passwd -crypt $_PASSWORD)" >> /home/twinleaf/twinleaf/.htpasswd
+echo "$_USERNAME:$(openssl passwd -crypt $twinleafPass)" >> /home/twinleaf/twinleaf/.htpasswd
 ln -fs /etc/nginx/sites-available/twinleaf.conf /etc/nginx/sites-enabled/
 echo "Applying configuration..."
 systemctl restart nginx.service
