@@ -290,6 +290,8 @@ echo -n "Enabling virtual host..."
 ln -fs /etc/nginx/sites-available/twinleaf.conf /etc/nginx/sites-enabled/ && echo " [OK]"
 echo -n "Applying configuration..."
 systemctl restart nginx.service && echo " [OK]"
+echo "Configuring SSL..."
+certbot --nginx --agree-tos -d $twinleafUrl -m "$twinleafEmail"
 
 
 header "Installing crontab entries..."
