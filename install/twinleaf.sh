@@ -80,7 +80,7 @@ sudo -Hu twinleaf composer install
 echo "Generating unique application key..."
 sudo -Hu twinleaf php artisan key:generate
 echo "Migrating database..."
-sudo -Hu twinleaf php artisan migrate --seed
+sudo -Hu twinleaf php artisan migrate --force --seed
 
 
 header "Configuring web server..."
