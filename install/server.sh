@@ -138,7 +138,7 @@ query "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '1
 echo -n "Removing anonymous users..."
 query "DELETE FROM mysql.user WHERE User=''"
 echo -n "Dropping test database..."
-query "DROP DATABASE test"
+query "DROP DATABASE IF EXISTS test"
 echo -n "Removing related privileges..."
 query "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'"
 echo -n "Reloading privileges..."
