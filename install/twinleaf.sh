@@ -42,14 +42,6 @@ read -sp "Enter password: " twinleafPass
 
 echo
 echo
-if [ -z "$mysqlRootPass" ]; then
-    read -sp "Enter the MySQL root password: " mysqlRootPass
-
-    echo "[mysql]" > $config
-    echo "user=root" >> $config
-    echo "password='$mysqlRootPass'" >> $config
-fi
-
 
 
 header "Configuring Twinleaf user"
@@ -75,6 +67,8 @@ chmod -R g+s . && chmod -R ug+rwx bin storage bootstrap/cache
 
 echo "Creating database..."
 query "CREATE DATABASE IF NOT EXISTS twinleaf"
+echo -n "Cleaning up..."
+rm -f $config && echo " [OK]"
 
 echo "Writing database config..."
 sudo -Hu twinleaf cp install/.env .env
