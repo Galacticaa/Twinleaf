@@ -203,7 +203,7 @@ echo
 echo -n "Creating your personal non-root user '$username'..."
 useradd -mg users -G root,systemd-journal,www-data $username && echo " [OK]"
 echo -n "Adding you to the sudoers file..."
-echo "$username ALL_(ALL) ALL" > /etc/sudoers.d/$username && echo " [OK]"
+echo "$username ALL=(ALL) ALL" > /etc/sudoers.d/$username && echo " [OK]"
 echo
 
 echo
