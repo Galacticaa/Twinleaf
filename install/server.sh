@@ -216,12 +216,7 @@ echo
 
 echo
 echo
-echo "All done!"
-echo
-
-echo
-echo
-read -n1 -srp "Press any key to install Twinleaf..."
+echo "All done! Proceeding to install Twinleaf..."
 echo
 
 wget -qO /tmp/twinleaf-install https://raw.githubusercontent.com/Galacticaa/Twinleaf/master/install/twinleaf.sh
