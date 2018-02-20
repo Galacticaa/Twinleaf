@@ -39,7 +39,7 @@ class Config extends Model
 
     public function getColoursAttribute($colours)
     {
-        $colours = $colours ?? [];
+        $colours = $colours ? json_decode($colours) : [];
 
         foreach ($this->teams as $team) {
             if (array_key_exists($team, $colours)) {
