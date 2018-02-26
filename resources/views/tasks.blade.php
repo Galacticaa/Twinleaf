@@ -48,10 +48,12 @@
                     <td>Account Creator</td>
                     @if (!$creator->isInstalled())
                     <td class="text-danger"><i class="fa fa-circle"></i> Not installed!</td>
-                    <td colspan="2"></td>
+                    <td></td>
+                    <td></td>
                     @elseif (!$creator->isRunning())
                     <td class="text-muted"><i class="fa fa-circle"></i> Inactive</td>
-                    <td colspan="2"></td>
+                    <td></td>
+                    <td></td>
                     @else
                     <td class="text-success"><i class="fa fa-circle"></i> Working</td>
                     <td>{{ $processes[$creatorPid]['cpu'] }}%</td>
@@ -77,8 +79,10 @@
                     <td>{{ $processes[$mapPid]['mem'] }}%</td>
                     @else
                     <td class="text-danger"><i class="fa fa-circle"></i> Not running!</td>
-                    <td colspan="3"></td>
+                    <td></td>
+                    <td></td>
                     @endif
+                    <td></td>
                 </tr>
                 @foreach ($map->areas()->whereIsEnabled(true)->get() as $area)
                 @foreach ($area->getPids() ?: [0] as $areaPid)
@@ -93,8 +97,10 @@
                     <td>{{ $processes[$areaPid]['mem'] }}%</td>
                     @else
                     <td class="text-danger"><i class="fa fa-circle"></i> Not running!</td>
-                    <td colspan="3"></td>
+                    <td></td>
+                    <td></td>
                     @endif
+                    <td></td>
                 </tr>
                 @endforeach
                 @endforeach
