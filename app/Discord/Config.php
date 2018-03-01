@@ -49,7 +49,7 @@ class Config extends Model
             $colours[$team] = null;
         }
 
-        return $colours;
+        return is_array($colours) ? (object) $colours : $colours;
     }
 
     public function coloursAsInt()
@@ -57,7 +57,7 @@ class Config extends Model
         $colours = $this->colours;
 
         foreach ($colours as $key => $colour) {
-            $colours[$key] = hexdec($colour);
+            $colours->$key = hexdec($colour);
         }
 
         return $colours;
