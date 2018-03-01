@@ -1,6 +1,7 @@
 <?php
 
 use Twinleaf\Services\KinanCore;
+use Twinleaf\Services\KinanMail;
 use Twinleaf\Map;
 use Twinleaf\Setting;
 
@@ -60,6 +61,7 @@ Route::get('tasks', function () {
 
     return view('tasks', [
         'creator' => new KinanCore,
+        'activator' => new KinanMail,
         'processes' => $processes,
         'maps' => $maps,
     ]);

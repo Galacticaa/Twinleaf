@@ -68,6 +68,27 @@
                 </tr>
                 @endforeach
 
+                @foreach ($activator->getPids() ?: [0] as $pid)
+                <tr>
+                    <td>{{ $pid }}</td>
+                    <td>Account Activator</td>
+                    @if (!$activator->isInstalled())
+                    <td class="text-danger"><i class="fa fa-circle"></i> Not installed!</td>
+                    <td></td>
+                    <td></td>
+                    @elseif ($activator->isRunning())
+                    <td class="text-muted"><i class="fa fa-circle"></i> Inactive</td>
+                    <td></td>
+                    <td></td>
+                    @else
+                    <td class="text-success"><i class="fa fa-circle"></i> Working</td>
+                    <td>{{ $processes[$pid]['cpu'] }}%</td>
+                    <td>{{ $processes[$pid]['mem'] }}%</td>
+                    @endif
+                    <td></td>
+                </tr>
+                @endforeach
+
                 @foreach ($maps as $map)
                 @foreach ($map->getPids() ?: [0] as $mapPid)
                 <tr>
