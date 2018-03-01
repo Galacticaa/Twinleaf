@@ -2,7 +2,7 @@ hash-key: {{ $config->hash_key }}
 gmaps-key: {{ $config->gmaps_key }}
 
 location: {{ $area->location ?? '42.421,141.1' }}
-status-name: {{ $area->name }}
+status-name: {{ str_replace('&', 'and', $area->name) }}
 @if ($area->radius)
 step-limit: {{ $area->radius }}
 @endif

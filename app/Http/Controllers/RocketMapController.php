@@ -25,7 +25,7 @@ class RocketMapController extends Controller
         $checkFile = $mapDir.'/.twinleaf_downloaded';
 
         if (file_exists($checkFile)) {
-            return ['downloaded' => true];
+            return ['success' => true];
         } elseif (!is_dir($mapRoot)) {
             exec("{$sudo} mkdir -pv {$mapRoot} 2>&1", $output);
         } elseif (is_dir($mapDir)) {

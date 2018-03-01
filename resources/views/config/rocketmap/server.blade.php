@@ -2,9 +2,14 @@ host: 0.0.0.0
 port: {{ 8000 + $map->id }}
 
 name: {{ $map->name }}
+@if (str_contains($map->url, '/map'))
+meta-url: {{ str_replace('/map', '', $map->url) }}
+web-uri: /map
+@else
+meta-url: {{ $map->url }}
+@endif
 meta-description: {{ $map->description }}
 meta-image: {{ $map->image_url }}
-meta-url: {{ $map->url }}
 
 gmaps-key: {{ $config->gmaps_key }}
 @if ($map->analytics_key)

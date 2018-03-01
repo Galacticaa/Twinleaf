@@ -1,6 +1,7 @@
 <?php
 
 use Twinleaf\Services\KinanCore;
+use Twinleaf\Services\KinanMail;
 use Twinleaf\Map;
 use Twinleaf\Setting;
 
@@ -52,6 +53,9 @@ Route::get('tasks', function () {
     // Load resources for all maps at once
     exec("ps -U twinleaf -u twinleaf -o pid,%cpu,%mem,cmd", $lines);
 
+    // Activator is run via sudo
+    exec("ps -U root -u root -o pid,%cpu,%mem,cmd", $lines);
+
     foreach ($lines as $line) {
         list($pid, $cpu, $mem, $cmd) = preg_split('/\s+/', trim($line), 4);
 
@@ -60,6 +64,7 @@ Route::get('tasks', function () {
 
     return view('tasks', [
         'creator' => new KinanCore,
+        'activator' => new KinanMail,
         'processes' => $processes,
         'maps' => $maps,
     ]);
