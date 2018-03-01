@@ -128,7 +128,7 @@ class DiscordPrep extends Command
         foreach ($this->teams as $team) {
             $names['global.'.$team] = [
                 'name' => ucfirst($team),
-                'colour' => $colours[$team],
+                'colour' => $colours->$team,
             ];
         }
 
