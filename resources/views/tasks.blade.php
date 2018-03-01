@@ -76,7 +76,7 @@
                     <td class="text-danger"><i class="fa fa-circle"></i> Not installed!</td>
                     <td></td>
                     <td></td>
-                    @elseif ($activator->isRunning())
+                    @elseif (!$activator->isRunning())
                     <td class="text-muted"><i class="fa fa-circle"></i> Inactive</td>
                     <td></td>
                     <td></td>

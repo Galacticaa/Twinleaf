@@ -42,7 +42,8 @@ class KinanMail
     {
         $cmd_parts = [
             'ps axf | grep "KinanCity-mail.jar" |',
-            "grep -v grep | awk '{ print \$1 }'",
+            'grep -v grep | grep -v sudo |',
+            "awk '{ print \$1 }'",
         ];
 
         exec(implode(' ', $cmd_parts), $pids);
