@@ -4,6 +4,7 @@ namespace Twinleaf\Services;
 
 use Twinleaf\Account;
 use Twinleaf\Setting;
+use Twinleaf\Proxy;
 
 class KinanCore
 {
@@ -34,6 +35,7 @@ class KinanCore
     {
         $config = view('config.kinan')->with([
             'config' => Setting::first(),
+            'activateProxy' => Proxy::whereForActivation(true)->first(),
             'database' => (object) config('database.connections.mysql'),
         ]);
 
