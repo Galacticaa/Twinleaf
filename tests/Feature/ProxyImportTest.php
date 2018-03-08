@@ -29,21 +29,10 @@ class ProxyImportTest extends TestCase
             'for_scanning' => '1',
             'for_creation' => '1',
             'for_activation' => '1',
-            'proxies' => implode("\n", [
-                "127.0.0.1",
-                "192.168.1.100",
-            ]),
+            'proxies' => "127.0.0.1",
         ]);
 
         $response->assertRedirect('proxies');
-
-        $this->assertDatabaseHas('proxies', [
-            'url' => '192.168.1.100',
-            'provider' => 'lime',
-            'for_scanning' => true,
-            'for_creation' => true,
-            'for_activation' => true,
-        ]);
 
         $this->assertDatabaseHas('proxies', [
             'url' => '127.0.0.1',
