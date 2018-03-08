@@ -32,6 +32,11 @@ class ProxyController extends Controller
     {
         $provider = $request->get('provider');
         $mode = $request->get('mode');
+        $for = [
+            'scanning' => $request->get('for_scanning', false),
+            'creation' => $request->get('for_creation', false),
+            'activation' => $request->get('for_activation', false),
+        ];
 
         if ($provider && !config('proxy.providers.'.$provider)) {
             return redirect()->back()->withErrors([
@@ -59,6 +64,9 @@ class ProxyController extends Controller
         foreach ($proxies as $proxy) {
             $proxy = Proxy::firstOrNew(['url' => $proxy]);
             $proxy->provider = $provider;
+            $proxy->for_scanning = $for['scanning'];
+            $proxy->for_creation = $for['creation'];
+            $proxy->for_activation = $for['activation'];
             $proxy->save();
         }
 

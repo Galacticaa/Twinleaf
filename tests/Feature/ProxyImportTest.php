@@ -26,6 +26,9 @@ class ProxyImportTest extends TestCase
         $response = $this->from('proxies')->post('proxies/import', [
             'provider' => 'lime',
             'mode' => 'a',
+            'for_scanning' => '1',
+            'for_creation' => '1',
+            'for_activation' => '1',
             'proxies' => implode("\n", [
                 "127.0.0.1",
                 "192.168.1.100",
@@ -37,11 +40,17 @@ class ProxyImportTest extends TestCase
         $this->assertDatabaseHas('proxies', [
             'url' => '192.168.1.100',
             'provider' => 'lime',
+            'for_scanning' => true,
+            'for_creation' => true,
+            'for_activation' => true,
         ]);
 
         $this->assertDatabaseHas('proxies', [
             'url' => '127.0.0.1',
             'provider' => 'lime',
+            'for_scanning' => true,
+            'for_creation' => true,
+            'for_activation' => true,
         ]);
     }
 
@@ -51,6 +60,7 @@ class ProxyImportTest extends TestCase
         $response = $this->from('proxies')->post('proxies/import', [
             'provider' => 'lime',
             'mode' => 'a',
+            'for_scanning' => '1',
             'proxies' => implode("\n", [
                 "127.0.0.1",
                 "192.168.1.100",
@@ -80,6 +90,10 @@ class ProxyImportTest extends TestCase
             'Append',
             'Replace',
             'Purge',
+            'Usage',
+            'Scanning',
+            'Creation',
+            'Activation',
             'Proxy list',
             'name="proxies"',
         ]);
