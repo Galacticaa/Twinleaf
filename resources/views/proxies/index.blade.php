@@ -86,6 +86,23 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label class="col-sm-3">Usage</label>
+                                <div class="col-sm-9 mb-10">
+                                    <label class="radio-inline pt-0">
+                                        <input type="checkbox" name="for_scanning" value="1">
+                                        Scanning
+                                    </label>
+                                    <label class="radio-inline pt-0">
+                                        <input type="checkbox" name="for_creation" value="1">
+                                        Account Creation
+                                    </label>
+                                    <label class="radio-inline pt-0">
+                                        <input type="checkbox" name="for_activation" value="1">
+                                        Activation
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label class="col-sm-3" for="formProxies">
                                     Proxy list
                                     <small class="help-block">one per line</small>

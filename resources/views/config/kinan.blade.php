@@ -5,6 +5,10 @@ twoCaptcha.key={{ $config->captcha_key }}
 proxies={{ trim($config->proxies) }}
 @endif
 
+@if ($activateProxy)
+proxy={{ $activateProxy->url }}
+@endif
+
 # Dump results 0=never, 1=onError, 2=Always
 dumpResult=1
 
@@ -17,7 +21,6 @@ captchaMaxTotalTime=600
 # Prevent from using the same IP twice in less then N seconds (default to 15s)
 # proxy.bottleneck=15
 
-#dbHost=localhost
 dbHost={{ $database->host }}
 dbName={{ $database->database }}
 dbUser={{ $database->username }}

@@ -7,8 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Proxy extends Model
 {
+    protected $casts = [
+        'for_scanning' => 'boolean',
+        'for_creation' => 'boolean',
+        'for_activation' => 'boolean',
+    ];
+
     protected $fillable = [
         'url',
+        'for_scanning',
+        'for_creation',
+        'for_activation',
     ];
 
     public function area()
