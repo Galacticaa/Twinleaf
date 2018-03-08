@@ -54,7 +54,7 @@ class AddMapTest extends TestCase
 
         $response->assertRedirect('maps/test-map');
 
-        $this->assertDatabaseHas((new Map)->getTable(), $map);
+        $this->assertDatabaseHas('maps', $map);
     }
 
     /** @test */
