@@ -5,17 +5,18 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class ExampleTest extends TestCase
+class DashboardTest extends TestCase
 {
     /**
      * A basic test example.
      *
+     * @test
      * @return void
      */
-    public function testBasicTest()
+    public function indexRedirectsToDashboard()
     {
         $response = $this->get('/');
 
-        $response->assertStatus(200);
+        $response->assertRedirect('/dashboard');
     }
 }
