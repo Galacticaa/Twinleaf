@@ -61,13 +61,19 @@ class ProxyController extends Controller
             Proxy::whereProvider($provider)->delete();
         }
 
+        $activationSet = false;
+
         foreach ($proxies as $proxy) {
             $proxy = Proxy::firstOrNew(['url' => $proxy]);
             $proxy->provider = $provider;
             $proxy->for_scanning = $for['scanning'];
             $proxy->for_creation = $for['creation'];
-            $proxy->for_activation = $for['activation'];
+            $proxy->for_activation = $activationSet ? false : $for['activation'];
             $proxy->save();
+
+            if (!$activationSet && $for['activation']) {
+                $activationSet = true;
+            }
         }
 
         return redirect()->route('proxies.index');

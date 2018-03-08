@@ -71,6 +71,39 @@ class ProxyImportTest extends TestCase
         $response->assertSee('192.168.1.100');
     }
 
+    /** @test */
+    public function cannotAssignMultipleProxiesAsBeingUsedForActivation()
+    {
+        $response = $this->from('proxies')->post('proxies/import', [
+            'provider' => 'mpp',
+            'mode' => 'a',
+            'for_activation' => '1',
+            'for_creation' => '1',
+            'proxies' => implode("\n", [
+                '127.0.0.1',
+                '192.168.1.50',
+                '192.168.1.100',
+            ]),
+        ]);
+
+        $response->assertRedirect('proxies');
+
+        $this->assertDatabaseHas('proxies', [
+            'url' => '127.0.0.1',
+            'for_activation' => true,
+        ]);
+
+        $this->assertDatabaseHas('proxies', [
+            'url' => '192.168.1.50',
+            'for_activation' => false,
+        ]);
+
+        $this->assertDatabaseMissing('proxies', [
+            'url' => '192.168.1.100',
+            'for_activation' => true,
+        ]);
+    }
+
     protected function assertAllImportFieldsAreVisible($response)
     {
         $this->seesValues($response, [
