@@ -227,7 +227,7 @@
                         <tr>
                             <td class="{{ $area->is_enabled ? '' : 'text-muted' }}"><b>{{ $area->name }}</b></td>
                             <td>{{ $area->accounts->count() }} accounts</td>
-                            @if ($map->isInstalled() && $map->hasLatestConfig())
+                            @if ($area->isInstalled() && $area->hasLatestConfig())
                             <td class="text-success text-center">latest config</td>
                             @elseif (!$area->accounts()->count())
                             <td class="text-warning text-center">needs accounts</td>
