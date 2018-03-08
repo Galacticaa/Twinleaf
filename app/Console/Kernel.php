@@ -2,12 +2,12 @@
 
 namespace Twinleaf\Console;
 
-use Twinleaf\Services\KinanCore;
-
 use Activity;
 use Carbon\Carbon;
 use Twinleaf\MapArea;
 use Twinleaf\Accounts\Generator;
+use Twinleaf\Services\KinanCore;
+use Twinleaf\Services\KinanMail;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -29,14 +29,22 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // Trigger account creation via KinanCity
-        $kinan = new KinanCore;
+        $creator = new KinanCore;
+        $activator = new KinanMail;
 
-        $schedule->call(function () use ($kinan) {
-            $kinan->start();
-        })->everyMinute()->skip(function () use ($kinan) {
-            return $kinan->isRunning();
+        // Trigger account creation via KinanCity
+        $schedule->call(function () use ($creator) {
+            $creator->start();
+        })->everyMinute()->skip(function () use ($creator) {
+            return $creator->isRunning();
         })->appendOutputTo(storage_path('logs/creation.log'));
+
+        // Keep activation running at all times
+        $schedule->call(function () use ($activator) {
+            $activator->start();
+        })->everyMinute()->skip(function () use ($activator) {
+            return $activator->isRunning();
+        })->appendOutputTo(storage_path('logs/activation.log'));
 
         // Check for areas with fresh accounts
         $schedule->command('accounts:update')->everyMinute()
