@@ -2,9 +2,9 @@ host: 0.0.0.0
 port: {{ 8000 + $map->id }}
 
 name: {{ $map->name }}
-@if (str_contains($map->url, '/map'))
-meta-url: {{ str_replace('/map', '', $map->url) }}
-web-uri: /map
+@if (str_contains($map->url, 'map/'))
+meta-url: {{ str_replace('map/', '', $map->url) }}
+web-uri: map/
 @else
 meta-url: {{ $map->url }}
 @endif
