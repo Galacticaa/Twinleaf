@@ -17,6 +17,7 @@ clear && cat <<HEADER
 HEADER
 
 status=1
+. /etc/lsb-release
 config="/tmp/.my.cnf"
 mysqlRootPass=""
 
@@ -126,7 +127,9 @@ echo
 
 
 header "Preparing additional software repositories..."
-add-apt-repository -y ppa:ondrej/php
+if [[ "$DISTRIB_RELEASE" == "16.04" ]]; then
+    add-apt-repository -y ppa:ondrej/php
+fi
 add-apt-repository -y ppa:certbot/certbot
 apt-get update
 echo
@@ -185,7 +188,11 @@ echo
 
 
 header "Installing PHP"
-apt-get install -qq php7.1 php7.1-curl php7.1-fpm php7.1-gd php7.1-mbstring php7.1-mysql php7.1-xml php7.1-zip
+if [[ "$DISTRIB_RELEASE" == "18.04" ]]; then
+    apt-get install -qq php php-curl php-fpm php-gd php-mbstring php-mysql php-xml php-zip
+else
+    apt-get install -qq php7.1 php7.1-curl php7.1-fpm php7.1-gd php7.1-mbstring php7.1-mysql php7.1-xml php7.1-zip
+fi
 echo
 
 
